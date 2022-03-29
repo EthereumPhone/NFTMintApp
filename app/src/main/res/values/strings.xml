@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">NFT creator</string>
+    <string name="welcome_message">Hello, %1$s</string>
+</resources>
