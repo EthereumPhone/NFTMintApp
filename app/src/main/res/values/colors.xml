@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- App main colors -->
+    <color name="purple_dark">#3D39B8</color>
+    <color name="purple_medium">#5550F2</color>
+    <color name="purple_light">#A3A0FF</color>
+    <color name="gray_dark">#2C2C2C</color>
+
+
 </resources>

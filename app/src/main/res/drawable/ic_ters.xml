@@ -16,7 +16,7 @@
       android:pathData="M139.504,0h41.496v10.374h-41.496z"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M42.792,36.309h41.496v10.374h-41.496z"
+      android:pathData="M43,36h41v11h-41z"
       android:fillColor="#ffffff"/>
   <path
       android:pathData="M41.496,18.154h90.772v10.374h-90.772z"
@@ -31,10 +31,10 @@
       android:pathData="M122.647,36.309h27.232v10.374h-27.232z"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M14.264,10.373h11.671v36.309h-11.671z"
+      android:pathData="M14,0h12v47h-12z"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M41.496,10.373h11.671v36.309h-11.671z"
+      android:pathData="M41,0h12v47h-12z"
       android:fillColor="#ffffff"/>
   <path
       android:pathData="M88.931,0h11.671v46.683h-11.671z"
