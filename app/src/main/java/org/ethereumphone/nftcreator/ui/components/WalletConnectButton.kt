@@ -19,22 +19,17 @@ import dev.pinkroom.walletconnectkit.WalletConnectButton
 
 @Composable
 fun WalletConnectButton(
-    text: String,
     enabled: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     MaterialTheme {
         Button(
             onClick = onClick,
-            contentPadding = PaddingValues(
-            ),
+            contentPadding = PaddingValues(),
             shape = RoundedCornerShape(20.dp),
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-
-
+            modifier = Modifier.fillMaxWidth(0.9f)
         ) {
-            Text(text)
+            Text("Connect Wallet")
         }
     }
 }
@@ -44,7 +39,7 @@ fun WalletConnectButton(
 @Composable
 @Preview(showBackground = false)
 fun WalletConnectButtonPreview() {
-    WalletConnectButton(text = "connect wallet", onClick = {})
+    WalletConnectButton(onClick = {})
 }
 
 
