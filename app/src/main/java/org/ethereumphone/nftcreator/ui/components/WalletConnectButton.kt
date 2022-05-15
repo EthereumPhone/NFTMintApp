@@ -15,13 +15,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WalletConnectButton(
     onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     MaterialTheme {
         Button(
             onClick = onClick,
             contentPadding = PaddingValues(),
             shape = RoundedCornerShape(20.dp),
-            modifier = Modifier.fillMaxWidth(0.9f)
+            modifier = modifier
         ) {
             Text("Connect Wallet")
         }
@@ -33,7 +34,7 @@ fun WalletConnectButton(
 @Composable
 @Preview(showBackground = false)
 fun WalletConnectButtonPreview() {
-    WalletConnectButton(onClick = {})
+    WalletConnectButton(modifier = Modifier.fillMaxWidth(0.9f), onClick = {})
 }
 
 

@@ -45,5 +45,6 @@ fun TersLogo() {
 @Composable
 @Preview(showBackground = false)
 fun TersLogoPreview() {
+
     TersLogo()
 }
