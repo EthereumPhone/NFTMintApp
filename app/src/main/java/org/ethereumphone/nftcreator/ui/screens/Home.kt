@@ -3,6 +3,7 @@ package org.ethereumphone.nftcreator.ui.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -51,7 +52,6 @@ fun Home() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 BoxWithConstraints(
-
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.85f)
@@ -59,7 +59,9 @@ fun Home() {
                         .border(
                             BorderStroke(5.dp, colorResource(id = R.color.purple_200)),
                             shape = RectangleShape
-                        ),
+                        )
+                        .clickable { onClick() },
+
                 ) {
                 }
             }
@@ -82,7 +84,9 @@ fun Home() {
     }
 }
 
+private fun onClick() {
 
+}
 
 
 @Composable
