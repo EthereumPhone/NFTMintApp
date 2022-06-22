@@ -2,6 +2,7 @@ package org.ethereumphone.nftcreator
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -24,6 +25,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 class MainActivity : AppCompatActivity() {
+
 
     private var connectedToWallet: Boolean = false
     private var walletConnectButton: WalletConnectButton? = null
