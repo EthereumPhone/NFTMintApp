@@ -180,5 +180,4 @@ class MainActivity : AppCompatActivity() {
         return bytes
     }
 
-
 }
