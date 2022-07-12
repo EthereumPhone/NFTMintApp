@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android'
+    id 'com.google.devtools.ksp' version '1.6.10-1.0.4'
 }
 
 android {
@@ -36,7 +37,6 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion "1.1.1"
-        kotlinCompilerVersion "1.5.10"
     }
 
     buildFeatures { // Jetpack Compose preview
@@ -46,7 +46,6 @@ android {
 
 dependencies {
     implementation 'dev.pinkroom:walletconnectkit:0.3.2'
-    implementation 'com.github.WalletConnect:kotlin-walletconnect-lib:0.9.8'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.6.0'
@@ -91,9 +90,22 @@ dependencies {
 
     implementation 'io.coil-kt:coil-compose:2.1.0'
 
+    // dependency injection
+    implementation "io.insert-koin:koin-android:3.2.0"
+    implementation "io.insert-koin:koin-android-compat:3.2.0"
+    implementation "io.insert-koin:koin-androidx-compose:3.2.0"
 
-    //
-    //implementation "androidx.activity:activity-ktx:1.4.0"
+    // Wallet Connect
+    implementation 'com.github.WalletConnect:kotlin-walletconnect-lib:0.9.6'
+    implementation "com.github.komputing:khex:1.0.0-RC6"
+    implementation "org.java-websocket:Java-WebSocket:1.4.0"
+    implementation 'com.squareup.moshi:moshi:1.8.0'
+    implementation "com.squareup.okhttp3:okhttp:4.9.1"
+
+
+    // Compose Destination
+    implementation 'io.github.raamcosta.compose-destinations:core:1.1.1'
+    ksp 'io.github.raamcosta.compose-destinations:ksp:1.1.1'
 
 
 }
