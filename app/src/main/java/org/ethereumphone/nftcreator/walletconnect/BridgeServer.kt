@@ -11,6 +11,9 @@ import java.net.InetSocketAddress
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+
+const val PORT = 8887
+
 class BridgeServer(moshi: Moshi): WebSocketServer(InetSocketAddress(PORT)) {
 
     private val adapter = moshi.adapter<Map<String, String>>(
@@ -90,7 +93,4 @@ class BridgeServer(moshi: Moshi): WebSocketServer(InetSocketAddress(PORT)) {
         }
     }
 
-    companion object {
-        val PORT = 5000 + Random().nextInt(60000)
-    }
 }
