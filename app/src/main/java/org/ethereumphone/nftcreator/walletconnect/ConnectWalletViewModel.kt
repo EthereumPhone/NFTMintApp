@@ -56,10 +56,10 @@ class ConnectWalletViewModel(
         session?.clearCallbacks()
         val key = ByteArray(32).also { Random().nextBytes(it) }.toHexString(prefix = "")
         config =
-            Session.Config(UUID.randomUUID().toString(), "https://bridge.walletconnect.org", key)
+            Session.Config(UUID.randomUUID().toString(), "ws://localhost:8887", key)
 
         session = WCSession(
-            config?.toFullyQualifiedConfig() ?: return,
+            config ?: return,
             MoshiPayloadAdapter(moshi),
             storage,
             OkHttpTransport.Builder(client, moshi),
