@@ -1,6 +1,5 @@
 package org.ethereumphone.nftcreator.injection
 
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import org.ethereumphone.nftcreator.App
@@ -10,6 +9,7 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.walletconnect.impls.FileWCSessionStore
+import org.walletconnect.impls.WCSessionStore
 import java.io.File
 
 val appModule = module {
@@ -18,13 +18,13 @@ val appModule = module {
     single { androidApplication() as App }
 
     // Provide Moshi
-    single { Moshi.Builder().build() }
+    single<Moshi> { Moshi.Builder().build() }
 
     // Provide OkHttpClient
     single { OkHttpClient.Builder().build() }
 
     // provide WCSessionStore
-    single { FileWCSessionStore(File(androidContext().cacheDir, "session_store.json").apply { createNewFile() }, get()) }
+    single<WCSessionStore> { FileWCSessionStore(File(androidContext().cacheDir, "session_store.json").apply { createNewFile() }, get()) }
 
     // provide ConnectWalletViewModel
     viewModel { ConnectWalletViewModel(get(), get(), get()) }
