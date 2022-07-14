@@ -9,6 +9,61 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.ExperimentalComposeUiApi
+import com.google.gson.Gson
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.annotation.NavGraph
+import com.squareup.moshi.Moshi
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import okhttp3.OkHttp
+import okhttp3.OkHttpClient
+import org.ethereumphone.nftcreator.model.NFTMetaData
+import org.ethereumphone.nftcreator.ui.screens.NavGraphs
+import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
+import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
+import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.walletconnect.impls.FileWCSessionStore
+import org.web3j.crypto.Credentials
+import org.web3j.protocol.Web3j
+import java.math.BigInteger
+import java.security.MessageDigest
+
+@ExperimentalComposeUiApi
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            DestinationsNavHost(navGraph = NavGraphs.root)
+        }
+    }
+}
+
+
+/*
+package org.ethereumphone.nftcreator
+
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.gson.Gson
@@ -181,3 +236,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+
+ */
