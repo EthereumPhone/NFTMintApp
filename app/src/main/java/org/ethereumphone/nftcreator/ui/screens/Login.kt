@@ -8,26 +8,15 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.components.TersLogo
 import org.ethereumphone.nftcreator.ui.screens.destinations.HomeDestination
-import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.androidx.compose.get
-import org.koin.androidx.compose.getViewModel
-import org.koin.androidx.compose.inject
-import org.koin.androidx.compose.viewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalComposeUiApi
 @Destination(start = true)
@@ -39,9 +28,8 @@ fun Login(
     val context = LocalContext.current
 
     Scaffold(
-        backgroundColor = colorResource(id = R.color.gray_dark),
-        bottomBar = { BottomAppBar(backgroundColor = colorResource(id = R.color.gray_dark))
-            {
+        //backgroundColor = MaterialTheme.colors.background,
+        bottomBar = { BottomAppBar {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_ethos),
                     contentDescription = null,
@@ -54,18 +42,10 @@ fun Login(
         // main
         Column(
             Modifier.fillMaxHeight(),
-            //verticalArrangement = Arrangement.
         ) {
 
             TersLogo()
-            Text(
-                "NFT Creator",
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                fontSize = 30.sp,
-                modifier = Modifier.fillMaxWidth()
-            )
+
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrows),
                 contentDescription = "ters logo",
