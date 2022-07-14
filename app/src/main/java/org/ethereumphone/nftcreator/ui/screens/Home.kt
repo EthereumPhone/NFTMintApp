@@ -14,18 +14,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestinationDsl
 import coil.compose.rememberAsyncImagePainter
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.ethereumphone.nftcreator.R
+import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
 
+@ExperimentalComposeUiApi
+@Destination
 @Composable
 fun Home(
-    address: String,
+    navController: DestinationsNavigator,
+    address: String
 ) {
 
     Scaffold(
@@ -116,5 +124,5 @@ fun Home(
 @Composable
 @Preview(showBackground = false)
 fun HomePreview() {
-    Home("")
+    //Home()
 }

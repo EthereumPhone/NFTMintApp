@@ -14,18 +14,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import dev.pinkroom.walletconnectkit.WalletConnectKit
-import dev.pinkroom.walletconnectkit.WalletConnectKitConfig
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.components.TersLogo
-import org.ethereumphone.nftcreator.ui.components.WalletConnectButton
+import org.ethereumphone.nftcreator.ui.screens.destinations.HomeDestination
+import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
+import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
+import org.koin.androidx.compose.get
+import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.inject
+import org.koin.androidx.compose.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalComposeUiApi
+@Destination(start = true)
 @Composable
 fun Login(
-    walletConnectKit: WalletConnectKit,
-    onConnected: (address: String) -> Unit
+    navController: DestinationsNavigator,
+    //walletConnect: ConnectWalletViewModel = get()
 ) {
+    val walletConnect = getViewModel<ConnectWalletViewModel>()
+    val context = LocalContext.current
+
     Scaffold(
         backgroundColor = colorResource(id = R.color.gray_dark),
         bottomBar = { BottomAppBar(backgroundColor = colorResource(id = R.color.gray_dark))
@@ -70,7 +83,22 @@ fun Login(
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                WalletConnectButton(walletConnectKit = walletConnectKit, onConnected = onConnected)
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        walletConnect.connectWallet(context)
+
+                        if(walletConnect.userWallet.value != "") {
+                            navController.navigate(
+                                HomeDestination(
+                                    walletConnect.userWallet.value
+                                )
+                            )
+                        }
+                    }
+                ) {
+                    Text(text = "connect Wallet")
+                }
             }
         }
     }
@@ -86,6 +114,7 @@ fun Login(
 @ExperimentalComposeUiApi
 @Preview(showBackground = true)
 fun LoginPreview() {
+    /*
     val config = WalletConnectKitConfig(
         context = LocalContext.current,
         bridgeUrl = "wss://bridge.aktionariat.com:8887",
@@ -94,5 +123,7 @@ fun LoginPreview() {
         appDescription = "This is the Swiss Army toolkit for WalletConnect!"
     )
     val walletConnectKit = WalletConnectKit.Builder(config).build()
-    Login(walletConnectKit, {})
+    */
+
+    //Login(walletConnectKit, {})
 }
