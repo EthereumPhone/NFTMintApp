@@ -34,9 +34,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 @Composable
 fun Login(
     navController: DestinationsNavigator,
-    //walletConnect: ConnectWalletViewModel = get()
+    walletConnect: ConnectWalletViewModel = get() // injected
 ) {
-    val walletConnect = getViewModel<ConnectWalletViewModel>()
     val context = LocalContext.current
 
     Scaffold(
