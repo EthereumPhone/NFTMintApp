@@ -27,6 +27,7 @@ import okhttp3.OkHttp
 import okhttp3.OkHttpClient
 import org.ethereumphone.nftcreator.model.NFTMetaData
 import org.ethereumphone.nftcreator.ui.screens.NavGraphs
+import org.ethereumphone.nftcreator.ui.theme.nftCreatorTheme
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -46,7 +47,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            DestinationsNavHost(navGraph = NavGraphs.root)
+            nftCreatorTheme {
+                DestinationsNavHost(navGraph = NavGraphs.root)
+            }
         }
     }
 }
