@@ -40,24 +40,11 @@ class ConnectWalletViewModel(
         }
     }
 
-    fun Session.Status.handleStatus() {
-        when (this) {
-            Session.Status.Approved -> sessionApproved()
-            Session.Status.Closed -> sessionClosed()
-            Session.Status.Connected,
-            Session.Status.Disconnected,
-            is Session.Status.Error,
-            -> Log.e("WC Session Status", "handleStatus: $this", )
-        }
-    }
-
-
     private fun resetSession() {
         session?.clearCallbacks()
         val key = ByteArray(32).also { Random().nextBytes(it) }.toHexString(prefix = "")
         config =
             Session.Config(UUID.randomUUID().toString(), "ws://localhost:8887", key)
-
         session = WCSession(
             config ?: return,
             MoshiPayloadAdapter(moshi),
@@ -84,8 +71,16 @@ class ConnectWalletViewModel(
         })
     }
 
-
-
+    fun Session.Status.handleStatus() {
+        when (this) {
+            Session.Status.Approved -> sessionApproved()
+            Session.Status.Closed -> sessionClosed()
+            Session.Status.Connected,
+            Session.Status.Disconnected,
+            is Session.Status.Error,
+            -> Log.e("WC Session Status", "handleStatus: $this", )
+        }
+    }
 
     private fun sessionApproved() {
         val address = session?.approvedAccounts()?.firstOrNull() ?: return
@@ -99,3 +94,9 @@ class ConnectWalletViewModel(
     }
 
 }
+
+
+/*
+config =
+            Session.Config(UUID.randomUUID().toString(), "ws://localhost:8887", key)
+ */
