@@ -41,7 +41,7 @@ fun Home(
         bottomBar = { BottomAppBar(backgroundColor = colorResource(id = R.color.gray_dark))
             {
             Icon(
-                painter = painterResource(id = R.drawable.ic_ethos),
+                painter = painterResource(id = R.drawable.ic_ters),
                 contentDescription = null,
                 tint = Color.Unspecified,
                 modifier = Modifier
@@ -56,7 +56,7 @@ fun Home(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_ters),
+                    painter = painterResource(id = R.drawable.ic_powered_by_ethos),
                     contentDescription = null,
                     tint = Color.Unspecified,
                     modifier = Modifier
