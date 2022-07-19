@@ -6,7 +6,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.komputing.khex.extensions.toHexString
 import org.walletconnect.Session
@@ -44,7 +47,7 @@ class ConnectWalletViewModel(
         session?.clearCallbacks()
         val key = ByteArray(32).also { Random().nextBytes(it) }.toHexString(prefix = "")
         config =
-            Session.Config(UUID.randomUUID().toString(), "ws://localhost:8887", key)
+            Session.Config(UUID.randomUUID().toString(), "https://bridge.walletconnect.org", key)
         session = WCSession(
             config ?: return,
             MoshiPayloadAdapter(moshi),
@@ -56,13 +59,18 @@ class ConnectWalletViewModel(
     }
 
 
-    fun connectWallet(context: Context) {
+    fun connectWallet(context: Context, callback: () -> Unit) {
         resetSession()
         activeCallback = object : Session.Callback {
             override fun onMethodCall(call: Session.MethodCall) = Unit
 
             override fun onStatus(status: Session.Status) {
                 status.handleStatus()
+                if(status == Session.Status.Approved) {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        callback()
+                    }
+                }
             }
         }
         session?.addCallback(activeCallback ?: return)
@@ -92,11 +100,4 @@ class ConnectWalletViewModel(
     private fun sessionClosed() {
 
     }
-
 }
-
-
-/*
-config =
-            Session.Config(UUID.randomUUID().toString(), "ws://localhost:8887", key)
- */
