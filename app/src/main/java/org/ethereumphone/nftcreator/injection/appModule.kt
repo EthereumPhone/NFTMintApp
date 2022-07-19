@@ -1,6 +1,7 @@
 package org.ethereumphone.nftcreator.injection
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import org.ethereumphone.nftcreator.App
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
@@ -18,7 +19,7 @@ val appModule = module {
     single { androidApplication() as App }
 
     // Provide Moshi
-    single<Moshi> { Moshi.Builder().build() }
+    single<Moshi> { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
 
     // Provide OkHttpClient
     single { OkHttpClient.Builder().build() }
