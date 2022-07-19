@@ -30,7 +30,7 @@ fun Login(
     walletConnect: ConnectWalletViewModel = get() // injected
 ) {
     val context = LocalContext.current
-    val walletAddress = walletConnect.userWallet.collectAsState().value
+    val walletAddress = walletConnect.userWallet.collectAsState()
 
 
     Scaffold {
@@ -49,15 +49,14 @@ fun Login(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        walletConnect.connectWallet(context)
-
-                        if(walletConnect.userWallet.value != "") {
-                            navController.navigate(
-                                HomeDestination(
-                                    walletConnect.userWallet.value
+                        walletConnect.connectWallet(context) {
+                            if(walletConnect.userWallet.value != "") {
+                                navController.navigate(
+                                    HomeDestination(walletAddress.value)
                                 )
-                            )
+                            }
                         }
+
                     }
                 ) {
                     Text(text = "connect Wallet")
