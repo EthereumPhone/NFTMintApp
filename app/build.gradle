@@ -114,7 +114,8 @@ dependencies {
     implementation 'com.github.WalletConnect:kotlin-walletconnect-lib:0.9.6'
     implementation "com.github.komputing:khex:1.0.0-RC6"
     implementation "org.java-websocket:Java-WebSocket:1.4.0"
-    implementation 'com.squareup.moshi:moshi:1.8.0'
+    implementation 'com.squareup.moshi:moshi:1.13.0'
+    implementation "com.squareup.moshi:moshi-kotlin:1.13.0"
     implementation "com.squareup.okhttp3:okhttp:4.9.1"
 
 
@@ -122,5 +123,9 @@ dependencies {
     implementation 'io.github.raamcosta.compose-destinations:core:1.5.13-beta'
     ksp 'io.github.raamcosta.compose-destinations:ksp:1.5.13-beta'
 
+    // immutableX
+    implementation 'com.github.immutable:imx-core-sdk-kotlin-jvm:v0.6.0'
+
+    //
 
 }
