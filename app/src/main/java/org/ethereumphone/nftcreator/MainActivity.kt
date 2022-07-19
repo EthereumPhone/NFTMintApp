@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.ExperimentalComposeUiApi
+import com.immutable.sdk.ImmutableXBase
+import com.immutable.sdk.ImmutableXCore
 import com.ramcosta.composedestinations.DestinationsNavHost
 
 import org.ethereumphone.nftcreator.ui.screens.NavGraphs
@@ -14,6 +16,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // set network
+        ImmutableXCore.setBase(ImmutableXBase.Ropsten)
 
         setContent {
             NftCreatorTheme {
