@@ -1,5 +1,6 @@
 package org.ethereumphone.nftcreator.ui.screens
 
+import android.net.LinkAddress
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -26,11 +27,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestinationDsl
 import coil.compose.rememberAsyncImagePainter
+import com.immutable.sdk.ImmutableXCore
+import com.immutable.sdk.Signer
+import com.immutable.sdk.StarkSigner
+import com.immutable.sdk.api.CollectionsApi
+import com.immutable.sdk.api.MintsApi
+import com.immutable.sdk.crypto.StarkKey
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
+import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import java.io.File
 
 @ExperimentalComposeUiApi
@@ -38,7 +46,8 @@ import java.io.File
 @Composable
 fun Home(
     navController: DestinationsNavigator,
-    address: String
+    walletConnect: ConnectWalletViewModel? = null,
+    address: String?
 ) {
     val imageUri = remember { mutableStateOf<Uri?>(null)}
 
@@ -114,6 +123,10 @@ fun Home(
                         val ipfs = IPFSApi()
                         val ipfsHash = ipfs.uploadImage(imageArray)
                         Log.d("test", ipfsHash)
+
+
+
+                        //ImmutableXCore.buy()
 
                     },
                     modifier = Modifier.fillMaxWidth(0.7f),

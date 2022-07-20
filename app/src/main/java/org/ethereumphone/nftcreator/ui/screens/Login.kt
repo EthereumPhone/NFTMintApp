@@ -32,7 +32,6 @@ fun Login(
     val context = LocalContext.current
     val walletAddress = walletConnect.userWallet.collectAsState()
 
-
     Scaffold {
         Column{
             TersLogo()
@@ -51,8 +50,9 @@ fun Login(
                     onClick = {
                         walletConnect.connectWallet(context) {
                             if(walletConnect.userWallet.value != "") {
-                                navController.navigate(
-                                    HomeDestination(walletAddress.value)
+                                navController.navigate(HomeDestination(
+                                    address = walletAddress.value
+                                )
                                 )
                             }
                         }
