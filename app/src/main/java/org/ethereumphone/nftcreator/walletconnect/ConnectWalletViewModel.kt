@@ -100,4 +100,15 @@ class ConnectWalletViewModel(
     private fun sessionClosed() {
 
     }
+
+    fun signMessage(message: String, callback: (Session.MethodCall.Response) -> Unit) {
+        session?.performMethodCall(
+            Session.MethodCall.SignMessage(
+                id = 1337L,
+                message = message,
+                address = userWallet.value
+            ),
+            callback = callback
+        )
+    }
 }
