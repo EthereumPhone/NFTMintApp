@@ -55,7 +55,6 @@ fun Login(
                                 )
                             }
                         }
-
                     }
                 ) {
                     Text(text = "connect Wallet")
