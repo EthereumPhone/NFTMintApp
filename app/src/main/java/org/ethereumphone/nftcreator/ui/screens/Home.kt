@@ -33,15 +33,21 @@ import com.immutable.sdk.Signer
 import com.immutable.sdk.StarkSigner
 import com.immutable.sdk.api.CollectionsApi
 import com.immutable.sdk.api.MintsApi
+import com.immutable.sdk.api.model.MintFee
+import com.immutable.sdk.api.model.MintRequest
+import com.immutable.sdk.api.model.MintTokenDataV2
+import com.immutable.sdk.api.model.MintUser
 import com.immutable.sdk.crypto.StarkKey
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
+import org.ethereumphone.nftcreator.utils.ImxSigner
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.androidx.compose.get
 import java.io.File
+import kotlin.random.Random
 
 @ExperimentalComposeUiApi
 @Destination
@@ -126,10 +132,32 @@ fun Home(
                         val ipfsHash = ipfs.uploadImage(imageArray)
                         Log.d("test", ipfsHash)
 
+                        // get StarKey
+                        val key = StarkKey.generate(ImxSigner(walletConnect))
+                            .whenComplete { keyPair, error ->
+                                var authSignature = StarkKey.sign(keyPair, walletConnect.userWallet.value)
 
+                                // mintRequest
+                                val mintTokenDataV2 = MintTokenDataV2(
+                                    id = (1..1000000000).random().toString(), // wont work if same id
+                                    blueprint = null,
+                                    royalties = null
+                                )
 
-                        //ImmutableXCore.buy()
+                                val mintUser =  MintUser(
+                                    tokens = listOf(mintTokenDataV2),
+                                    user = walletConnect.userWallet.value
 
+                                )
+
+                                val mintRequest = MintRequest(
+                                    authSignature = authSignature,
+                                    contractAddress = "0xf3d64ec690E551F94ac3d4DcE5ce4Bd191466318",
+                                    users = listOf(mintUser),
+                                    royalties = null
+                                )
+                                var response = MintsApi().mintTokens(listOf(mintRequest))
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(0.7f),
                     shape = RoundedCornerShape(50),
