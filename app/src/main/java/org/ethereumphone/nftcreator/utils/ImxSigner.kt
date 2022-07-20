@@ -1,18 +1,21 @@
 package org.ethereumphone.nftcreator.utils
 
 import com.immutable.sdk.Signer
+import com.immutable.sdk.StarkSigner
+import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 
 
-class ImxSigner : Signer {
+class ImxSigner(
+    walletViewModel: ConnectWalletViewModel
+) : Signer, StarkSigner {
+    private val wallet = walletViewModel
     override fun getAddress(): CompletableFuture<String> {
         val completableFuture = CompletableFuture<String>()
 
         Executors.newCachedThreadPool().submit {
-            Thread.sleep(500)
-            //TODO: Return valid connected address
-            completableFuture.complete("Hello")
+            completableFuture.complete(wallet.userWallet.value)
         }
 
         return completableFuture
@@ -20,13 +23,13 @@ class ImxSigner : Signer {
 
     override fun signMessage(message: String): CompletableFuture<String> {
         val completableFuture = CompletableFuture<String>()
-
-        Executors.newCachedThreadPool().submit {
-            Thread.sleep(500)
-            //TODO: Sign passed message and return result
-            completableFuture.complete("Hello")
+        wallet.signMessage(
+            message = message
+        ) {
+            Executors.newCachedThreadPool().submit {
+                completableFuture.complete(it.result.toString())
+            }
         }
-
         return completableFuture
     }
 
