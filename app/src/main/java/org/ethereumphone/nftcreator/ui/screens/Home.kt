@@ -25,6 +25,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavDestinationDsl
 import coil.compose.rememberAsyncImagePainter
 import com.immutable.sdk.ImmutableXCore
@@ -39,6 +40,7 @@ import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
+import org.koin.androidx.compose.get
 import java.io.File
 
 @ExperimentalComposeUiApi
@@ -46,8 +48,7 @@ import java.io.File
 @Composable
 fun Home(
     navController: DestinationsNavigator,
-    walletConnect: ConnectWalletViewModel? = null,
-    address: String?
+    walletConnect: ConnectWalletViewModel,
 ) {
     val imageUri = remember { mutableStateOf<Uri?>(null)}
 
@@ -116,6 +117,7 @@ fun Home(
                 modifier = Modifier.fillMaxWidth()
 
                 ) {
+
                 val con = LocalContext.current
                 Button(
                     onClick = {

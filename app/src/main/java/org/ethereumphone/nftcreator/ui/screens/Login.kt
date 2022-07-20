@@ -27,7 +27,7 @@ import org.koin.androidx.compose.get
 @Composable
 fun Login(
     navController: DestinationsNavigator,
-    walletConnect: ConnectWalletViewModel = get() // injected
+    walletConnect: ConnectWalletViewModel //= get() // injected
 ) {
     val context = LocalContext.current
     val walletAddress = walletConnect.userWallet.collectAsState()
@@ -50,9 +50,8 @@ fun Login(
                     onClick = {
                         walletConnect.connectWallet(context) {
                             if(walletConnect.userWallet.value != "") {
-                                navController.navigate(HomeDestination(
-                                    address = walletAddress.value
-                                )
+                                navController.navigate(
+                                    HomeDestination()
                                 )
                             }
                         }

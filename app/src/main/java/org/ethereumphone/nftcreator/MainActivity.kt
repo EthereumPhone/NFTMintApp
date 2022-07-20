@@ -7,9 +7,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableXCore
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.navigation.dependency
+import org.ethereumphone.nftcreator.ui.screens.Home
 
 import org.ethereumphone.nftcreator.ui.screens.NavGraphs
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
+import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
+import org.koin.androidx.compose.get
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 @ExperimentalComposeUiApi
 class MainActivity : ComponentActivity() {
@@ -22,7 +27,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NftCreatorTheme {
-                DestinationsNavHost(navGraph = NavGraphs.root)
+                DestinationsNavHost(
+                    navGraph = NavGraphs.root,
+                    dependenciesContainerBuilder = {
+                        dependency(getViewModel<ConnectWalletViewModel>())
+                    }
+                )
             }
         }
     }
