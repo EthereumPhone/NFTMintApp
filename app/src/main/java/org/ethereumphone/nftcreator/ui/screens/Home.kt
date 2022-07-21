@@ -32,14 +32,13 @@ import com.immutable.sdk.ImmutableXCore
 import com.immutable.sdk.Signer
 import com.immutable.sdk.StarkSigner
 import com.immutable.sdk.api.CollectionsApi
+import com.immutable.sdk.api.MetadataApi
 import com.immutable.sdk.api.MintsApi
-import com.immutable.sdk.api.model.MintFee
-import com.immutable.sdk.api.model.MintRequest
-import com.immutable.sdk.api.model.MintTokenDataV2
-import com.immutable.sdk.api.model.MintUser
+import com.immutable.sdk.api.model.*
 import com.immutable.sdk.crypto.StarkKey
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.pinkroom.walletconnectkit.WalletConnectKit
 import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
@@ -55,8 +54,11 @@ import kotlin.random.Random
 fun Home(
     navController: DestinationsNavigator,
     walletConnect: ConnectWalletViewModel,
+    walletConnectKit: WalletConnectKit
 ) {
     val imageUri = remember { mutableStateOf<Uri?>(null)}
+
+
 
     Scaffold(
         backgroundColor = colorResource(id = R.color.gray_dark),
@@ -133,9 +135,10 @@ fun Home(
                         Log.d("test", ipfsHash)
 
                         // get StarKey
-                        val key = StarkKey.generate(ImxSigner(walletConnect))
+                        StarkKey.generate(ImxSigner(walletConnect, context = con, walletConnectKit = walletConnectKit))
                             .whenComplete { keyPair, error ->
-                                var authSignature = StarkKey.sign(keyPair, walletConnect.userWallet.value)
+
+                                var authSignature = StarkKey.sign(keyPair, walletConnectKit.address!!)
 
                                 // mintRequest
                                 val mintTokenDataV2 = MintTokenDataV2(
@@ -146,7 +149,7 @@ fun Home(
 
                                 val mintUser =  MintUser(
                                     tokens = listOf(mintTokenDataV2),
-                                    user = walletConnect.userWallet.value
+                                    user = walletConnectKit.address!!
 
                                 )
 
@@ -156,7 +159,11 @@ fun Home(
                                     users = listOf(mintUser),
                                     royalties = null
                                 )
+                                //MetadataApi().
+
                                 var response = MintsApi().mintTokens(listOf(mintRequest))
+
+                                Log.d("response", response.results.toString())
                         }
                     },
                     modifier = Modifier.fillMaxWidth(0.7f),
