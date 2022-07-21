@@ -22,9 +22,11 @@ import androidx.lifecycle.ViewModel
 
 import org.walletconnect.Session
 import androidx.lifecycle.viewModelScope
+import dev.pinkroom.walletconnectkit.WalletConnectKit
+import dev.pinkroom.walletconnectkit.WalletConnectKitConfig
 import kotlinx.coroutines.launch
 
-/*
+
 @Composable
 fun WalletConnectKitButton(
     modifier: Modifier = Modifier,
@@ -39,7 +41,7 @@ fun WalletConnectKitButton(
     val viewModel = WCKViewModel(walletConnectKit, onConnected, onDisconnected, sessionCallback)
     viewModel.loadSessionIfStored()
     MaterialTheme {
-        Button( // TODO fix background colors (no dark mode?)
+        Button(
             //colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.design_default_color_background)),
             onClick = viewModel::onClick,
             contentPadding = PaddingValues(),
@@ -120,5 +122,5 @@ private fun ComposablePreview() {
         onConnected = {},
     )
 }
-*/
+
 
