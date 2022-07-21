@@ -8,6 +8,7 @@ import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableXCore
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
+import dev.pinkroom.walletconnectkit.WalletConnectKit
 import org.ethereumphone.nftcreator.ui.screens.Home
 
 import org.ethereumphone.nftcreator.ui.screens.NavGraphs
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
                     navGraph = NavGraphs.root,
                     dependenciesContainerBuilder = {
                         dependency(getViewModel<ConnectWalletViewModel>())
+                        dependency(get<WalletConnectKit>())
                     }
                 )
             }
