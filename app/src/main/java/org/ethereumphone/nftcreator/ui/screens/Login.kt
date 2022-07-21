@@ -15,9 +15,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.pinkroom.walletconnectkit.WalletConnectKit
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.components.OverlappingTriangles
 import org.ethereumphone.nftcreator.ui.components.TersLogo
+import org.ethereumphone.nftcreator.ui.components.WalletConnectKitButton
 import org.ethereumphone.nftcreator.ui.screens.destinations.HomeDestination
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.androidx.compose.get
@@ -27,7 +29,8 @@ import org.koin.androidx.compose.get
 @Composable
 fun Login(
     navController: DestinationsNavigator,
-    walletConnect: ConnectWalletViewModel //= get() // injected
+    walletConnect: ConnectWalletViewModel, //= get() // injected
+    walletConnectKit: WalletConnectKit
 ) {
     val context = LocalContext.current
     val walletAddress = walletConnect.userWallet.collectAsState()
@@ -45,9 +48,12 @@ fun Login(
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
+                /*
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
+
+                        /*
                         walletConnect.connectWallet(context) {
                             if(walletConnect.userWallet.value != "") {
                                 navController.navigate(
@@ -55,10 +61,18 @@ fun Login(
                                 )
                             }
                         }
+
+                         */
                     }
                 ) {
                     Text(text = "connect Wallet")
                 }
+                 */
+                WalletConnectKitButton(walletConnectKit = walletConnectKit, onConnected = {
+                    navController.navigate(
+                        HomeDestination()
+                    )
+                })
             }
         }
     }
