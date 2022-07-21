@@ -49,7 +49,7 @@ class ConnectWalletViewModel(
         config =
             Session.Config(UUID.randomUUID().toString(), "https://bridge.walletconnect.org", key)
         session = WCSession(
-            config ?: return,
+            config?.toFullyQualifiedConfig() ?: return,
             MoshiPayloadAdapter(moshi),
             storage,
             OkHttpTransport.Builder(client, moshi),
@@ -66,6 +66,7 @@ class ConnectWalletViewModel(
 
             override fun onStatus(status: Session.Status) {
                 status.handleStatus()
+
                 if(status == Session.Status.Approved) {
                     GlobalScope.launch(Dispatchers.Main) {
                         callback()
@@ -101,14 +102,52 @@ class ConnectWalletViewModel(
 
     }
 
-    fun signMessage(message: String, callback: (Session.MethodCall.Response) -> Unit) {
+    fun signMessage(context: Context, message: String, callback: (Session.MethodCall.Response) -> Unit) {
+
+
         session?.performMethodCall(
-            Session.MethodCall.SignMessage(
+
+
+            /*Session.MethodCall.SignMessage(
                 id = 1337L,
-                message = message,
-                address = userWallet.value
+                message = userWallet.value,
+                address = message
             ),
             callback = callback
+            */
+            Session.MethodCall.SendTransaction(
+                id = 133L,
+                from = "0x24EdA4f7d0c466cc60302b9b5e9275544E5ba552",
+                to = "0x3a4e6ed8b0f02bfbfaa3c6506af2db939ea5798c",
+                nonce = null,
+                gasPrice = null,
+                gasLimit = null,
+                value = "0x5AF3107A4000",
+                data = ""
+            ),
+            callback = callback
+
         )
+
+
+        /*
+        activeCallback = object : Session.Callback {
+            override fun onMethodCall(call: Session.MethodCall) {
+                Log.d("test onMethodCall", "Margus Ass")
+            }
+
+            override fun onStatus(status: Session.Status) {
+
+            }
+        }
+        */
+        //session?.addCallback(activeCallback ?: return)
+        // sign message via walletConnect
+
+        /*
+        context.startActivity(Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(config?.toWCUri() ?: return)
+        })
+        */
     }
 }
