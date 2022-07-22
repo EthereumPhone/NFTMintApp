@@ -1,9 +1,11 @@
 package org.ethereumphone.nftcreator.utils
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.platform.LocalContext
 import com.immutable.sdk.Signer
 import com.immutable.sdk.StarkSigner
+import com.immutable.sdk.crypto.Crypto
 import com.immutable.sdk.crypto.StarkKey
 import dev.pinkroom.walletconnectkit.WalletConnectKit
 import kotlinx.coroutines.Dispatchers
@@ -16,19 +18,14 @@ import java.util.concurrent.Executors
 
 
 class ImxSigner(
-    walletViewModel: ConnectWalletViewModel? = null,
     walletConnectKit: WalletConnectKit,
-    context: Context
 ) : Signer {
-    //private val wallet = walletViewModel
-    private val context = context
     private val walletConnectKit = walletConnectKit
 
     override fun getAddress(): CompletableFuture<String> {
         val completableFuture = CompletableFuture<String>()
 
         Executors.newCachedThreadPool().submit {
-            //completableFuture.complete(wallet?.userWallet?.value)
             completableFuture.complete(walletConnectKit.address)
 
         }
@@ -38,19 +35,10 @@ class ImxSigner(
 
     override fun signMessage(message: String): CompletableFuture<String> {
         val completableFuture = CompletableFuture<String>()
-        /*
-        wallet?.signMessage(
-            message = message,
-            context = context
-        ) {
-            Executors.newCachedThreadPool().submit {
-                completableFuture.complete(it.result.toString())
-            }
-        }
-        */
+
         Executors.newCachedThreadPool().submit {
             GlobalScope.launch(Dispatchers.Main) {
-                completableFuture.complete(walletConnectKit.personalSign(message).result.toString())
+                completableFuture.complete("\\x19Ethereum Signed Message:\n" + walletConnectKit.personalSign(message).result.toString())
             }
         }
 
@@ -60,18 +48,19 @@ class ImxSigner(
 
 class ImxStarkSinger(
     walletConnectKit: WalletConnectKit,
-    context: Context
+    signer: Signer
 ): StarkSigner {
     private val walletConnectKit = walletConnectKit
-    private val context = context
+    private val signer = signer
+    private var ecKeyPair: ECKeyPair?= null
+
+
 
     override fun getAddress(): CompletableFuture<String> {
         val completableFuture = CompletableFuture<String>()
 
         Executors.newCachedThreadPool().submit {
-            //completableFuture.complete(wallet?.userWallet?.value)
             completableFuture.complete(walletConnectKit.address)
-
         }
         return completableFuture
     }
@@ -80,13 +69,13 @@ class ImxStarkSinger(
         val completableFuture = CompletableFuture<String>()
 
         Executors.newCachedThreadPool().submit {
-            StarkKey.generate(ImxSigner(walletConnectKit = walletConnectKit, context = context)).whenComplete { keyPair, error ->
-                val signOutput = StarkKey.sign(keyPair, message)
-
-                completableFuture.complete(signOutput)
+            if(ecKeyPair == null) {
+                StarkKey.generate(signer = signer).whenComplete{ keyPair, error ->
+                    ecKeyPair = keyPair
+                }.thenApply { completableFuture.complete(StarkKey.sign(ecKeyPair!!, message)) }
+            } else {
+                completableFuture.complete(StarkKey.sign(ecKeyPair!!, message))
             }
-
-
         }
         return completableFuture
     }
