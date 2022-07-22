@@ -64,30 +64,46 @@ class ImxStarkSinger(
 ): StarkSigner {
     private val walletConnectKit = walletConnectKit
     private val context = context
+    private var ecKeyPair : ECKeyPair? = null
+
 
     override fun getAddress(): CompletableFuture<String> {
         val completableFuture = CompletableFuture<String>()
 
-        Executors.newCachedThreadPool().submit {
-            //completableFuture.complete(wallet?.userWallet?.value)
-            completableFuture.complete(walletConnectKit.address)
-
+        if(ecKeyPair==null){
+            Executors.newCachedThreadPool().submit {
+                StarkKey.generate(ImxSigner(walletConnectKit = walletConnectKit, context = context)).whenComplete { keyPair, error ->
+                    ecKeyPair = keyPair
+                    completableFuture.complete(keyPair.publicKey.toString())
+                }
+            }
+        } else {
+            Executors.newCachedThreadPool().submit {
+                completableFuture.complete(ecKeyPair!!.publicKey.toString())
+            }
         }
         return completableFuture
     }
 
     override fun signMessage(message: String): CompletableFuture<String> {
         val completableFuture = CompletableFuture<String>()
+        if (ecKeyPair == null){
+            Executors.newCachedThreadPool().submit {
+                StarkKey.generate(ImxSigner(walletConnectKit = walletConnectKit, context = context)).whenComplete { keyPair, error ->
+                    ecKeyPair = keyPair
+                    val signOutput = StarkKey.sign(keyPair, message)
 
-        Executors.newCachedThreadPool().submit {
-            StarkKey.generate(ImxSigner(walletConnectKit = walletConnectKit, context = context)).whenComplete { keyPair, error ->
-                val signOutput = StarkKey.sign(keyPair, message)
+                    completableFuture.complete(signOutput)
+                }
+            }
+        } else {
+            Executors.newCachedThreadPool().submit {
+                val signOutput = StarkKey.sign(ecKeyPair!!, message)
 
                 completableFuture.complete(signOutput)
             }
-
-
         }
+
         return completableFuture
     }
 
