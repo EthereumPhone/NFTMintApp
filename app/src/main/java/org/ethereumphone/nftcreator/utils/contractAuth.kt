@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture
 
 fun getSignature(mint: MintRequest, address: String, mintData: MintTokenDataV2): CompletableFuture<String> {
     val completableFuture = CompletableFuture<String>();
-    val url = "https://us-central1-imx-minting-ethos.cloudfunctions.net/getSignature" + URLEncoder.encode("?address=${address}&id=${mintData.id}&blueprint=${mintData.blueprint}&contractAddress=${mint.contractAddress}", "utf-8")
+    val url = "https://us-central1-imx-minting-ethos.cloudfunctions.net/getSignature?address=${URLEncoder.encode(address, "utf-8")}&id=${URLEncoder.encode(mintData.id, "utf-8")}&blueprint=${URLEncoder.encode(mintData.blueprint, "utf-8")}&contractAddress=${URLEncoder.encode(mint.contractAddress, "utf-8")}"
     GlobalScope.launch(Dispatchers.IO) {
         val response = async { URL(url).readText() }.await()
         completableFuture.complete(response)
