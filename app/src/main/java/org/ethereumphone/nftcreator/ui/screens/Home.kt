@@ -12,10 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,21 +25,24 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavDestinationDsl
 import coil.compose.rememberAsyncImagePainter
-import com.immutable.sdk.ImmutableXCore
-import com.immutable.sdk.Signer
-import com.immutable.sdk.StarkSigner
+import com.immutable.sdk.*
 import com.immutable.sdk.api.CollectionsApi
 import com.immutable.sdk.api.MetadataApi
 import com.immutable.sdk.api.MintsApi
+import com.immutable.sdk.api.UsersApi
 import com.immutable.sdk.api.model.*
 import com.immutable.sdk.crypto.StarkKey
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.pinkroom.walletconnectkit.WalletConnectKit
+import jnr.a64asm.Register
+import kotlinx.coroutines.*
 import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
 import org.ethereumphone.nftcreator.utils.ImxSigner
+import org.ethereumphone.nftcreator.utils.ImxStarkSinger
+import org.ethereumphone.nftcreator.utils.mintingWorkFlow
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.androidx.compose.get
 import java.io.File
@@ -127,18 +127,45 @@ fun Home(
                 ) {
 
                 val con = LocalContext.current
+               // val coroutineScope = rememberCoroutineScope()
+
                 Button(
                     onClick = {
+                        /*
                         val imageArray = con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
                         val ipfs = IPFSApi()
                         val ipfsHash = ipfs.uploadImage(imageArray)
                         Log.d("test", ipfsHash)
+                        */
 
-                        // get StarKey
-                        StarkKey.generate(ImxSigner(walletConnect, context = con, walletConnectKit = walletConnectKit))
+                        // IMX signers
+                        val signer = ImxSigner(walletConnectKit)
+                        var starkSinger = ImxStarkSinger(signer)
+
+                        mintingWorkFlow(
+                            signer = signer,
+                            starkSinger = starkSinger
+                        ).whenComplete { result, _ ->
+                            Log.d("test", result.results[0].toString())
+                        }
+
+
+
+
+                        //var registerRequest = RegisterUserRequest()
+
+                        //UsersApi().registerUser()
+
+
+                        /*
+                        StarkKey.generate(ImxSigner(walletConnectKit = walletConnectKit))
                             .whenComplete { keyPair, error ->
 
-                                var authSignature = StarkKey.sign(keyPair, walletConnectKit.address!!)
+
+
+                                var authSignature = StarkKey.sign(keyPair, "0x5369676e2074686973")
+
+
 
                                 // mintRequest
                                 val mintTokenDataV2 = MintTokenDataV2(
@@ -163,8 +190,9 @@ fun Home(
 
                                 var response = MintsApi().mintTokens(listOf(mintRequest))
 
-                                Log.d("response", response.results.toString())
+                                //Log.d("response", response.results.joinToString { it. })
                         }
+                        */
                     },
                     modifier = Modifier.fillMaxWidth(0.7f),
                     shape = RoundedCornerShape(50),
