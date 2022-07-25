@@ -46,6 +46,16 @@ internal fun mintingWorkFlow(
 
     signer.getAddress().thenApply { address ->
         userWallet = address
+        user = MintUser(
+            tokens = listOf(tokenData),
+            user = userWallet
+        )
+        request = MintRequest(
+            authSignature = "",
+            contractAddress = CONTRACT_ADDRESS,
+            users = listOf(user),
+            royalties = null
+        )
         isWalletRegistered(userWallet, usersApi) }
         .thenCompose { isConnected -> connectWallet(isConnected, signer, starkSinger) }
         .thenCompose { getSignature(request, userWallet, tokenData)
