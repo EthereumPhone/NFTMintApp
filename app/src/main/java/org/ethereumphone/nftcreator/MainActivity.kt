@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableXCore
+import com.immutable.sdk.ImmutableXHttpLoggingLevel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import dev.pinkroom.walletconnectkit.WalletConnectKit
@@ -23,8 +24,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // set network
+
         ImmutableXCore.setBase(ImmutableXBase.Ropsten)
+        ImmutableXCore.setHttpLoggingLevel(ImmutableXHttpLoggingLevel.Body)
 
         setContent {
             NftCreatorTheme {
