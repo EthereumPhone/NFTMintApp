@@ -4,6 +4,7 @@ package org.ethereumphone.nftcreator.utils
 import com.immutable.sdk.Signer
 import com.immutable.sdk.StarkSigner
 import com.immutable.sdk.crypto.StarkKey
+import com.immutable.sdk.extensions.getStarkPublicKey
 import dev.pinkroom.walletconnectkit.WalletConnectKit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -34,7 +35,6 @@ class ImxSigner(
                 completableFuture.complete(walletConnectKit.personalSign(message).result.toString())
             }
         }
-
         return completableFuture
     }
 }
@@ -52,12 +52,12 @@ class ImxStarkSinger(signer: Signer,
             CompletableFuture.runAsync {
                 StarkKey.generate(signer).whenComplete { keyPair, error ->
                     ecKeyPair = keyPair
-                    completableFuture.complete(keyPair.publicKey.toString())
+                    completableFuture.complete(ecKeyPair!!.getStarkPublicKey())
                 }
             }
         } else {
             CompletableFuture.runAsync {
-                completableFuture.complete(ecKeyPair!!.publicKey.toString())
+                completableFuture.complete(ecKeyPair!!.getStarkPublicKey())
             }
         }
         return completableFuture
