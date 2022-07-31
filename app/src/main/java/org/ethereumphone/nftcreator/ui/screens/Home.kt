@@ -148,51 +148,6 @@ fun Home(
                         ).whenComplete { result, _ ->
                             Log.d("test", result.results[0].toString())
                         }
-
-
-
-
-                        //var registerRequest = RegisterUserRequest()
-
-                        //UsersApi().registerUser()
-
-
-                        /*
-                        StarkKey.generate(ImxSigner(walletConnectKit = walletConnectKit))
-                            .whenComplete { keyPair, error ->
-
-
-
-                                var authSignature = StarkKey.sign(keyPair, "0x5369676e2074686973")
-
-
-
-                                // mintRequest
-                                val mintTokenDataV2 = MintTokenDataV2(
-                                    id = (1..1000000000).random().toString(), // wont work if same id
-                                    blueprint = null,
-                                    royalties = null
-                                )
-
-                                val mintUser =  MintUser(
-                                    tokens = listOf(mintTokenDataV2),
-                                    user = walletConnectKit.address!!
-
-                                )
-
-                                val mintRequest = MintRequest(
-                                    authSignature = authSignature,
-                                    contractAddress = "0xf3d64ec690E551F94ac3d4DcE5ce4Bd191466318",
-                                    users = listOf(mintUser),
-                                    royalties = null
-                                )
-                                //MetadataApi().
-
-                                var response = MintsApi().mintTokens(listOf(mintRequest))
-
-                                //Log.d("response", response.results.joinToString { it. })
-                        }
-                        */
                     },
                     modifier = Modifier.fillMaxWidth(0.7f),
                     shape = RoundedCornerShape(50),

@@ -1,5 +1,6 @@
 package org.ethereumphone.nftcreator.utils
 
+import android.util.Log
 import com.immutable.sdk.ImmutableXCore
 import com.immutable.sdk.api.MintsApi
 import com.immutable.sdk.api.UsersApi
@@ -10,6 +11,7 @@ import java.net.HttpURLConnection
 import java.util.concurrent.CompletableFuture
 
 private const val CONTRACT_ADDRESS = "0xf3d64ec690E551F94ac3d4DcE5ce4Bd191466318" //ethOS minting contract
+
 
 /**
  * This function allows to mint a ERC-Token via ImmutableX
@@ -23,13 +25,18 @@ internal fun mintingWorkFlow(
 ): CompletableFuture<MintTokensResponse> {
     val future = CompletableFuture<MintTokensResponse>()
 
-    var blueprint = ""
+    var blueprint = "test"
     var userWallet = ""
 
+    var royalties = MintFee(
+        percentage = 2.0,
+        recipient = userWallet
+    )
+
     var tokenData = MintTokenDataV2(
-        id = (1..1000000000).random().toString(), // wont work if same id
+        id = "0", // wont work if same id
         blueprint = blueprint,
-        royalties = null
+        royalties = listOf(royalties)
     )
 
     var user = MintUser(
@@ -41,34 +48,49 @@ internal fun mintingWorkFlow(
         authSignature = "",
         contractAddress = CONTRACT_ADDRESS,
         users = listOf(user),
-        royalties = null
+        royalties = listOf(royalties)
     )
 
     signer.getAddress().thenApply { address ->
         userWallet = address
+
+        // royalties
+        royalties = MintFee(
+            percentage = 2.0,
+            recipient = userWallet
+        )
+        // token data
+        tokenData = MintTokenDataV2(
+                id = (1..1000000000).random().toString(), // wont work if same id
+            blueprint = blueprint,
+            royalties = listOf(royalties)
+        )
+        // mint user
         user = MintUser(
             tokens = listOf(tokenData),
             user = userWallet
         )
+        // mint request
         request = MintRequest(
             authSignature = "",
             contractAddress = CONTRACT_ADDRESS,
             users = listOf(user),
-            royalties = null
+            royalties = listOf(royalties)
         )
         isWalletRegistered(userWallet, usersApi) }
         .thenCompose { isConnected -> connectWallet(isConnected, signer, starkSinger) }
-        .thenCompose { getSignature(request, userWallet, tokenData)
-            .thenApply {
+        .thenCompose { getSignature(request, userWallet, tokenData).thenApply { auth ->
                 request = MintRequest(
-                    authSignature = it,
+                    authSignature = auth,
                     contractAddress = CONTRACT_ADDRESS,
                     users = listOf(user),
-                    royalties = null
+                    royalties = listOf(royalties)
                 )
             }
         }
-        .thenApply { mintsApi.mintTokens(listOf(request)) }
+        .thenApply {
+            Log.d("auth", request.authSignature)
+            mintsApi.mintTokens(listOf(request)) }
         .whenComplete { response, error ->
             if(error != null) future.completeExceptionally(error)
             else future.complete(response)
