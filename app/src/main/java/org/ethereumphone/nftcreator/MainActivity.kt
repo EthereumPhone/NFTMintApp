@@ -1,5 +1,51 @@
 package org.ethereumphone.nftcreator
 
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.ui.ExperimentalComposeUiApi
+import com.immutable.sdk.ImmutableXBase
+import com.immutable.sdk.ImmutableXCore
+import com.immutable.sdk.ImmutableXHttpLoggingLevel
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.navigation.dependency
+import dev.pinkroom.walletconnectkit.WalletConnectKit
+import org.ethereumphone.nftcreator.ui.screens.Home
+
+import org.ethereumphone.nftcreator.ui.screens.NavGraphs
+import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
+import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
+import org.koin.androidx.compose.get
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+
+@ExperimentalComposeUiApi
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+
+        ImmutableXCore.setBase(ImmutableXBase.Ropsten)
+        ImmutableXCore.setHttpLoggingLevel(ImmutableXHttpLoggingLevel.Body)
+
+        setContent {
+            NftCreatorTheme {
+                DestinationsNavHost(
+                    navGraph = NavGraphs.root,
+                    dependenciesContainerBuilder = {
+                        dependency(getViewModel<ConnectWalletViewModel>())
+                        dependency(get<WalletConnectKit>())
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+/*
+package org.ethereumphone.nftcreator
+
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -181,3 +227,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+
+ */

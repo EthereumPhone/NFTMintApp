@@ -19,15 +19,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import dev.pinkroom.walletconnectkit.R
-import dev.pinkroom.walletconnectkit.WalletConnectKit
-import dev.pinkroom.walletconnectkit.WalletConnectKitConfig
+
 import org.walletconnect.Session
 import androidx.lifecycle.viewModelScope
+import dev.pinkroom.walletconnectkit.WalletConnectKit
+import dev.pinkroom.walletconnectkit.WalletConnectKitConfig
 import kotlinx.coroutines.launch
 
+
 @Composable
-fun WalletConnectButton(
+fun WalletConnectKitButton(
     modifier: Modifier = Modifier,
     imageModifier: Modifier = Modifier
         .size(232.dp, 48.dp)
@@ -40,7 +41,7 @@ fun WalletConnectButton(
     val viewModel = WCKViewModel(walletConnectKit, onConnected, onDisconnected, sessionCallback)
     viewModel.loadSessionIfStored()
     MaterialTheme {
-        Button( // TODO fix background colors (no dark mode?)
+        Button(
             //colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.design_default_color_background)),
             onClick = viewModel::onClick,
             contentPadding = PaddingValues(),
@@ -115,11 +116,9 @@ private fun ComposablePreview() {
         appDescription = "This is the Swiss Army toolkit for WalletConnect!"
     )
     val walletConnectKit = WalletConnectKit.Builder(config).build()
-    WalletConnectButton(
+    WalletConnectKitButton(
         modifier = Modifier.fillMaxWidth(),
         walletConnectKit = walletConnectKit,
         onConnected = {},
     )
 }
-
-
