@@ -132,9 +132,9 @@ fun Home(
                     onClick = {
 
                         val imageArray = con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
-                        //val ipfs = IPFSApi()
-                        //val ipfsHash = ipfs.uploadImage(imageArray)
-                        //Log.d("test", ipfsHash)
+                        val ipfs = IPFSApi()
+                        val ipfsHash = ipfs.uploadImage(imageArray)
+                        Log.d("test", ipfsHash)
 
 
                         // IMX signers
@@ -144,7 +144,7 @@ fun Home(
                         mintingWorkFlow(
                             signer = signer,
                             starkSinger = starkSinger,
-                            ipfsHash = "Qmc6qs3doJGi4VWKJLLM9Apc17ZTs2u4XAbXaWWJfMssbQ",
+                            ipfsHash = ipfsHash, //"QmSn5Y8cAxokNbJdqE91BDF7zQpNHw9VmNfmijzC3gQsTV",
                             blueprint = ""
                         ).whenComplete { result, _ ->
                             Log.d("test", result.toString())

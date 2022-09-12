@@ -9,12 +9,18 @@ import com.immutable.sdk.api.model.*
 import com.immutable.sdk.crypto.Crypto
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.bouncycastle.pqc.math.linearalgebra.IntegerFunctions.pow
 import org.openapitools.client.infrastructure.ClientException
 import java.net.HttpURLConnection
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 private const val CONTRACT_ADDRESS = "0x5062fD4a4F56A6241047CF476E1484b0e46d18EE" //ethOS minting contract
 
+fun rand(from: Int, to: Int) : Int {
+    val random = Random()
+    return random.nextInt(to - from) + from
+}
 
 /**
  * This function allows to mint a ERC-Token via ImmutableX
@@ -32,7 +38,7 @@ internal fun mintingWorkFlow(
     var userWallet = ""
 
     var bp = NFTMetadata(
-        name = "test",
+        name = "NFT",
         image = ipfsHash,
         description = "this is a test mint",
     )
@@ -73,7 +79,7 @@ internal fun mintingWorkFlow(
         // token data
         tokenData = MintTokenDataV2(
             // TODO: change how id is generated (Markus was warned :D)
-            id = (0..1000000).random().toString(),
+            id = rand(0, 1000000000).toString(),
 
             blueprint = BpString,
             royalties = listOf(royalties)
@@ -93,7 +99,7 @@ internal fun mintingWorkFlow(
         isWalletRegistered(userWallet, usersApi) }
         .thenCompose { isConnected -> connectWallet(isConnected, signer, starkSinger) }
         .thenApply {
-            mintToken(address = userWallet, mintData = tokenData, blueprint = BpString)
+            mintToken(address = userWallet, mintData = tokenData, blueprint = bp)
             .whenComplete {
                 response, error ->
                 if(error != null) future.completeExceptionally(error)

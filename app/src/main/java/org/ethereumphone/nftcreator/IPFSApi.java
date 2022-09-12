@@ -10,11 +10,12 @@ import io.ipfs.api.MerkleNode;
 import io.ipfs.api.NamedStreamable;
 
 public class IPFSApi {
-    private final IPFS ipfs;
+    private final IPFS ipfs;1
     public IPFSApi() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        ipfs = new IPFS("/dnsaddr/nftmintapp.infura-ipfs.io/tcp/5001/https");
+        ipfs = new IPFS("/dnsaddr/ipfs.best-practice.se/tcp/443/https");
+        //ipfs = new IPFS("");
     }
 
     public String uploadImage(byte[] image) throws IOException {
