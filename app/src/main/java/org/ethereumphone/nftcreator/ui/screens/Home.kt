@@ -152,15 +152,13 @@ fun Home(
                             Log.d("test", result.toString())
                             val jsonObject = JSONObject(result.toString())
                             // https://market.ropsten.immutable.com/inventory/contractAddress/tokenID
-                            val url = "https://market.ropsten.immutable.com/inventory/${jsonObject.get("contract_address")}/${jsonObject.get("token_id")}"
+                            val dataObject: JSONObject= jsonObject.getJSONArray("results").get(0) as JSONObject
+                            val url = "https://market.ropsten.immutable.com/inventory/${dataObject.get("contract_address")}/${dataObject.get("token_id")}"
                             val uri = Uri.parse(url)
                             val intent = Intent(Intent.ACTION_VIEW, uri)
                             // Verify that the intent will resolve to an activity
                             // Verify that the intent will resolve to an activity
-                            if (intent.resolveActivity(con.getPackageManager()) != null) {
-                                // Here we use an intent without a Chooser unlike the next example
-                                con.startActivity(intent)
-                            }
+                            con.startActivity(intent)
                         }
                     },
                     modifier = Modifier.fillMaxWidth(0.7f),
