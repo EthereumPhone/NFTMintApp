@@ -42,6 +42,7 @@ import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
 import org.ethereumphone.nftcreator.utils.ImxSigner
 import org.ethereumphone.nftcreator.utils.ImxStarkSinger
+import org.ethereumphone.nftcreator.utils.NFTMetadata
 import org.ethereumphone.nftcreator.utils.mintingWorkFlow
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.androidx.compose.get
@@ -127,16 +128,14 @@ fun Home(
                 ) {
 
                 val con = LocalContext.current
-               // val coroutineScope = rememberCoroutineScope()
-
                 Button(
                     onClick = {
-                        /*
+
                         val imageArray = con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
-                        val ipfs = IPFSApi()
-                        val ipfsHash = ipfs.uploadImage(imageArray)
-                        Log.d("test", ipfsHash)
-                        */
+                        //val ipfs = IPFSApi()
+                        //val ipfsHash = ipfs.uploadImage(imageArray)
+                        //Log.d("test", ipfsHash)
+
 
                         // IMX signers
                         val signer = ImxSigner(walletConnectKit)
@@ -144,9 +143,11 @@ fun Home(
 
                         mintingWorkFlow(
                             signer = signer,
-                            starkSinger = starkSinger
+                            starkSinger = starkSinger,
+                            ipfsHash = "Qmc6qs3doJGi4VWKJLLM9Apc17ZTs2u4XAbXaWWJfMssbQ",
+                            blueprint = ""
                         ).whenComplete { result, _ ->
-                            Log.d("test", result.results[0].toString())
+                            Log.d("test", result.toString())
                         }
                     },
                     modifier = Modifier.fillMaxWidth(0.7f),

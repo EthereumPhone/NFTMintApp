@@ -122,5 +122,3 @@ private fun ComposablePreview() {
         onConnected = {},
     )
 }
-
-

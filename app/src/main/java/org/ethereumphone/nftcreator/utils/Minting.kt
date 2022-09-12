@@ -1,16 +1,19 @@
 package org.ethereumphone.nftcreator.utils
 
 import android.util.Log
+import com.google.gson.Gson
 import com.immutable.sdk.ImmutableXCore
 import com.immutable.sdk.api.MintsApi
 import com.immutable.sdk.api.UsersApi
 import com.immutable.sdk.api.model.*
 import com.immutable.sdk.crypto.Crypto
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.openapitools.client.infrastructure.ClientException
 import java.net.HttpURLConnection
 import java.util.concurrent.CompletableFuture
 
-private const val CONTRACT_ADDRESS = "0xf3d64ec690E551F94ac3d4DcE5ce4Bd191466318" //ethOS minting contract
+private const val CONTRACT_ADDRESS = "0x5062fD4a4F56A6241047CF476E1484b0e46d18EE" //ethOS minting contract
 
 
 /**
@@ -22,11 +25,19 @@ internal fun mintingWorkFlow(
     starkSinger: ImxStarkSinger,
     usersApi: UsersApi = UsersApi(),
     mintsApi: MintsApi = MintsApi(),
-): CompletableFuture<MintTokensResponse> {
-    val future = CompletableFuture<MintTokensResponse>()
-
-    var blueprint = "test"
+    ipfsHash: String,
+    blueprint: String?
+): CompletableFuture<String> {
+    val future = CompletableFuture<String>()
     var userWallet = ""
+
+    var bp = NFTMetadata(
+        name = "test",
+        image = ipfsHash,
+        description = "this is a test mint",
+    )
+
+    var BpString = Json.encodeToString(bp)
 
     var royalties = MintFee(
         percentage = 2.0,
@@ -35,7 +46,7 @@ internal fun mintingWorkFlow(
 
     var tokenData = MintTokenDataV2(
         id = "0", // wont work if same id
-        blueprint = blueprint,
+        blueprint = BpString,
         royalties = listOf(royalties)
     )
 
@@ -61,8 +72,10 @@ internal fun mintingWorkFlow(
         )
         // token data
         tokenData = MintTokenDataV2(
-                id = (1..1000000000).random().toString(), // wont work if same id
-            blueprint = blueprint,
+            // TODO: change how id is generated (Markus was warned :D)
+            id = (0..1000000).random().toString(),
+
+            blueprint = BpString,
             royalties = listOf(royalties)
         )
         // mint user
@@ -79,21 +92,13 @@ internal fun mintingWorkFlow(
         )
         isWalletRegistered(userWallet, usersApi) }
         .thenCompose { isConnected -> connectWallet(isConnected, signer, starkSinger) }
-        .thenCompose { getSignature(request, userWallet, tokenData).thenApply { auth ->
-                request = MintRequest(
-                    authSignature = auth,
-                    contractAddress = CONTRACT_ADDRESS,
-                    users = listOf(user),
-                    royalties = listOf(royalties)
-                )
-            }
-        }
         .thenApply {
-            Log.d("auth", request.authSignature)
-            mintsApi.mintTokens(listOf(request)) }
-        .whenComplete { response, error ->
-            if(error != null) future.completeExceptionally(error)
-            else future.complete(response)
+            mintToken(address = userWallet, mintData = tokenData, blueprint = BpString)
+            .whenComplete {
+                response, error ->
+                if(error != null) future.completeExceptionally(error)
+                else future.complete(response)
+            }
         }
     return future
 }

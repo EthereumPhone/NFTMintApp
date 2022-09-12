@@ -14,7 +14,7 @@ public class IPFSApi {
     public IPFSApi() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        ipfs = new IPFS("/dnsaddr/ipfs.infura.io/tcp/5001/https");
+        ipfs = new IPFS("/dnsaddr/nftmintapp.infura-ipfs.io/tcp/5001/https");
     }
 
     public String uploadImage(byte[] image) throws IOException {

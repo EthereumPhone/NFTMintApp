@@ -2,6 +2,7 @@ package org.ethereumphone.nftcreator.model
 
 import kotlinx.serialization.Serializable
 
+
 @Serializable
 data class NFTMetaData(
     val description: String,
