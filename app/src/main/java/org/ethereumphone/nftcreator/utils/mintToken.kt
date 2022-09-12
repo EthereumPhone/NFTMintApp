@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture
 
 fun mintToken(address: String, mintData: MintTokenDataV2, blueprint: NFTMetadata): CompletableFuture<String> {
     val completableFuture = CompletableFuture<String>();
+    println("Image url: "+"https://nftmintapp.infura-ipfs.io/ipfs/"+blueprint.image)
     val url = "https://us-central1-imx-minting-ethos.cloudfunctions.net/mint?wallet=${URLEncoder.encode(address, "utf-8")}" +
             "&tokenID=${URLEncoder.encode(mintData.id, "utf-8")}" +
             "&blueprint=${URLEncoder.encode(blueprint.name,"utf-8")}" +

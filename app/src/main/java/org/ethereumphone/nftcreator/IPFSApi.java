@@ -2,33 +2,47 @@ package org.ethereumphone.nftcreator;
 
 import android.os.StrictMode;
 
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-
-import io.ipfs.api.IPFS;
-import io.ipfs.api.MerkleNode;
-import io.ipfs.api.NamedStreamable;
-
 public class IPFSApi {
-    private final IPFS ipfs;1
     public IPFSApi() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        ipfs = new IPFS("/dnsaddr/ipfs.best-practice.se/tcp/443/https");
         //ipfs = new IPFS("");
     }
 
-    public String uploadImage(byte[] image) throws IOException {
-        NamedStreamable.ByteArrayWrapper bytearray = new NamedStreamable.ByteArrayWrapper(image);
-        MerkleNode response = ipfs.add(bytearray).get(0);
-        System.out.println("Hash (base 58): " + response.hash.toBase58());
-        return response.hash.toString();
+    public String uploadFile(File file) throws IOException, JSONException {
+        String comm = "curl -X POST -F file=@"+file.getAbsolutePath()+" -u \"2EPNnJ65ujBbliM2LiB9hkfDvk1:c552726a5ca40cce21831316a9460189\" \"https://ipfs.infura.io:5001/api/v0/add\"";
+        String out = executeCommand(comm);
+        JSONObject jsonObject = new JSONObject(out);
+        return jsonObject.getString("Hash");
     }
 
-    public String uploadString (String data) throws IOException {
-        NamedStreamable.ByteArrayWrapper bytearray = new NamedStreamable.ByteArrayWrapper(data.getBytes(StandardCharsets.UTF_8));
-        MerkleNode response = ipfs.add(bytearray).get(0);
-        System.out.println("Hash (base 58): " + response.hash.toBase58());
-        return response.hash.toString();
+
+    public String executeCommand(String command) {
+        StringBuilder output = new StringBuilder();
+        try {
+            Process proc = Runtime.getRuntime().exec(new String[] { "sh", "-c", command });
+            BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine())!= null) {
+                output.append(line + "\n");
+            }
+            proc.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return output.toString();
     }
 }
+

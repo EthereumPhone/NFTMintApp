@@ -1,6 +1,6 @@
 package org.ethereumphone.nftcreator.ui.screens
 
-import android.net.LinkAddress
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -12,7 +12,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -22,32 +24,21 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavDestinationDsl
+import androidx.core.content.ContextCompat.startActivity
 import coil.compose.rememberAsyncImagePainter
-import com.immutable.sdk.*
-import com.immutable.sdk.api.CollectionsApi
-import com.immutable.sdk.api.MetadataApi
-import com.immutable.sdk.api.MintsApi
-import com.immutable.sdk.api.UsersApi
-import com.immutable.sdk.api.model.*
-import com.immutable.sdk.crypto.StarkKey
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.pinkroom.walletconnectkit.WalletConnectKit
-import jnr.a64asm.Register
-import kotlinx.coroutines.*
 import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
-import org.ethereumphone.nftcreator.ui.screens.destinations.LoginDestination
 import org.ethereumphone.nftcreator.utils.ImxSigner
 import org.ethereumphone.nftcreator.utils.ImxStarkSinger
-import org.ethereumphone.nftcreator.utils.NFTMetadata
 import org.ethereumphone.nftcreator.utils.mintingWorkFlow
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
-import org.koin.androidx.compose.get
+import org.json.JSONObject
 import java.io.File
-import kotlin.random.Random
+import java.io.FileOutputStream
+
 
 @ExperimentalComposeUiApi
 @Destination
@@ -131,9 +122,20 @@ fun Home(
                 Button(
                     onClick = {
 
-                        val imageArray = con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
+
                         val ipfs = IPFSApi()
-                        val ipfsHash = ipfs.uploadImage(imageArray)
+                        val filename = "${System.currentTimeMillis()}.jpg"
+                        val file = File(con.cacheDir, filename)
+                        val fos = FileOutputStream(file)
+                        val imageArray = con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
+                        try {
+                            fos.write(imageArray);
+                        }
+                        finally {
+                            fos.close();
+                        }
+
+                        val ipfsHash = ipfs.uploadFile(file)
                         Log.d("test", ipfsHash)
 
 
@@ -148,6 +150,17 @@ fun Home(
                             blueprint = ""
                         ).whenComplete { result, _ ->
                             Log.d("test", result.toString())
+                            val jsonObject = JSONObject(result.toString())
+                            // https://market.ropsten.immutable.com/inventory/contractAddress/tokenID
+                            val url = "https://market.ropsten.immutable.com/inventory/${jsonObject.get("contract_address")}/${jsonObject.get("token_id")}"
+                            val uri = Uri.parse(url)
+                            val intent = Intent(Intent.ACTION_VIEW, uri)
+                            // Verify that the intent will resolve to an activity
+                            // Verify that the intent will resolve to an activity
+                            if (intent.resolveActivity(con.getPackageManager()) != null) {
+                                // Here we use an intent without a Chooser unlike the next example
+                                con.startActivity(intent)
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth(0.7f),

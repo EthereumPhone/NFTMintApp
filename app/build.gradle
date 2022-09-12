@@ -96,7 +96,7 @@ dependencies {
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.1.1")
-    implementation 'com.github.ipfs:java-ipfs-http-client:v1.3.3'
+    implementation 'com.github.EthereumPhone:java-ipfs-http-client:debc8c6554'
 
     // Serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3"
