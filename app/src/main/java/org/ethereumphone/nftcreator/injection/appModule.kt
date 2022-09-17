@@ -21,15 +21,6 @@ val appModule = module {
     // provide application
     single { androidApplication() as App }
 
-    // Provide Moshi
-    single<Moshi> { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
-
-    // Provide OkHttpClient
-    single { OkHttpClient.Builder().build() }
-
-    // provide WCSessionStore
-    single<WCSessionStore> { FileWCSessionStore(File(androidContext().cacheDir, "session_store.json").apply { createNewFile() }, get()) }
-
     // provide walletConnectKit
     single<WalletConnectKit> {
         val config = WalletConnectKitConfig(
@@ -42,7 +33,4 @@ val appModule = module {
 
         WalletConnectKit.Builder(config).build()
     }
-
-    // provide ConnectWalletViewModel
-    viewModel { ConnectWalletViewModel(get(), get(), get()) }
 }

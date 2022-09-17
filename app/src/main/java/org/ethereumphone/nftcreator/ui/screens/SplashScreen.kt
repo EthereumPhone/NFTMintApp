@@ -19,50 +19,64 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat.getColor
 import org.ethereumphone.nftcreator.R
+import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 
 @ExperimentalComposeUiApi
 @Composable
 fun SplashScreen() {
-     Scaffold(
-        backgroundColor = colorResource(id = R.color.gray_dark),
-         bottomBar = { BottomAppBar(backgroundColor = colorResource(id = R.color.gray_dark))
-            {
+    NftCreatorTheme {
+        Scaffold(
+            bottomBar = {
+                BottomAppBar(
+                    backgroundColor = Color.Transparent,
+                    elevation = 0.dp
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+
+                        ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_powered_by_ethos),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier
+                                .fillMaxSize(0.45f)
+                        )
+                    }
+                }
+            }
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_powered_by_ethos),
+                    painter = painterResource(id = R.drawable.ic_logo),
                     contentDescription = null,
                     tint = Color.Unspecified,
                     modifier = Modifier
-                        .fillMaxWidth())
+                        .fillMaxWidth(0.5F)
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_ters),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .fillMaxHeight(0.1f)
+                )
             }
-         }
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_logo),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .fillMaxWidth(0.5F)
-            )
-
-            Icon(
-                painter = painterResource(id = R.drawable.ic_powered_by_ethos),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .fillMaxHeight(0.1f)
-
-            )
-
-
         }
     }
+
+
+
 }
 
 

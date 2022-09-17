@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         ImmutableXCore.setBase(ImmutableXBase.Ropsten)
         ImmutableXCore.setHttpLoggingLevel(ImmutableXHttpLoggingLevel.Body)
 
@@ -33,7 +32,6 @@ class MainActivity : ComponentActivity() {
                 DestinationsNavHost(
                     navGraph = NavGraphs.root,
                     dependenciesContainerBuilder = {
-                        dependency(getViewModel<ConnectWalletViewModel>())
                         dependency(get<WalletConnectKit>())
                     }
                 )
