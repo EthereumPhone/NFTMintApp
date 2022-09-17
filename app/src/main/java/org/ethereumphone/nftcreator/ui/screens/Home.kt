@@ -54,6 +54,8 @@ fun Home(
     walletConnectKit: WalletConnectKit?
 ) {
     val imageUri = remember { mutableStateOf<Uri?>(null)}
+    val processing = remember {mutableStateOf(false)}
+
 
     NftCreatorTheme {
         Scaffold(
@@ -101,6 +103,7 @@ fun Home(
                             }
                     ) {
 
+
                         if(imageUri.value != null) {
                             AsyncImage(
                                 model = imageUri.value,
@@ -125,6 +128,13 @@ fun Home(
                                     )
                             )
                         }
+                        if(processing.value) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .align(Alignment.Center)
+                            )
+                        }
                     }
                 }
                 Column(
@@ -135,11 +145,14 @@ fun Home(
                 ) {
                     val con = LocalContext.current
 
+
                     // TODO: Fix custom theme
                     MaterialTheme {
                         Button(
                             enabled = imageUri.value != null,
                             onClick = {
+                                processing.value = true
+
                                 val ipfs = IPFSApi()
                                 val filename = "${System.currentTimeMillis()}.jpg"
                                 val file = File(con.cacheDir, filename)
@@ -175,6 +188,7 @@ fun Home(
                                     val intent = Intent(Intent.ACTION_VIEW, uri)
                                     // Verify that the intent will resolve to an activity
                                     con.startActivity(intent)
+                                    processing.value = false
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(0.7f),
