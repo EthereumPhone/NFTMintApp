@@ -1,12 +1,15 @@
 package org.ethereumphone.nftcreator.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,7 +23,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -29,9 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.pinkroom.walletconnectkit.WalletConnectKit
@@ -44,6 +44,12 @@ import org.ethereumphone.nftcreator.utils.mintingWorkFlow
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
+
+fun Context.copyToClipboard(text: CharSequence){
+    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("label",text)
+    clipboard.setPrimaryClip(clip)
+}
 
 
 @ExperimentalComposeUiApi
@@ -181,13 +187,10 @@ fun Home(
                                 ).whenComplete { result, _ ->
                                     Log.d("test", result.toString())
                                     val jsonObject = JSONObject(result.toString())
-                                    // https://market.ropsten.immutable.com/inventory/contractAddress/tokenID
                                     val dataObject: JSONObject= jsonObject.getJSONArray("results").get(0) as JSONObject
-                                    val url = "https://market.ropsten.immutable.com/inventory/${dataObject.get("contract_address")}/${dataObject.get("token_id")}"
-                                    val uri = Uri.parse(url)
-                                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                                    // Verify that the intent will resolve to an activity
-                                    con.startActivity(intent)
+                                    val url = "https://market.sandbox.immutable.com/inventory/${dataObject.get("contract_address")}/${dataObject.get("token_id")}"
+                                    con.copyToClipboard(url)
+                                    Toast.makeText(con, "Copied URL to clipboard", Toast.LENGTH_LONG).show()
                                     processing.value = false
                                 }
                             },

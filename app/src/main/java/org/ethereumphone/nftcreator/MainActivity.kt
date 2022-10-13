@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.immutable.sdk.ImmutableXBase
-import com.immutable.sdk.ImmutableXCore
+import com.immutable.sdk.ImmutableX
 import com.immutable.sdk.ImmutableXHttpLoggingLevel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
@@ -23,9 +23,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        ImmutableXCore.setBase(ImmutableXBase.Ropsten)
-        ImmutableXCore.setHttpLoggingLevel(ImmutableXHttpLoggingLevel.Body)
+        ImmutableX(base = ImmutableXBase.Sandbox).setHttpLoggingLevel(level = ImmutableXHttpLoggingLevel.Body)
 
         setContent {
             NftCreatorTheme {
