@@ -190,8 +190,12 @@ fun Home(
                                     val dataObject: JSONObject= jsonObject.getJSONArray("results").get(0) as JSONObject
                                     val url = "https://market.sandbox.immutable.com/inventory/${dataObject.get("contract_address")}/${dataObject.get("token_id")}"
                                     con.copyToClipboard(url)
-                                    Toast.makeText(con, "Copied URL to clipboard", Toast.LENGTH_LONG).show()
+                                    Thread.sleep(1000)
                                     processing.value = false
+                                    imageUri.value = null
+                                    val uri = Uri.parse(url)
+                                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                                    con.startActivity(intent)
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(0.7f),
