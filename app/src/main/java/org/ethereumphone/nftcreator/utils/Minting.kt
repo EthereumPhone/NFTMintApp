@@ -2,20 +2,20 @@ package org.ethereumphone.nftcreator.utils
 
 import android.util.Log
 import com.google.gson.Gson
-import com.immutable.sdk.ImmutableXCore
-import com.immutable.sdk.api.MintsApi
-import com.immutable.sdk.api.UsersApi
+import com.immutable.sdk.ImmutableX
+import com.immutable.sdk.ImmutableXBase
+
 import com.immutable.sdk.api.model.*
 import com.immutable.sdk.crypto.Crypto
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.bouncycastle.pqc.math.linearalgebra.IntegerFunctions.pow
-import org.openapitools.client.infrastructure.ClientException
+
 import java.net.HttpURLConnection
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-private const val CONTRACT_ADDRESS = "0x5062fD4a4F56A6241047CF476E1484b0e46d18EE" //ethOS minting contract
+private const val CONTRACT_ADDRESS = "0x15abe18681d0fcc8d9f13b3cf28b181d0954ab85" //ethOS minting contract
 
 fun rand(from: Int, to: Int) : Int {
     val random = Random()
@@ -29,8 +29,7 @@ fun rand(from: Int, to: Int) : Int {
 internal fun mintingWorkFlow(
     signer: ImxSigner,
     starkSinger: ImxStarkSinger,
-    usersApi: UsersApi = UsersApi(),
-    mintsApi: MintsApi = MintsApi(),
+
     ipfsHash: String,
     blueprint: String?
 ): CompletableFuture<String> {
@@ -96,7 +95,7 @@ internal fun mintingWorkFlow(
             users = listOf(user),
             royalties = listOf(royalties)
         )
-        isWalletRegistered(userWallet, usersApi) }
+        isWalletRegistered(userWallet) }
         .thenCompose { isConnected -> connectWallet(isConnected, signer, starkSinger) }
         .thenApply {
             mintToken(address = userWallet, mintData = tokenData, blueprint = bp)
@@ -110,13 +109,8 @@ internal fun mintingWorkFlow(
 }
 
 @Suppress("TooGenericExceptionCaught", "InstanceOfCheckForException")
-private fun isWalletRegistered(address: String, userApi: UsersApi): Boolean {
-    return try {
-        userApi.getUsers(address).accounts.isNotEmpty()
-    } catch (e: Exception) {
-        if (e is ClientException && e.statusCode == HttpURLConnection.HTTP_NOT_FOUND) false
-        else throw e
-    }
+private fun isWalletRegistered(address: String): Boolean {
+    return false
 }
 
 private fun connectWallet(
@@ -124,7 +118,7 @@ private fun connectWallet(
     signer: ImxSigner,
     starkSinger: ImxStarkSinger
 ): CompletableFuture<Unit> {
-    return if(!isConnected) ImmutableXCore.registerOffChain(signer,starkSinger)
+    return if(!isConnected) ImmutableX(base = ImmutableXBase.Sandbox).registerOffChain(signer,starkSinger)
     else CompletableFuture.completedFuture(Unit)
 }
 
