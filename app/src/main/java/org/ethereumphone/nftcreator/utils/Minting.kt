@@ -15,7 +15,7 @@ import java.net.HttpURLConnection
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-private const val CONTRACT_ADDRESS = "0x5062fD4a4F56A6241047CF476E1484b0e46d18EE" //ethOS minting contract
+private const val CONTRACT_ADDRESS = "0x15abe18681d0fcc8d9f13b3cf28b181d0954ab85" //ethOS minting contract
 
 fun rand(from: Int, to: Int) : Int {
     val random = Random()
