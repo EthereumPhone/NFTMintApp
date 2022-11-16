@@ -8,6 +8,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.ethereumphone.nftcreator.ui.theme.InputFiledColors
@@ -17,25 +18,31 @@ import org.ethereumphone.nftcreator.ui.theme.md_theme_dark_onSurface
 
 @Composable
 fun InputField(
+    value: String = "",
     label: String = "",
+    readOnly: Boolean = false,
     singeLine: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
     shape: Shape = RoundedCornerShape(50.dp),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
-    var text by remember { mutableStateOf("")}
+    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
+    val text = textFieldValueState.copy(text = value)
 
     TextField(
         value = text,
-        onValueChange = { text = it },
+        onValueChange = { textFieldValueState = it },
         label = {
             Text(text = label, color = md_theme_dark_onSurface)
         },
+        readOnly = readOnly,
         colors = InputFiledColors(),
         shape = shape,
         modifier = modifier,
         singleLine = singeLine,
-        maxLines = maxLines
+        maxLines = maxLines,
+        trailingIcon = trailingIcon
     )
 }
 
