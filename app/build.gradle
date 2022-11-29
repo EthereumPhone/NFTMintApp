@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "org.ethereumphone.nftcreator"
-        minSdk 26
+        minSdk 27
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -129,10 +129,10 @@ dependencies {
 
     //web3j
     implementation 'org.web3j:core:4.8.8-android'
-    implementation 'org.web3j:abi:4.8.8-android'
-    implementation 'org.web3j:contracts:4.8.8-android'
+    //implementation 'org.web3j:abi:4.8.8-android'
+    // implementation 'org.web3j:contracts:4.8.8-android'
 
     //WalletSDK (ethOS baby)
-    implementation 'com.github.EthereumPhone:WalletSDK:0.0.4'
+    //implementation 'com.github.EthereumPhone:WalletSDK:0.0.5'
 
 }

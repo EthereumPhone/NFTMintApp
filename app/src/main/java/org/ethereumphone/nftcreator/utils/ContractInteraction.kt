@@ -3,8 +3,6 @@ package org.ethereumphone.nftcreator.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import org.ethereumphone.nftcreator.contracts.Abi
-import org.ethereumphone.walletsdk.WalletSDK
-import org.web3j.abi.FunctionEncoder
 import org.web3j.crypto.Keys
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
@@ -29,7 +27,7 @@ fun load(
     web3j = try {
         Web3j.build(HttpService())
     } catch(e: Exception) {
-        Web3j.build(HttpService("https://cloudflare-eth.com"))
+        Web3j.build(HttpService("https://eth-goerli.g.alchemy.com/v2/XXXXX"))
     }
     nftMintContract = Abi.load(
         selectedContract,
@@ -79,7 +77,7 @@ fun mintImage(
     tokenURI: String
 ) {
     val data = nftMintContract?.mintImage(address, tokenURI)?.encodeFunctionCall()
-    val wallet = WalletSDK(LocalContext.current)
+    val wallet = WalletSDK(LocalContext.current, web3RPC = "https://eth-goerli.g.alchemy.com/v2/XXXXX")
     if (data != null) {
         gasEstimation(data)
     }
@@ -90,7 +88,8 @@ fun mintImage(
                 to = selectedContract,
                 value = "0x0",
                 data = data,
-                gasAmount = it.result
+                gasAmount = it.result,
+                chainId = 5 // Görli
             )
         }
     }
