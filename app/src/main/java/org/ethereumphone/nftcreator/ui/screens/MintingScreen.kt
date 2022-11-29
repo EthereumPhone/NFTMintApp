@@ -48,7 +48,7 @@ fun MintingScreen(
 fun MintingScreenInput(
     modifier: Modifier = Modifier
 ) {
-    val options = listOf("L1", "IMX")
+    val options = listOf("Main", "Goerli", "IMX")
     var price = ""
 
     Column(
@@ -89,7 +89,8 @@ fun MintingScreenInput(
 
         DropDownSelector(
             label = "Network",
-            options = options)
+            options = options
+        )
 
         Column(
             modifier = Modifier.fillMaxSize(),

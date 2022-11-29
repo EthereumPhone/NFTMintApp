@@ -15,7 +15,8 @@ import org.ethereumphone.nftcreator.ui.theme.md_theme_dark_surface
 @Composable
 fun DropDownSelector(
     label: String,
-    options: List<String>
+    options: List<String>,
+    selectedNetwork: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0])}
@@ -47,6 +48,7 @@ fun DropDownSelector(
                         onClick = {
                             selectedOptionText = selectionOption
                             expanded = false
+                            selectedNetwork(selectedOptionText)
                         },
                         text = selectionOption
                     )
@@ -74,7 +76,9 @@ fun dropDownItem(
 fun previewDropDownSelector() {
     NftCreatorTheme {
         val options = listOf("L1", "IMX")
-        DropDownSelector("Network", options)
+        DropDownSelector("Network", options) {
+
+        }
     }
 }
 
