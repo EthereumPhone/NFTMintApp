@@ -1,5 +1,6 @@
-package org.ethereumphone.nftcreator.ui.screens
+package c.ui.screens
 
+/*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -18,7 +19,6 @@ import org.ethereumphone.nftcreator.ui.components.WalletConnectKitButton
 import org.ethereumphone.nftcreator.ui.screens.destinations.HomeDestination
 
 @ExperimentalComposeUiApi
-@Destination(start = true)
 @Composable
 fun Login(
     navController: DestinationsNavigator?,
@@ -63,3 +63,4 @@ fun LoginPreview() {
 
     Login(null ,walletConnectKit)
 }
+*/
