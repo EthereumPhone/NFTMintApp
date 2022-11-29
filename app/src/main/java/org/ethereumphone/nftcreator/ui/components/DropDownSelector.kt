@@ -1,6 +1,7 @@
 package org.ethereumphone.nftcreator.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -27,9 +28,11 @@ fun DropDownSelector(
             readOnly = true,
             label = label,
             value = selectedOptionText,
+            modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-        })
+            }
+        )
 
         NftCreatorTheme(
             shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(30.dp))
