@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-android'
     id 'com.google.devtools.ksp' version '1.6.10-1.0.2'
     id 'kotlinx-serialization'
-
 }
 
 
@@ -127,5 +126,13 @@ dependencies {
 
     implementation 'com.github.ligi:ipfs-api-kotlin:0.15'
     implementation "com.squareup.moshi:moshi-kotlin:1.13.0"
+
+    //web3j
+    implementation 'org.web3j:core:4.8.8-android'
+    implementation 'org.web3j:abi:4.8.8-android'
+    implementation 'org.web3j:contracts:4.8.8-android'
+
+    //WalletSDK (ethOS baby)
+    implementation 'com.github.EthereumPhone:WalletSDK:0.0.4'
 
 }
