@@ -90,7 +90,9 @@ fun MintingScreenInput(
         DropDownSelector(
             label = "Network",
             options = options
-        )
+        ) {
+
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
