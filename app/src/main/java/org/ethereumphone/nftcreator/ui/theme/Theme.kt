@@ -33,13 +33,15 @@ private val darkColors = darkColors(
 @Composable
 fun NftCreatorTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    shapes: Shapes = Shapes(),
     content: @Composable () -> Unit
 ) {
     val colors = darkColors
     CompositionLocalProvider(LocalSpacing provides Spacing()){
         MaterialTheme(
             colors = colors,
-            content = content
+            content = content,
+            shapes = shapes
         )
     }
 }
