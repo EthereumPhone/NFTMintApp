@@ -27,12 +27,11 @@ fun InputField(
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
-    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
-    val text = textFieldValueState.copy(text = value)
+    var text by remember { mutableStateOf(value) }
 
     TextField(
         value = text,
-        onValueChange = { textFieldValueState = it },
+        onValueChange = { text = it },
         label = {
             Text(text = label, color = md_theme_dark_onSurface)
         },
