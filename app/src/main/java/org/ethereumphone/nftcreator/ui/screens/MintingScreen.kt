@@ -7,6 +7,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -51,6 +53,9 @@ fun MintingScreenInput(
     val options = listOf("Main", "Goerli", "IMX")
     var price = ""
 
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -72,19 +77,28 @@ fun MintingScreenInput(
                 .fillMaxHeight(0.35f)
         )
 
+
         InputField(
+            value = title,
             label = "Title",
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = {
+                title = it
+            }
         )
 
         InputField(
+            value = description,
             label = "Description",
             singeLine = false,
             maxLines = 5,
             shape = RoundedCornerShape(25.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(.4f)
+                .fillMaxHeight(.4f),
+            onValueChange = {
+                description = it
+            }
         )
 
         DropDownSelector(

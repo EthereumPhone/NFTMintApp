@@ -29,6 +29,9 @@ fun DropDownSelector(
             readOnly = true,
             label = label,
             value = selectedOptionText,
+            onValueChange = {
+                selectedOptionText = it
+            },
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)

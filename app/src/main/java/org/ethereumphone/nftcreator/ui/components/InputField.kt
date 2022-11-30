@@ -25,13 +25,22 @@ fun InputField(
     maxLines: Int = Int.MAX_VALUE,
     shape: Shape = RoundedCornerShape(50.dp),
     modifier: Modifier = Modifier,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    onValueChange: (String) -> Unit
 ) {
-    var text by remember { mutableStateOf(value) }
+    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
+    val textFieldValue = textFieldValueState.copy(text = value)
+
 
     TextField(
-        value = text,
-        onValueChange = { text = it },
+        value = textFieldValue,
+        onValueChange =
+        {
+            textFieldValueState = it
+            if (value != it.text) {
+                onValueChange(it.text)
+            }
+        },
         label = {
             Text(text = label, color = md_theme_dark_onSurface)
         },
@@ -50,7 +59,7 @@ fun InputField(
 @Preview
 fun PreviewInputFiledEmpty() {
     NftCreatorTheme {
-        InputField()
+        InputField() {}
     }
 }
 
@@ -58,7 +67,7 @@ fun PreviewInputFiledEmpty() {
 @Preview
 fun PreviewInputFiled() {
     NftCreatorTheme {
-        InputField("Test")
+        InputField("Test") {}
     }
 }
 
@@ -74,6 +83,6 @@ fun PreviewInputFiledBox() {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(.7f)
-        )
+        ) {}
     }
 }
