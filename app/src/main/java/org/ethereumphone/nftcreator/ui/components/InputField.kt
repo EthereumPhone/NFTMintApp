@@ -1,13 +1,16 @@
 package org.ethereumphone.nftcreator.ui.components
 
+import android.widget.EditText
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,14 +28,22 @@ fun InputField(
     maxLines: Int = Int.MAX_VALUE,
     shape: Shape = RoundedCornerShape(50.dp),
     modifier: Modifier = Modifier,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    onChange: ((value: String) -> Unit)? = null
 ) {
-    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
-    val text = textFieldValueState.copy(text = value)
+    var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue("", TextRange(0, 16)))
+    }
+
 
     TextField(
         value = text,
-        onValueChange = { textFieldValueState = it },
+        onValueChange = {
+                            text = it
+                            if (onChange != null) {
+                                onChange(it.text)
+                            }
+                        },
         label = {
             Text(text = label, color = md_theme_dark_onSurface)
         },
@@ -51,7 +62,9 @@ fun InputField(
 @Preview
 fun PreviewInputFiledEmpty() {
     NftCreatorTheme {
-        InputField()
+        InputField() {
+            println(it)
+        }
     }
 }
 
@@ -59,7 +72,9 @@ fun PreviewInputFiledEmpty() {
 @Preview
 fun PreviewInputFiled() {
     NftCreatorTheme {
-        InputField("Test")
+        InputField("Test"){
+            println(it)
+        }
     }
 }
 
@@ -75,6 +90,8 @@ fun PreviewInputFiledBox() {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(.7f)
-        )
+        ){
+            println(it)
+        }
     }
 }
