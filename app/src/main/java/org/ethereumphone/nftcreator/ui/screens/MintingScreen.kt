@@ -1,6 +1,8 @@
 package org.ethereumphone.nftcreator.ui.screens
 
+import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
@@ -25,6 +28,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.ramcosta.composedestinations.annotation.Destination
 import org.ethereumphone.nftcreator.IPFSApi
@@ -34,8 +38,9 @@ import org.ethereumphone.nftcreator.ui.components.ImageBox
 import org.ethereumphone.nftcreator.ui.components.InputField
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 import org.ethereumphone.nftcreator.ui.theme.md_theme_light_primary
-import org.ethereumphone.nftcreator.utils.ContractInteraction
-import org.ethereumphone.nftcreator.utils.WalletSDK
+import org.ethereumphone.nftcreator.utils.*
+import org.ethereumphone.nftcreator.utils.mintingWorkFlow
+import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
@@ -46,8 +51,8 @@ import java.io.FileWriter
 @Composable
 @Destination(start = true)
 fun MintingScreen(
-){
-    Scaffold{
+) {
+    Scaffold {
         Column(
             modifier = Modifier
                 .statusBarsPadding()
@@ -72,6 +77,8 @@ fun MintingScreenInput(
     val con = LocalContext.current
     var titleText = ""
     var descriptionText = ""
+    val processing = remember { mutableStateOf(false) }
+
 
 
     Column(
@@ -90,20 +97,39 @@ fun MintingScreenInput(
         )
         val launcher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
-        ) {imageUri.value = it}
-        ImageBox(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.35f)
-                .clickable {
-                    // Get image
-                    launcher.launch("image/*")
-                }
-        )
+        ) { imageUri.value = it }
+        if (imageUri.value != null) {
+            AsyncImage(
+                model = imageUri.value,
+                contentDescription = "Selected image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.35f)
+                    .clip(
+                        RoundedCornerShape(20.dp)
+                    )
+                    .clickable {
+                        launcher.launch("image/*")
+                    }
+            )
+        } else {
+            ImageBox(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.35f)
+                    .clickable {
+                        // Get image
+                        launcher.launch("image/*")
+                    }
+            )
+        }
+
 
         InputField(
             label = "Title",
             modifier = Modifier.fillMaxWidth(),
+            value = ""
         ) {
             titleText = it
         }
@@ -115,13 +141,16 @@ fun MintingScreenInput(
             shape = RoundedCornerShape(25.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(.4f)
+                .fillMaxHeight(.4f),
+            value = ""
         ) {
             descriptionText = it
         }
 
+
+
         DropDownSelector(
-            label = if (selectedNetwork == "") "Network" else selectedNetwork,
+            label = "Network",
             options = options,
         ) {
             selectedNetwork = it
@@ -132,67 +161,117 @@ fun MintingScreenInput(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
-            Button(
-                shape = RoundedCornerShape(50.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary),
-                modifier = Modifier.fillMaxWidth(),
-                enabled = imageUri.value != null,
-                onClick = {
-                    // Lets mint
-                    // Upload the image on ipfs
-                    val ipfs = IPFSApi()
-                    val filename = "${System.currentTimeMillis()}.jpg"
-                    val file = File(con.cacheDir, filename)
-                    val fos = FileOutputStream(file)
-                    val imageArray = con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
-                    try {
-                        fos.write(imageArray);
-                    } finally {
-                        fos.close();
-                    }
-                    val imageIPFSHash = ipfs.uploadFile(file)
-                    if (selectedNetwork.equals("Mainnet") || selectedNetwork.equals("Goerli Testnet")) {
-                        // Mint on evm just with different contracts
-                        // First the tokenJSON to IPFS
-                        var gson = Gson()
-                        val jsonString = gson.toJson(TokenData(
-                            name = titleText,
-                            description = descriptionText,
-                            image = imageIPFSHash
-                        ))
-                        val jsonFileName = "${System.currentTimeMillis()}.json"
-                        val jsonFile = File(con.cacheDir, jsonFileName)
-                        val fw = FileWriter(jsonFile)
-                        try {
-                            fw.write(jsonString)
-                        } finally {
-                            fw.close()
+            if(processing.value) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(70.dp)
+                        .fillMaxWidth()
+                )
+            } else {
+                Button(
+                    shape = RoundedCornerShape(50.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary),
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = imageUri.value != null,
+                    onClick = {
+                        // Lets mint
+                        // Upload the image on ipfs
+                        processing.value = true
+                        val runnable = Runnable {
+                            val ipfs = IPFSApi()
+                            val filename = "${System.currentTimeMillis()}.jpg"
+                            val file = File(con.cacheDir, filename)
+                            val fos = FileOutputStream(file)
+                            val imageArray =
+                                con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
+                            try {
+                                fos.write(imageArray);
+                            } finally {
+                                fos.close();
+                            }
+                            val imageIPFSHash = ipfs.uploadFile(file)
+                            if (selectedNetwork.equals("Mainnet") || selectedNetwork.equals("Goerli Testnet")) {
+                                // Mint on evm just with different contracts
+                                // First the tokenJSON to IPFS
+                                var gson = Gson()
+                                val jsonString = gson.toJson(
+                                    TokenData(
+                                        name = titleText,
+                                        description = descriptionText,
+                                        image = "ipfs://$imageIPFSHash"
+                                    )
+                                )
+                                val jsonFileName = "${System.currentTimeMillis()}.json"
+                                val jsonFile = File(con.cacheDir, jsonFileName)
+                                val fw = FileWriter(jsonFile)
+                                try {
+                                    fw.write(jsonString)
+                                } finally {
+                                    fw.close()
+                                }
+
+                                val jsonIPFSHash = ipfs.uploadFile(jsonFile)
+
+                                val contractsIntercation = ContractInteraction(
+                                    con = con,
+                                    mainnet = (selectedNetwork == "Mainnet")
+                                )
+                                contractsIntercation.load()
+
+                                contractsIntercation.mintImage(
+                                    address = WalletSDK(con).getAddress(),
+                                    tokenURI = "ipfs://$jsonIPFSHash"
+                                ).whenComplete { s, throwable ->
+                                    processing.value = false
+                                    imageUri.value = null
+                                    val url = if (selectedNetwork == "Mainnet") "https://etherscan.io/tx/$s" else "https://goerli.etherscan.io/tx/$s"
+                                    con.copyToClipboard(url)
+                                    val uri = Uri.parse(url)
+                                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                                    con.startActivity(intent)
+                                }
+
+                            } else if (selectedNetwork.equals("IMX")) {
+                                // Mint on IMX
+                                val signer = ImxSigner(context = con)
+                                var starkSinger = ImxStarkSinger(signer)
+
+                                mintingWorkFlow(
+                                    signer = signer,
+                                    starkSinger = starkSinger,
+                                    ipfsHash = imageIPFSHash, //"QmSn5Y8cAxokNbJdqE91BDF7zQpNHw9VmNfmijzC3gQsTV",
+                                    blueprint = ""
+                                ).whenComplete { result, _ ->
+                                    Log.d("test", result.toString())
+                                    val jsonObject = JSONObject(result.toString())
+                                    val dataObject: JSONObject =
+                                        jsonObject.getJSONArray("results").get(0) as JSONObject
+                                    val url =
+                                        "https://market.sandbox.immutable.com/inventory/${dataObject.get("contract_address")}/${
+                                            dataObject.get("token_id")
+                                        }"
+                                    con.copyToClipboard(url)
+                                    Thread.sleep(1000)
+                                    processing.value = false
+                                    imageUri.value = null
+                                    val uri = Uri.parse(url)
+                                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                                    con.startActivity(intent)
+                                }
+                            }
                         }
-
-                        val jsonIPFSHash = ipfs.uploadFile(jsonFile)
-
-                        val contractsIntercation = ContractInteraction(
-                            con = con,
-                            mainnet = (selectedNetwork == "Mainnet")
-                        )
-                        contractsIntercation.load()
-
-                        contractsIntercation.mintImage(
-                            address = WalletSDK(con).getAddress(),
-                            tokenURI = jsonIPFSHash
-                        )
-                        Toast.makeText(con, "Minted!", Toast.LENGTH_LONG).show()
-
-                    } else if (selectedNetwork.equals("IMX")) {
-                        // Mint on IMX
+                        Thread(runnable).start()
 
                     }
+                ) {
+                    Text(text = "Mint")
                 }
-            ) {
-                Text(text = "Mint")
             }
+
         }
     }
+
+
 }
 
 

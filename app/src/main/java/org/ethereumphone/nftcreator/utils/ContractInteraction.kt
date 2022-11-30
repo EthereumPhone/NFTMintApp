@@ -1,25 +1,48 @@
 package org.ethereumphone.nftcreator.utils
 
 import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.ethereumphone.nftcreator.contracts.Abi
+import org.web3j.crypto.Credentials
 import org.web3j.crypto.Keys
 import org.web3j.protocol.Web3j
-import org.web3j.protocol.http.HttpService
-import org.web3j.crypto.Credentials
 import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.EthEstimateGas
+import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
+import java.security.Provider
+import java.security.Security
+import java.util.concurrent.CompletableFuture
 
 class ContractInteraction(
     con: Context,
     private val mainnet: Boolean
 ) {
     private val GOERLI_CONTRACT_ADDRESS = "0x5B48267F7fDb98416C8382C230f4f4AD7453aBd7"
-    private val GOERLI_RPC = "https://eth-goerli.g.alchemy.com/v2/XXXXX"
+    private val GOERLI_RPC = "https://eth-goerli.g.alchemy.com/v2/ia67i9WXD4d3MV5DSLVOdA45UJCGoJrL"
     private val MAINNET_RPC = "https://cloudflare-eth.com"
+
+    private fun setupBouncyCastle() {
+        val provider: Provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)
+            ?: // Web3j will set up the provider lazily when it's first used.
+            return
+        if (provider::class.java.equals(BouncyCastleProvider::class.java)) {
+            // BC with same package name, shouldn't happen in real life.
+            return
+        }
+        // Android registers its own BC provider. As it might be outdated and might not include
+        // all needed ciphers, we substitute it with a known BC bundled in the app.
+        // Android's BC has its package rewritten to "com.android.org.bouncycastle" and because
+        // of that it's possible to have another BC implementation loaded in VM.
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
+        Security.insertProviderAt(BouncyCastleProvider(), 1)
+    }
+
+    init {
+        setupBouncyCastle()
+    }
+
 
     private var web3j: Web3j? = null
     private var nftMintContract: Abi? = null
@@ -91,24 +114,17 @@ class ContractInteraction(
     fun mintImage(
         address: String,
         tokenURI: String
-    ) {
+    ): CompletableFuture<String> {
         val data = nftMintContract?.mintImage(address, tokenURI)?.encodeFunctionCall()
         val wallet =
             WalletSDK(context, web3RPC = selectedRPC)
-        if (data != null) {
-            gasEstimation(data)
-        }
 
-        if (data != null) {
-            gasEstimate?.let {
-                wallet.sendTransaction(
-                    to = selectedContract,
-                    value = "0x0",
-                    data = data,
-                    gasAmount = it.result,
-                    chainId = if (mainnet) 1 else 5 // Mainnet or Goerli
-                )
-            }
-        }
+        return wallet.sendTransaction(
+            to = selectedContract,
+            value = "0",
+            data = data!!,
+            gasAmount = "150000",
+            chainId = if (mainnet) 1 else 5 // Mainnet or Goerli
+        )
     }
 }

@@ -176,7 +176,7 @@ fun Home(
 
 
                                 // IMX signers
-                                val signer = ImxSigner(walletConnectKit!!)
+                                val signer = ImxSigner(walletConnectKit!!, context = con)
                                 var starkSinger = ImxStarkSinger(signer)
 
                                 mintingWorkFlow(

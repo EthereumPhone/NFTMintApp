@@ -21,7 +21,7 @@ import org.ethereumphone.nftcreator.ui.theme.md_theme_dark_onSurface
 
 @Composable
 fun InputField(
-    value: String = "",
+    value: String,
     label: String = "",
     readOnly: Boolean = false,
     singeLine: Boolean = true,
@@ -31,19 +31,15 @@ fun InputField(
     trailingIcon: @Composable (() -> Unit)? = null,
     onChange: ((value: String) -> Unit)? = null
 ) {
-    var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("", TextRange(0, 16)))
-    }
-
-
+    var text by remember { mutableStateOf(value) }
     TextField(
         value = text,
         onValueChange = {
-                            text = it
-                            if (onChange != null) {
-                                onChange(it.text)
-                            }
-                        },
+            text = it
+            if (onChange != null) {
+                onChange(it)
+            }
+        },
         label = {
             Text(text = label, color = md_theme_dark_onSurface)
         },
@@ -62,7 +58,7 @@ fun InputField(
 @Preview
 fun PreviewInputFiledEmpty() {
     NftCreatorTheme {
-        InputField() {
+        InputField("") {
             println(it)
         }
     }
@@ -72,7 +68,7 @@ fun PreviewInputFiledEmpty() {
 @Preview
 fun PreviewInputFiled() {
     NftCreatorTheme {
-        InputField("Test"){
+        InputField("Test") {
             println(it)
         }
     }
@@ -90,7 +86,7 @@ fun PreviewInputFiledBox() {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(.7f)
-        ){
+        ) {
             println(it)
         }
     }

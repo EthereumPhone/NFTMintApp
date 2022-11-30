@@ -1,6 +1,7 @@
 package org.ethereumphone.nftcreator.utils
 
 
+import android.content.Context
 import android.provider.SyncStateContract
 import com.immutable.sdk.Signer
 import com.immutable.sdk.StarkSigner
@@ -15,28 +16,23 @@ import java.util.concurrent.CompletableFuture
 
 
 class ImxSigner(
-    walletConnectKit: WalletConnectKit,
+    walletConnectKit: WalletConnectKit? = null,
+    val context: Context
 ) : Signer {
-    private val walletConnectKit = walletConnectKit
+
+    val wallet = WalletSDK(context)
 
     override fun getAddress(): CompletableFuture<String> {
         val completableFuture = CompletableFuture<String>()
 
         CompletableFuture.runAsync {
-            completableFuture.complete(walletConnectKit.address)
+            completableFuture.complete(wallet.getAddress())
         }
         return completableFuture
     }
 
     override fun signMessage(message: String): CompletableFuture<String> {
-        val completableFuture = CompletableFuture<String>()
-
-        CompletableFuture.runAsync {
-            GlobalScope.launch(Dispatchers.Main) {
-                completableFuture.complete(walletConnectKit.personalSign(message).result.toString())
-            }
-        }
-        return completableFuture
+        return wallet.signMessage(message)
     }
 }
 
