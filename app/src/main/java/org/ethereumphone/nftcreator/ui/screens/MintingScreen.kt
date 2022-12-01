@@ -72,7 +72,7 @@ fun MintingScreenInput(
 ) {
     val options = listOf("Mainnet", "Goerli Testnet", "IMX")
     var price = ""
-    var selectedNetwork = ""
+    var selectedNetwork = "Mainnet"
     val imageUri = remember { mutableStateOf<Uri?>(null) }
     val con = LocalContext.current
     var titleText = ""
