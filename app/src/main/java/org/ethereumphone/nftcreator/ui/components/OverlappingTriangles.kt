@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 
+/*
 
 @Composable
 fun OverlappingTriangles(modifier: Modifier = Modifier) {
@@ -101,4 +102,6 @@ fun previewOverlappingTriangles() {
         OverlappingTriangles(modifier = Modifier.aspectRatio(1f))
     }
 }
+
+ */
 

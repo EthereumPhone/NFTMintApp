@@ -15,19 +15,33 @@ private val DarkColorPalette = darkColors(
     background = black900
 )
 
+private val darkColors = darkColors(
+    primary = md_theme_dark_primary,
+    onPrimary = md_theme_dark_onPrimary,
+    secondary = md_theme_dark_secondary,
+    onSecondary = md_theme_dark_onSecondary,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    background = md_theme_dark_background,
+    onBackground = md_theme_dark_onBackground,
+    surface = md_theme_dark_surface,
+    onSurface = md_theme_dark_onSurface,
+)
+
+
 
 @Composable
 fun NftCreatorTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    shapes: Shapes = Shapes(),
     content: @Composable () -> Unit
 ) {
-    val colors = DarkColorPalette
+    val colors = darkColors
     CompositionLocalProvider(LocalSpacing provides Spacing()){
         MaterialTheme(
             colors = colors,
-            typography = Typography(),
-            shapes = Shapes(),
-            content = content
+            content = content,
+            shapes = shapes
         )
     }
 }

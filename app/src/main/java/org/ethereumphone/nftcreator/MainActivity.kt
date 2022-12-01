@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableX
 import com.immutable.sdk.ImmutableXHttpLoggingLevel
@@ -24,6 +28,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ImmutableX(base = ImmutableXBase.Sandbox).setHttpLoggingLevel(level = ImmutableXHttpLoggingLevel.Body)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             NftCreatorTheme {
