@@ -1,5 +1,6 @@
 package org.ethereumphone.nftcreator.ui.screens
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -32,6 +33,7 @@ import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.ramcosta.composedestinations.annotation.Destination
 import org.ethereumphone.nftcreator.IPFSApi
+import org.ethereumphone.nftcreator.moduls.Network
 import org.ethereumphone.nftcreator.moduls.TokenData
 import org.ethereumphone.nftcreator.ui.components.DropDownSelector
 import org.ethereumphone.nftcreator.ui.components.ImageBox
@@ -70,9 +72,37 @@ fun MintingScreen(
 fun MintingScreenInput(
     modifier: Modifier = Modifier
 ) {
-    val options = listOf("Mainnet", "Goerli Testnet", "IMX")
+    val options = listOf("Mainnet", "Optimism", "Arbitrum", "Goerli Testnet")
     var price = ""
-    var selectedNetwork = "Mainnet"
+    val mainnetNetwork = Network(
+        chainName = "Mainnet",
+        chainId = 1,
+        chainExplorer = "https://etherscan.io",
+        chainRPC = "https://cloudflare-eth.com",
+        contractAddress = "0x7D4960bFcB377307e544ae191CBaF9Dad054552F"
+    )
+    val optimismNetwork = Network(
+        chainName = "Optimism",
+        chainId = 10,
+        chainExplorer = "https://optimistic.etherscan.io",
+        chainRPC = "https://mainnet.optimism.io",
+        contractAddress = "0xf5b335fe4099ad0b005d8a09a864b4b3b3b5c5e1"
+    )
+    val arbitrumNetwork = Network(
+        chainName = "Arbitrum",
+        chainId = 42161,
+        chainExplorer = "https://arbiscan.io",
+        chainRPC = "https://arb1.arbitrum.io/rpc",
+        contractAddress = "0xb084391C0d4af65297d9BB97C7e9C309A962907d"
+    )
+    val goerliNetwork = Network(
+        chainName = "Goerli Testnet",
+        chainId = 5,
+        chainExplorer = "https://goerli.etherscan.io",
+        chainRPC = "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+        contractAddress = "0x5B48267F7fDb98416C8382C230f4f4AD7453aBd7"
+    )
+    var selectedNetwork = mainnetNetwork
     val imageUri = remember { mutableStateOf<Uri?>(null) }
     val con = LocalContext.current
     var titleText = ""
@@ -153,7 +183,12 @@ fun MintingScreenInput(
             label = "Network",
             options = options,
         ) {
-            selectedNetwork = it
+            when(it) {
+                "Mainnet" -> selectedNetwork = mainnetNetwork
+                "Optimism" -> selectedNetwork = optimismNetwork
+                "Arbitrum" -> selectedNetwork = arbitrumNetwork
+                "Goerli Testnet" -> selectedNetwork = goerliNetwork
+            }
         }
 
         Column(
@@ -190,7 +225,7 @@ fun MintingScreenInput(
                                 fos.close();
                             }
                             val imageIPFSHash = ipfs.uploadFile(file)
-                            if (selectedNetwork.equals("Mainnet") || selectedNetwork.equals("Goerli Testnet")) {
+                            if (!selectedNetwork.equals(null)) {
                                 // Mint on evm just with different contracts
                                 // First the tokenJSON to IPFS
                                 var gson = Gson()
@@ -214,7 +249,7 @@ fun MintingScreenInput(
 
                                 val contractsIntercation = ContractInteraction(
                                     con = con,
-                                    mainnet = (selectedNetwork == "Mainnet")
+                                    selectedNetwork = selectedNetwork
                                 )
                                 contractsIntercation.load()
 
@@ -224,7 +259,7 @@ fun MintingScreenInput(
                                 ).whenComplete { s, throwable ->
                                     processing.value = false
                                     imageUri.value = null
-                                    val url = if (selectedNetwork == "Mainnet") "https://etherscan.io/tx/$s" else "https://goerli.etherscan.io/tx/$s"
+                                    val url = "${selectedNetwork.chainExplorer}/tx/$s"
                                     con.copyToClipboard(url)
                                     val uri = Uri.parse(url)
                                     val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -234,7 +269,7 @@ fun MintingScreenInput(
                             } else if (selectedNetwork.equals("IMX")) {
                                 // Mint on IMX
                                 val signer = ImxSigner(context = con)
-                                var starkSinger = ImxStarkSinger(signer)
+                                var starkSinger = ImxStarkSinger(signer, con.getSharedPreferences("STARK", Context.MODE_PRIVATE))
 
                                 mintingWorkFlow(
                                     signer = signer,

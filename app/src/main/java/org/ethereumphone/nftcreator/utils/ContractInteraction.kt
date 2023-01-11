@@ -3,6 +3,7 @@ package org.ethereumphone.nftcreator.utils
 import android.content.Context
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.ethereumphone.nftcreator.contracts.Abi
+import org.ethereumphone.nftcreator.moduls.Network
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.Keys
 import org.web3j.crypto.RawTransaction
@@ -19,12 +20,8 @@ import java.util.concurrent.CompletableFuture
 
 class ContractInteraction(
     con: Context,
-    private val mainnet: Boolean
+    private val selectedNetwork: Network
 ) {
-    private val GOERLI_CONTRACT_ADDRESS = "0x5B48267F7fDb98416C8382C230f4f4AD7453aBd7"
-    private val MAINNET_CONTRACT_ADDRESS = "0x7D4960bFcB377307e544ae191CBaF9Dad054552F"
-    private val GOERLI_RPC = "https://eth-goerli.g.alchemy.com/v2/ia67i9WXD4d3MV5DSLVOdA45UJCGoJrL"
-    private val MAINNET_RPC = "https://cloudflare-eth.com"
 
     private fun setupBouncyCastle() {
         val provider: Provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)
@@ -56,19 +53,19 @@ class ContractInteraction(
     private var selectedRPC = ""
 
     fun load() {
-        selectedContract = if (mainnet) MAINNET_CONTRACT_ADDRESS else GOERLI_CONTRACT_ADDRESS
+        selectedContract = selectedNetwork.contractAddress
         try {
-            if (!mainnet) {
-                web3j = Web3j.build(HttpService(GOERLI_RPC))
-                selectedRPC = GOERLI_RPC
+            if (selectedNetwork.chainId != 1) {
+                web3j = Web3j.build(HttpService(selectedNetwork.chainRPC))
+                selectedRPC = selectedNetwork.chainRPC
             } else {
                 web3j = Web3j.build(HttpService())
                 web3j?.ethChainId()?.sendAsync()?.get()
                 selectedRPC = "http://127.0.0.1:8545"
             }
         } catch (e: Exception) {
-            web3j = Web3j.build(HttpService(if (mainnet) MAINNET_RPC else GOERLI_RPC))
-            selectedRPC = if (mainnet) MAINNET_RPC else GOERLI_RPC
+            web3j = Web3j.build(HttpService(selectedNetwork.chainRPC))
+            selectedRPC = selectedNetwork.chainRPC
         }
         nftMintContract = Abi.load(
             selectedContract,
@@ -135,7 +132,7 @@ class ContractInteraction(
             value = "0",
             data = data!!,
             gasAmount = "240000",
-            chainId = if (mainnet) 1 else 5 // Mainnet or Goerli
+            chainId = selectedNetwork.chainId
         )
 
     }
