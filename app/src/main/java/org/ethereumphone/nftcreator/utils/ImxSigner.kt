@@ -2,16 +2,18 @@ package org.ethereumphone.nftcreator.utils
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.provider.SyncStateContract
 import com.immutable.sdk.Signer
+import com.immutable.sdk.StandardStarkSigner
 import com.immutable.sdk.StarkSigner
 import com.immutable.sdk.crypto.StarkKey
-import com.immutable.sdk.extensions.getStarkPublicKey
 import dev.pinkroom.walletconnectkit.WalletConnectKit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.web3j.crypto.ECKeyPair
+import org.web3j.crypto.RawTransaction
 import java.util.concurrent.CompletableFuture
 
 
@@ -29,6 +31,10 @@ class ImxSigner(
             completableFuture.complete(wallet.getAddress())
         }
         return completableFuture
+    }
+
+    override fun sendTransaction(rawTransaction: RawTransaction): CompletableFuture<String> {
+        TODO("Not yet implemented")
     }
 
     override fun signMessage(message: String): CompletableFuture<String> {
@@ -71,45 +77,31 @@ fun String.hexToByteArray(): ByteArray {
 }
 
 
-class ImxStarkSinger(signer: Signer,
+class ImxStarkSinger(
+    signer: Signer,
+    sharedPreferences: SharedPreferences
 ): StarkSigner {
-    private var ecKeyPair : ECKeyPair? = null
-    private val signer = signer
+    var starkPrivateKey = StarkKey.generateStarkPrivateKey()
+    lateinit var starkSigner : StandardStarkSigner
+
+    init {
+        if (sharedPreferences.contains("starkPrivateKey")) {
+            val starkPrivateKey = sharedPreferences.getString("starkPrivateKey", null)
+            if (starkPrivateKey != null) {
+                this.starkPrivateKey = starkPrivateKey
+            }
+        } else {
+            sharedPreferences.edit().putString("starkPrivateKey", starkPrivateKey).apply()
+        }
+        starkSigner = StandardStarkSigner(starkPrivateKey)
+    }
 
 
     override fun getAddress(): CompletableFuture<String> {
-        val completableFuture = CompletableFuture<String>()
-
-        if(ecKeyPair==null){
-            CompletableFuture.runAsync {
-                StarkKey.generate(signer).whenComplete { keyPair, error ->
-                    ecKeyPair = keyPair
-                    completableFuture.complete(ecKeyPair!!.getStarkPublicKey())
-                }
-            }
-        } else {
-            CompletableFuture.runAsync {
-                completableFuture.complete(ecKeyPair!!.getStarkPublicKey())
-            }
-        }
-        return completableFuture
+        return starkSigner.getAddress()
     }
 
     override fun signMessage(message: String): CompletableFuture<String> {
-        val completableFuture = CompletableFuture<String>()
-        if (ecKeyPair == null){
-            CompletableFuture.runAsync {
-                StarkKey.generate(signer).whenComplete { keyPair, error ->
-                    ecKeyPair = keyPair
-                    completableFuture.complete(StarkKey.sign(ecKeyPair!!, message))
-                }
-            }
-        } else {
-            CompletableFuture.runAsync {
-                completableFuture.complete(StarkKey.sign(ecKeyPair!!, message))
-            }
-        }
-
-        return completableFuture
+        return starkSigner.signMessage(message)
     }
 }

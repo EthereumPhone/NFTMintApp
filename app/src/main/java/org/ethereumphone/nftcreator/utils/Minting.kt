@@ -4,9 +4,9 @@ import android.util.Log
 import com.google.gson.Gson
 import com.immutable.sdk.ImmutableX
 import com.immutable.sdk.ImmutableXBase
+import com.immutable.sdk.ImmutableXHttpLoggingLevel
 
 import com.immutable.sdk.api.model.*
-import com.immutable.sdk.crypto.Crypto
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.bouncycastle.pqc.math.linearalgebra.IntegerFunctions.pow
@@ -118,7 +118,11 @@ private fun connectWallet(
     signer: ImxSigner,
     starkSinger: ImxStarkSinger
 ): CompletableFuture<Unit> {
-    return if(!isConnected) ImmutableX(base = ImmutableXBase.Sandbox).registerOffChain(signer,starkSinger)
+    return if(!isConnected) {
+        val imx = ImmutableX(base = ImmutableXBase.Sandbox)
+        imx.setHttpLoggingLevel(ImmutableXHttpLoggingLevel.Body)
+        imx.registerOffChain(signer,starkSinger)
+    }
     else CompletableFuture.completedFuture(Unit)
 }
 
