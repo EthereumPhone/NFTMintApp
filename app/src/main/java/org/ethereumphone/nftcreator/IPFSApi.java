@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 import io.ipfs.kotlin.IPFS;
 import io.ipfs.kotlin.IPFSConfiguration;
@@ -35,7 +36,11 @@ public class IPFSApi {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        ipfs = new IPFS(new IPFSConfiguration("https://ipfs.infura.io:5001/api/v0/", new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+        ipfs = new IPFS(new IPFSConfiguration("https://ipfs.infura.io:5001/api/v0/", new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(new Interceptor() {
             @NonNull
             @Override
             public Response intercept(@NonNull Chain chain) throws IOException {
