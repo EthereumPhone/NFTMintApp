@@ -13,6 +13,7 @@ import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.EthEstimateGas
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.DefaultGasProvider
+import java.lang.Long
 import java.math.BigInteger
 import java.security.Provider
 import java.security.Security
@@ -127,11 +128,24 @@ class ContractInteraction(
             println(gasEstimate)
         }
 
+        val gas = web3j?.ethEstimateGas(
+            org.web3j.protocol.core.methods.request.Transaction.createFunctionCallTransaction(
+                wallet.getAddress(),
+                null,
+                null,
+                null,
+                selectedContract,
+                BigInteger.ZERO,
+                data
+            )
+        )?.send()
+        println("Gas: ${gas?.amountUsed}")
+
         return wallet.sendTransaction(
             to = selectedContract,
             value = "0",
             data = data!!,
-            gasAmount = "240000",
+            gasAmount = gas?.amountUsed.toString(),
             chainId = selectedNetwork.chainId
         )
 

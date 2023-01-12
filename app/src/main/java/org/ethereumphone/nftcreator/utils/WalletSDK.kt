@@ -83,7 +83,8 @@ class WalletSDK(
                 if (result == DECLINE) {
                     completableFuture.complete(DECLINE)
                 } else {
-                    completableFuture.complete(web3j!!.ethSendRawTransaction(result).sendAsync().get().transactionHash)
+                    val txResult = web3j!!.ethSendRawTransaction(result).sendAsync().get()
+                    completableFuture.complete(txResult.transactionHash)
                 }
             }
             return completableFuture
