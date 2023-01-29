@@ -41,7 +41,8 @@ fun NftCreatorTheme(
         MaterialTheme(
             colors = colors,
             content = content,
-            shapes = shapes
+            shapes = shapes,
+            typography = ethOSTypography
         )
     }
 }

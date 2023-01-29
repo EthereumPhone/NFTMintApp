@@ -2,16 +2,16 @@ package org.ethereumphone.nftcreator.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.ethereumphone.nftcreator.ui.theme.InputFiledColors
-import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
-import org.ethereumphone.nftcreator.ui.theme.md_theme_dark_onSurface
-import org.ethereumphone.nftcreator.ui.theme.md_theme_dark_surface
+import org.ethereumphone.nftcreator.ui.theme.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -26,18 +26,24 @@ fun DropDownSelector(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {expanded = !expanded},
+
     ) {
 
         TextField(
             value = selectedOptionText,
             onValueChange = {},
             label = {
-                Text(text = label, color = md_theme_dark_onSurface)
+                Text(
+                    text = label,
+                    color = md_theme_dark_onSurface,
+
+                )
             },
             readOnly = true,
             colors = InputFiledColors(),
             shape = RoundedCornerShape(50.dp),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             singleLine = true,
             maxLines = Int.MAX_VALUE,
             trailingIcon = {

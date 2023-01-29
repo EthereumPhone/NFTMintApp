@@ -3,7 +3,9 @@ package org.ethereumphone.nftcreator.ui.components
 import android.widget.EditText
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import org.ethereumphone.nftcreator.ui.theme.InputFiledColors
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 import org.ethereumphone.nftcreator.ui.theme.md_theme_dark_onSurface
+import org.ethereumphone.nftcreator.ui.theme.spacing
 
 
 @Composable
@@ -41,7 +44,12 @@ fun InputField(
             }
         },
         label = {
-            Text(text = label, color = md_theme_dark_onSurface)
+            Text(
+                text = label,
+                color = md_theme_dark_onSurface,
+                style = MaterialTheme.typography.body2,
+                //modifier = Modifier.padding(start = MaterialTheme.spacing.small)
+            )
         },
         readOnly = readOnly,
         colors = InputFiledColors(),
