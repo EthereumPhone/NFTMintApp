@@ -106,7 +106,7 @@ fun MintingScreenInput(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.35f)
+                    .fillMaxHeight(0.45f)
                     .clip(
                         RoundedCornerShape(20.dp)
                     )
@@ -118,7 +118,7 @@ fun MintingScreenInput(
             ImageBox(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.35f)
+                    .fillMaxHeight(0.4f)
                     .clickable {
                         // Get image
                         launcher.launch("image/*")
@@ -173,11 +173,11 @@ fun MintingScreenInput(
             } else {
                 Button(
                     shape = RoundedCornerShape(50.dp),
-                    //colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary),
 
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .height(56.dp)
                         ,
 
                     enabled = imageUri.value != null,
