@@ -1,6 +1,7 @@
 package org.ethereumphone.nftcreator.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -37,13 +38,13 @@ fun ImageBox(
             ) {
                 Icon(
                     Icons.Outlined.Image,
-                    contentDescription = "select image",
+                    contentDescription = "Select image",
                     tint = md_theme_dark_onSurface,
                     modifier = Modifier
                         .size(32.dp)
                 )
                 Text(
-                    text = "select your image",
+                    text = "Select your image",
                     fontSize = 12.sp,
                     color = md_theme_dark_onSurface
                 )

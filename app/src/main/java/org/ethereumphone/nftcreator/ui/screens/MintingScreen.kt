@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +39,7 @@ import org.ethereumphone.nftcreator.ui.components.ImageBox
 import org.ethereumphone.nftcreator.ui.components.InputField
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 import org.ethereumphone.nftcreator.ui.theme.md_theme_light_primary
+import org.ethereumphone.nftcreator.ui.theme.spacing
 import org.ethereumphone.nftcreator.utils.*
 import org.ethereumphone.nftcreator.utils.mintingWorkFlow
 import org.json.JSONObject
@@ -91,8 +93,7 @@ fun MintingScreenInput(
     ) {
         Text(
             text = "Mint new NFT",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
+            style = MaterialTheme.typography.h4,
             modifier = Modifier.fillMaxWidth(),
         )
         val launcher = rememberLauncherForActivityResult(
@@ -105,7 +106,7 @@ fun MintingScreenInput(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.35f)
+                    .fillMaxHeight(0.45f)
                     .clip(
                         RoundedCornerShape(20.dp)
                     )
@@ -117,7 +118,7 @@ fun MintingScreenInput(
             ImageBox(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.35f)
+                    .fillMaxHeight(0.4f)
                     .clickable {
                         // Get image
                         launcher.launch("image/*")
@@ -128,7 +129,9 @@ fun MintingScreenInput(
 
         InputField(
             label = "Title",
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+            ,
             value = ""
         ) {
             titleText = it
@@ -171,7 +174,12 @@ fun MintingScreenInput(
                 Button(
                     shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary),
-                    modifier = Modifier.fillMaxWidth(),
+
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        ,
+
                     enabled = imageUri.value != null,
                     onClick = {
                         // Lets mint
@@ -261,10 +269,12 @@ fun MintingScreenInput(
                             }
                         }
                         Thread(runnable).start()
-
                     }
                 ) {
-                    Text(text = "Mint")
+                    Text(
+                        text = "Mint",
+                        style = MaterialTheme.typography.body1
+                    )
                 }
             }
 
