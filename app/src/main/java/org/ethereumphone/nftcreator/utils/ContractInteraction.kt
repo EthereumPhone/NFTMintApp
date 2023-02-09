@@ -4,6 +4,7 @@ import android.content.Context
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.ethereumphone.nftcreator.contracts.Abi
 import org.ethereumphone.nftcreator.moduls.Network
+import org.ethereumphone.walletsdk.WalletSDK
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.Keys
 import org.web3j.crypto.RawTransaction
@@ -123,10 +124,6 @@ class ContractInteraction(
         val data = nftMintContract?.mintImage(address, tokenURI)?.encodeFunctionCall()
         val wallet =
             WalletSDK(context, web3RPC = selectedRPC)
-        if (data != null) {
-            gasEstimation(address, tokenURI)
-            println(gasEstimate)
-        }
 
         val gas = web3j?.ethEstimateGas(
             org.web3j.protocol.core.methods.request.Transaction.createFunctionCallTransaction(
@@ -140,6 +137,10 @@ class ContractInteraction(
             )
         )?.send()
         println("Gas: ${gas?.amountUsed}")
+
+        if (wallet.getChainId() != selectedNetwork.chainId) {
+            wallet.changeChainid(selectedNetwork.chainId).get()
+        }
 
         return wallet.sendTransaction(
             to = selectedContract,

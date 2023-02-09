@@ -12,6 +12,7 @@ import dev.pinkroom.walletconnectkit.WalletConnectKit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.ethereumphone.walletsdk.WalletSDK
 import org.web3j.crypto.ECKeyPair
 import org.web3j.crypto.RawTransaction
 import java.util.concurrent.CompletableFuture

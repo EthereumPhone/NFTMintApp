@@ -42,6 +42,7 @@ import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 import org.ethereumphone.nftcreator.ui.theme.md_theme_light_primary
 import org.ethereumphone.nftcreator.utils.*
 import org.ethereumphone.nftcreator.utils.mintingWorkFlow
+import org.ethereumphone.walletsdk.WalletSDK
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
@@ -72,7 +73,12 @@ fun MintingScreen(
 fun MintingScreenInput(
     modifier: Modifier = Modifier
 ) {
-    val options = listOf("Mainnet", "Optimism", "Arbitrum", "Goerli Testnet")
+    val options = listOf("Mainnet",
+        //"Optimism",
+        //"Arbitrum",
+        "Goerli Testnet",
+        //"Arbitrum Görlit Testnet"
+    )
     var price = ""
     val mainnetNetwork = Network(
         chainName = "Mainnet",
@@ -99,8 +105,15 @@ fun MintingScreenInput(
         chainName = "Goerli Testnet",
         chainId = 5,
         chainExplorer = "https://goerli.etherscan.io",
-        chainRPC = "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+        chainRPC = "https://eth-goerli.public.blastapi.io",
         contractAddress = "0x5B48267F7fDb98416C8382C230f4f4AD7453aBd7"
+    )
+    val arbitrumGoerliNetwork = Network(
+        chainName = "Arbitrum Görlit Testnet",
+        chainId = 421613,
+        chainExplorer = "https://goerli.arbiscan.io",
+        chainRPC = "https://goerli-rollup.arbitrum.io/rpc",
+        contractAddress = "0x5c4AA72b2847b3049e837b2fF218a696d9F50F50"
     )
     var selectedNetwork = mainnetNetwork
     val imageUri = remember { mutableStateOf<Uri?>(null) }
@@ -108,6 +121,7 @@ fun MintingScreenInput(
     var titleText = ""
     var descriptionText = ""
     val processing = remember { mutableStateOf(false) }
+    val processText = remember { mutableStateOf("Uploading image...") }
 
 
 
@@ -185,9 +199,10 @@ fun MintingScreenInput(
         ) {
             when(it) {
                 "Mainnet" -> selectedNetwork = mainnetNetwork
-                "Optimism" -> selectedNetwork = optimismNetwork
-                "Arbitrum" -> selectedNetwork = arbitrumNetwork
+                //"Optimism" -> selectedNetwork = optimismNetwork
+                //"Arbitrum" -> selectedNetwork = arbitrumNetwork
                 "Goerli Testnet" -> selectedNetwork = goerliNetwork
+                //"Arbitrum Görlit Testnet" -> selectedNetwork = arbitrumGoerliNetwork
             }
         }
 
@@ -197,11 +212,17 @@ fun MintingScreenInput(
             verticalArrangement = Arrangement.Bottom
         ) {
             if(processing.value) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(70.dp)
-                        .fillMaxWidth()
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(text = processText.value)
+                }
             } else {
                 Button(
                     shape = RoundedCornerShape(50.dp),
@@ -252,18 +273,21 @@ fun MintingScreenInput(
                                     selectedNetwork = selectedNetwork
                                 )
                                 contractsIntercation.load()
-
+                                processText.value = "Minting NFT..."
                                 contractsIntercation.mintImage(
                                     address = WalletSDK(con).getAddress(),
                                     tokenURI = "ipfs://$jsonIPFSHash"
                                 ).whenComplete { s, throwable ->
                                     processing.value = false
-                                    imageUri.value = null
-                                    val url = "${selectedNetwork.chainExplorer}/tx/$s"
-                                    con.copyToClipboard(url)
-                                    val uri = Uri.parse(url)
-                                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                                    con.startActivity(intent)
+                                    if (s != WalletSDK.DECLINE) {
+                                        imageUri.value = null
+                                        val url = "${selectedNetwork.chainExplorer}/tx/$s"
+                                        con.copyToClipboard(url)
+                                        val uri = Uri.parse(url)
+                                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                                        Thread.sleep(1000)
+                                        con.startActivity(intent)
+                                    }
                                 }
 
                             } else if (selectedNetwork.equals("IMX")) {
