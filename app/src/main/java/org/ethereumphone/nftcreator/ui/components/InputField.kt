@@ -3,30 +3,34 @@ package org.ethereumphone.nftcreator.ui.components
 import android.widget.EditText
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.ethereumphone.nftcreator.ui.theme.InputFiledColors
-import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
-import org.ethereumphone.nftcreator.ui.theme.md_theme_dark_onSurface
+import org.ethereumphone.nftcreator.ui.theme.*
 
 
 @Composable
 fun InputField(
     value: String,
-    label: String = "",
+    placeholder: String,
     readOnly: Boolean = false,
     singeLine: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
-    shape: Shape = RoundedCornerShape(50.dp),
+    //shape: Shape = RoundedCornerShape(12.dp),
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
     onChange: ((value: String) -> Unit)? = null
@@ -40,12 +44,19 @@ fun InputField(
                 onChange(it)
             }
         },
-        label = {
-            Text(text = label, color = md_theme_dark_onSurface)
+        placeholder = {
+            Text(text = placeholder)
         },
         readOnly = readOnly,
-        colors = InputFiledColors(),
-        shape = shape,
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = darkblue2,
+            textColor = white,
+            placeholderColor = gray,
+            errorCursorColor= Color.Red,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent
+        ),
+        shape = RoundedCornerShape(12.dp),
         modifier = modifier,
         singleLine = singeLine,
         maxLines = maxLines,
@@ -53,13 +64,34 @@ fun InputField(
     )
 }
 
+@Composable
+@Preview
+fun PreviewInputFiledBox() {
+    NftCreatorTheme {
+        InputField("Test", "Test", modifier = Modifier.fillMaxWidth())
+    }
+}
+
+/*
+
+val customTextFieldColors = TextFieldColors(
+    backgroundColor = Color.Black,
+    cursorColor = Color.Green,
+    focusedIndicatorColor = Color.Blue,
+    unfocusedIndicatorColor = Color.Gray,
+    disabledLabelColor = Color.Gray,
+    errorLabelColor = Color.Red,
+    leadingIconColor = Color.White,
+    trailingIconColor = Color.White,
+    textColor = Color.White
+)
 
 @Composable
 @Preview
 fun PreviewInputFiledEmpty() {
     NftCreatorTheme {
         InputField("") {
-            println(it)
+            c
         }
     }
 }
@@ -90,4 +122,4 @@ fun PreviewInputFiledBox() {
             println(it)
         }
     }
-}
+}*/

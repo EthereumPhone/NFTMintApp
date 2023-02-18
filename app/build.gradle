@@ -72,6 +72,9 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.0'
     implementation "androidx.navigation:navigation-compose:2.5.0"
 
+    // WalletSDK
+    implementation 'com.github.EthereumPhone:WalletSDK:0.0.8'
+
     // https://mvnrepository.com/artifact/com.immutable.sdk/imx-core-sdk-kotlin-jvm
     implementation 'com.immutable.sdk:imx-core-sdk-kotlin-jvm:1.0.0-beta.2'
 
