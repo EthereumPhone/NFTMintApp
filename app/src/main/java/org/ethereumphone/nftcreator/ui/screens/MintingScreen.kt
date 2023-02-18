@@ -155,15 +155,16 @@ fun MintingScreenInput(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
-            .fillMaxHeight()
+            //.fillMaxHeight()
             .background(darkblue1)
-            //.height(LocalConfiguration.current.screenHeightDp.dp)
+            .height(LocalConfiguration.current.screenHeightDp.dp)
             .padding(32.dp)
 
 
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(top=12.dp)
         ) {
 
             AddressPills(address = walletAddress, chainId = selectedNetwork.chainId)
@@ -361,11 +362,11 @@ fun MintingScreenInput(
 }
 
 
-/*@ExperimentalComposeUiApi
+@ExperimentalComposeUiApi
 @Composable
 @Preview(showBackground = true, widthDp = 390, heightDp = 800)
 fun PreviewMintingScreen() {
     NftCreatorTheme {
         MintingScreen()
     }
-}*/
+}
