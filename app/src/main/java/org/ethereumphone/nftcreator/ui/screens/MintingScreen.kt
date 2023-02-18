@@ -62,24 +62,18 @@ import java.io.FileWriter
 @Destination(start = true)
 fun MintingScreen(
 ) {
-    NftCreatorTheme() {
-        MintingScreenInput()
-    }
-        /*Column(
+    Scaffold {
+        Column(
             modifier = Modifier
-                .background(androidx.compose.ui.graphics.Color.Blue)
-                .fillMaxHeight()
                 .statusBarsPadding()
                 .navigationBarsPadding()
                 .imePadding()
                 .verticalScroll(rememberScrollState())
-
-                .fillMaxWidth()
-
+                .fillMaxSize()
         ) {
-
-        }*/
-
+            MintingScreenInput()
+        }
+    }
 }
 
 @Composable
@@ -361,7 +355,7 @@ fun MintingScreenInput(
     }
 }
 
-
+/*
 @ExperimentalComposeUiApi
 @Composable
 @Preview(showBackground = true, widthDp = 390, heightDp = 800)
@@ -369,4 +363,4 @@ fun PreviewMintingScreen() {
     NftCreatorTheme {
         MintingScreen()
     }
-}
+}*/
