@@ -42,6 +42,7 @@ import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.ramcosta.composedestinations.annotation.Destination
 import org.ethereumphone.nftcreator.IPFSApi
+import org.ethereumphone.nftcreator.moduls.MinterAttribute
 import org.ethereumphone.nftcreator.moduls.Network
 import org.ethereumphone.nftcreator.moduls.TokenData
 import org.ethereumphone.nftcreator.ui.components.*
@@ -92,7 +93,7 @@ fun MintingScreenInput(
         chainId = 1,
         chainExplorer = "https://etherscan.io",
         chainRPC = "https://cloudflare-eth.com",
-        contractAddress = "0x7D4960bFcB377307e544ae191CBaF9Dad054552F"
+        contractAddress = "0x2c6c5bc10af349574af2ee08c26f8aad185b3e3a"
     )
     val optimismNetwork = Network(
         chainName = "Optimism",
@@ -133,8 +134,8 @@ fun MintingScreenInput(
 
     val walletSDK = WalletSDK(LocalContext.current)//access to wallet
     val walletAddress = walletSDK.getAddress()//get wallet address
-
-    if (walletSDK.getChainId() != 1) {
+    val currChainid = walletSDK.getChainId()
+    if (currChainid != 1) {
         walletSDK.changeChainid(1).whenComplete { s, t ->
             if (s != WalletSDK.DECLINE) {
                 print("Changed chain")
@@ -193,9 +194,6 @@ fun MintingScreenInput(
                         modifier = Modifier
                             .width(160.dp)
                             .height(160.dp)
-                            .clip(
-                                CircleShape
-                            )
                             .clickable {
                                 launcher.launch("image/*")
                             }
@@ -203,8 +201,8 @@ fun MintingScreenInput(
                 } else {
                     ImageBox(
                         modifier = Modifier
-                            .width(160.dp)
-                            .height(160.dp)
+                            .fillMaxWidth()
+                            .height(280.dp)
                             .clickable {
                                 // Get image
                                 launcher.launch("image/*")
@@ -212,6 +210,7 @@ fun MintingScreenInput(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -261,6 +260,7 @@ fun MintingScreenInput(
                             // Upload the image on ipfs
                             processing.value = true
                             val runnable = Runnable {
+                                val wallet = WalletSDK(con)
                                 val ipfs = IPFSApi()
                                 val filename = "${System.currentTimeMillis()}.jpg"
                                 val file = File(con.cacheDir, filename)
@@ -281,7 +281,13 @@ fun MintingScreenInput(
                                         TokenData(
                                             name = titleText,
                                             description = descriptionText,
-                                            image = "ipfs://$imageIPFSHash"
+                                            image = "ipfs://$imageIPFSHash",
+                                            attributes = listOf(
+                                                MinterAttribute(
+                                                    trait_type = "Minter",
+                                                    value = wallet.getAddress()
+                                                )
+                                            )
                                         )
                                     )
                                     val jsonFileName = "${System.currentTimeMillis()}.json"
@@ -302,7 +308,7 @@ fun MintingScreenInput(
                                     contractsIntercation.load()
                                     processText.value = "Minting NFT..."
                                     contractsIntercation.mintImage(
-                                        address = WalletSDK(con).getAddress(),
+                                        address = wallet.getAddress(),
                                         tokenURI = "ipfs://$jsonIPFSHash"
                                     ).whenComplete { s, throwable ->
                                         processing.value = false

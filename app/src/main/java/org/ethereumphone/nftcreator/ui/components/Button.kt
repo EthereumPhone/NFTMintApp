@@ -31,7 +31,11 @@ fun ethOSButton(
     onClick: (() -> Unit)? = null
 ) {
     Button(
-        onClick = { onClick },
+        onClick = {
+            if (onClick != null) {
+                onClick()
+            }
+        },
         shape = RoundedCornerShape(50.dp),
         enabled = enabled,
         modifier = Modifier

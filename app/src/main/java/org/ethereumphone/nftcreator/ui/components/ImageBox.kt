@@ -26,7 +26,6 @@ fun ImageBox(
 ) {
     Box(
         modifier = modifier
-            .clip(CircleShape)
             .background(darkblue2)
 
     ) {
