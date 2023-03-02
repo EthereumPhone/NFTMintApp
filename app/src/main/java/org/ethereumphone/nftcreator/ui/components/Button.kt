@@ -16,11 +16,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.HorizontalAlignmentLine
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.theme.*
 
 @Composable
@@ -30,6 +33,13 @@ fun ethOSButton(
     enabled: Boolean,
     onClick: (() -> Unit)? = null
 ) {
+    val Inter = FontFamily(
+        Font(R.font.inter_light,FontWeight.Light),
+        Font(R.font.inter_regular,FontWeight.Normal),
+        Font(R.font.inter_medium,FontWeight.Medium),
+        Font(R.font.inter_semibold,FontWeight.SemiBold),
+        Font(R.font.inter_bold, FontWeight.Bold)
+    )
     Button(
         onClick = {
             if (onClick != null) {
@@ -79,7 +89,7 @@ fun ethOSButton(
                     tint = Color.White
                 )
             }
-            Text(text=text, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+            Text(text=text, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, fontFamily = Inter)
             Box (
                 modifier = Modifier
 

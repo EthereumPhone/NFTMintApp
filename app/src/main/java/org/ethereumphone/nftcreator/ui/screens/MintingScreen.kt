@@ -32,6 +32,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +44,7 @@ import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.ramcosta.composedestinations.annotation.Destination
 import org.ethereumphone.nftcreator.IPFSApi
+import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.moduls.MinterAttribute
 import org.ethereumphone.nftcreator.moduls.Network
 import org.ethereumphone.nftcreator.moduls.TokenData
@@ -131,6 +134,13 @@ fun MintingScreenInput(
     val processing = remember { mutableStateOf(false) }
     val processText = remember { mutableStateOf("Uploading image...") }
 
+    val Inter = FontFamily(
+        Font(R.font.inter_light,FontWeight.Light),
+        Font(R.font.inter_regular,FontWeight.Normal),
+        Font(R.font.inter_medium,FontWeight.Medium),
+        Font(R.font.inter_semibold,FontWeight.SemiBold),
+        Font(R.font.inter_bold, FontWeight.Bold)
+    )
 
     val walletSDK = WalletSDK(LocalContext.current)//access to wallet
     val walletAddress = walletSDK.getAddress()//get wallet address
@@ -159,17 +169,18 @@ fun MintingScreenInput(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top=12.dp)
+            modifier = Modifier.padding(top=4.dp)
         ) {
 
             AddressPills(address = walletAddress, chainId = selectedNetwork.chainId)
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Mint",
                 fontWeight = FontWeight.Bold,
                 fontSize = 42.sp,
                 color = white,
                 textAlign = TextAlign.Center,
+                fontFamily = Inter,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp)
@@ -192,8 +203,8 @@ fun MintingScreenInput(
                         contentDescription = "Selected image",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .width(160.dp)
-                            .height(160.dp)
+                            .fillMaxWidth()
+                            .height(180.dp)
                             .clickable {
                                 launcher.launch("image/*")
                             }
@@ -202,7 +213,7 @@ fun MintingScreenInput(
                     ImageBox(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(280.dp)
+                            .height(180.dp)
                             .clickable {
                                 // Get image
                                 launcher.launch("image/*")
@@ -210,7 +221,7 @@ fun MintingScreenInput(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -220,7 +231,7 @@ fun MintingScreenInput(
                     InputField(
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = "Title",
-                        value = ""
+                        value = "",
                     ) {
                         titleText = it
                     }

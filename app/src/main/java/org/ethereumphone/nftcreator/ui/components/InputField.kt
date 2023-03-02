@@ -17,9 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.theme.*
 
 
@@ -35,6 +39,13 @@ fun InputField(
     trailingIcon: @Composable (() -> Unit)? = null,
     onChange: ((value: String) -> Unit)? = null
 ) {
+    val Inter = FontFamily(
+        Font(R.font.inter_light, FontWeight.Light),
+        Font(R.font.inter_regular, FontWeight.Normal),
+        Font(R.font.inter_medium, FontWeight.Medium),
+        Font(R.font.inter_semibold, FontWeight.SemiBold),
+        Font(R.font.inter_bold, FontWeight.Bold)
+    )
     var text by remember { mutableStateOf(value) }
     TextField(
         value = text,
@@ -45,7 +56,11 @@ fun InputField(
             }
         },
         placeholder = {
-            Text(text = placeholder)
+            Text(
+                text = placeholder,
+                fontFamily = Inter,
+                fontWeight = FontWeight.SemiBold
+            )
         },
         readOnly = readOnly,
         colors = TextFieldDefaults.textFieldColors(
