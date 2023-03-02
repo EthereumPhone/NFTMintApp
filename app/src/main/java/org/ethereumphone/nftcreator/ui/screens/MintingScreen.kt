@@ -3,6 +3,7 @@ package org.ethereumphone.nftcreator.ui.screens
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -267,6 +268,15 @@ fun MintingScreenInput(
                         Icons.Default.ArrowUpward,
                         enabled = imageUri.value != null,
                         onClick = {
+                            // Check if phone has internet connection
+                            if (!isNetworkAvailable(con)) {
+                                Toast.makeText(
+                                    con,
+                                    "No internet connection",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@ethOSButton
+                            }
                             // Lets mint
                             // Upload the image on ipfs
                             processing.value = true
@@ -370,6 +380,12 @@ fun MintingScreenInput(
             }
         }
     }
+}
+
+fun isNetworkAvailable(con: Context): Boolean {
+    val connectivityManager =
+        con.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    return connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo!!.isConnected
 }
 
 /*
