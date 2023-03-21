@@ -1,26 +1,22 @@
 package org.ethereumphone.nftcreator
 
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
-import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableX
+import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableXHttpLoggingLevel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import dev.pinkroom.walletconnectkit.WalletConnectKit
-import org.ethereumphone.nftcreator.ui.screens.Home
-
 import org.ethereumphone.nftcreator.ui.screens.NavGraphs
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
-import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.androidx.compose.get
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+
 
 @ExperimentalComposeUiApi
 class MainActivity : ComponentActivity() {
@@ -29,6 +25,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         ImmutableX(base = ImmutableXBase.Sandbox).setHttpLoggingLevel(level = ImmutableXHttpLoggingLevel.Body)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        val builder = VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
 
         setContent {
             NftCreatorTheme {
