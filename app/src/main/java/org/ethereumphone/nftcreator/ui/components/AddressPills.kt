@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.ethereumphone.nftcreator.ui.screens.MintingScreen
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 
@@ -29,6 +30,7 @@ import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 fun AddressPills(
     address: String,
     chainId: Int,
+    sdeg:SnackbarDelegate
 ) {
 
 
@@ -71,9 +73,13 @@ fun AddressPills(
                 clipboard?.setPrimaryClip(clip)
 
                 // Toast copy to clipboard
-                Toast
-                    .makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT)
-                    .show()
+//                Toast
+//                    .makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT)
+//                    .show()
+                //Snackbar for copy to clipboard
+                sdeg.coroutineScope.launch {
+                    sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
+                }
 
             }
     ) {
@@ -93,11 +99,11 @@ fun AddressPills(
     }
 }
 
-@ExperimentalComposeUiApi
-@Composable
-@Preview
-fun PreviewMintingScreen() {
-    NftCreatorTheme {
-        AddressPills("0xefBABdeE59968641DC6E892e30C470c2b40157Cd",1)
-    }
-}
+//@ExperimentalComposeUiApi
+//@Composable
+//@Preview
+//fun PreviewMintingScreen() {
+//    NftCreatorTheme {
+//        AddressPills("0xefBABdeE59968641DC6E892e30C470c2b40157Cd",1)
+//    }
+//}

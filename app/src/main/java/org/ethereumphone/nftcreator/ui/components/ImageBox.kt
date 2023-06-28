@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.theme.darkblue2
 import org.ethereumphone.nftcreator.ui.theme.md_theme_dark_onSurface
+import org.ethereumphone.nftcreator.ui.theme.md_theme_light_onError
 import org.ethereumphone.nftcreator.ui.theme.white
 
 @Composable
@@ -36,6 +38,7 @@ fun ImageBox(
     )
     Box(
         modifier = modifier
+            .clip(RoundedCornerShape(24.dp))
             .background(darkblue2)
 
     ) {

@@ -52,8 +52,16 @@ val md_theme_dark_onSurface = Color(0xFFA3A0FF)
 
 val darkblue1 = Color(0xFF1E2730)
 val darkblue2 = Color(0xFF24303D)
-val gray = Color(0xFFC8C8C8)
+val gray = Color(0xFF9FA2A5)
 val white = Color(0xFFFFFFFF)
 
+val darkblue= Color(0xFF1E2730)
+val blue = Color(0xFF24303D)
+val lightblue = Color(0xFF3C4958)
+
+val positive = Color(0xFF1B7C12)
+val warning = Color(0xFFFFB526)
+val error = Color(0xFFC63B3B)
+val darkbrown = Color(0xFF3A2A0A)
 
 val seed = Color(0xFF5550F2)
