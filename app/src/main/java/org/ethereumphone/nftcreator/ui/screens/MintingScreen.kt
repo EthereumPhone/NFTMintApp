@@ -1,10 +1,14 @@
 package org.ethereumphone.nftcreator.ui.screens
 
+import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -55,6 +59,7 @@ import org.ethereumphone.nftcreator.utils.*
 import org.ethereumphone.nftcreator.utils.mintingWorkFlow
 import org.ethereumphone.walletsdk.WalletSDK
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
@@ -138,6 +143,7 @@ fun MintingScreenInput(
     var descriptionText = ""
     val processing = remember { mutableStateOf(false) }
     val processText = remember { mutableStateOf("Uploading image...") }
+    val openCamOrGallery = remember { mutableStateOf(false) }
 
     val Inter = FontFamily(
         Font(R.font.inter_light,FontWeight.Light),
@@ -201,18 +207,68 @@ fun MintingScreenInput(
             //Image
             Box (contentAlignment= Alignment.Center){
                 val launcher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.GetContent()
-                ) { imageUri.value = it }
+                    ActivityResultContracts.StartActivityForResult()
+                ) { result ->
+                    if (result.resultCode == Activity.RESULT_OK) {
+                        // Handle the result here
+                        if (result.data?.data == null) {
+                            val bitmap = result.data?.extras?.get("data") as Bitmap
+                            val uri = getImageUri(con, bitmap)
+                            imageUri.value = uri
+                        } else {
+                            val data: Intent? = result.data
+                            imageUri.value = data?.data
+                        }
+                    }
+                }
+                if (openCamOrGallery.value) {
+
+                    AlertDialog(
+                        // Center the buttons inside the dialog
+
+                        onDismissRequest = { },
+                        title = { Text(text = "Choose Image Source") },
+                        buttons = {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(120.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Button(onClick = {
+                                    // Launch the camera intent
+                                    openCamOrGallery.value = false
+                                    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                    launcher.launch(intent)
+                                }) {
+                                    Text(text="Camera", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, fontFamily = Inter)
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(onClick = {
+                                    // Launch the gallery intent
+                                    openCamOrGallery.value = false
+                                    val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                                    launcher.launch(intent)
+                                }) {
+                                    Text(text="Gallery", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, fontFamily = Inter)
+
+                                }
+                            }
+                        }
+                    )
+                }
                 if (imageUri.value != null) {
                     AsyncImage(
                         model = imageUri.value,
                         contentDescription = "Selected image",
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.FillHeight,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(180.dp)
+                            .height(250.dp)
                             .clickable {
-                                launcher.launch("image/*")
+                                openCamOrGallery.value = true
                             }
                     )
                 } else {
@@ -222,7 +278,7 @@ fun MintingScreenInput(
                             .height(180.dp)
                             .clickable {
                                 // Get image
-                                launcher.launch("image/*")
+                                openCamOrGallery.value = true
                             }
                     )
                 }
@@ -387,11 +443,19 @@ fun MintingScreenInput(
     }
 }
 
+private fun getImageUri(context: Context, bitmap: Bitmap): Uri? {
+    val bytes = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+    val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+    return Uri.parse(path)
+}
+
 fun isNetworkAvailable(con: Context): Boolean {
     val connectivityManager =
         con.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     return connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo!!.isConnected
 }
+
 
 /*
 @ExperimentalComposeUiApi

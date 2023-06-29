@@ -3,15 +3,14 @@ package org.ethereumphone.nftcreator
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
-import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableX
+import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableXHttpLoggingLevel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
@@ -23,9 +22,8 @@ import org.ethereumphone.nftcreator.ui.screens.MintingScreen
 import org.ethereumphone.nftcreator.ui.screens.NavGraphs
 import org.ethereumphone.nftcreator.ui.screens.destinations.MintingScreenDestination
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
-import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.androidx.compose.get
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+
 
 @ExperimentalComposeUiApi
 class MainActivity : ComponentActivity() {
@@ -45,6 +43,8 @@ class MainActivity : ComponentActivity() {
                 imageUri = receivedUri
             }
         }
+        val builder = VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
 
         setContent {
             NftCreatorTheme {
