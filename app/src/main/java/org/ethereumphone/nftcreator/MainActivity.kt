@@ -1,5 +1,7 @@
 package org.ethereumphone.nftcreator
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,11 +14,14 @@ import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableX
 import com.immutable.sdk.ImmutableXHttpLoggingLevel
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import com.ramcosta.composedestinations.navigation.dependency
 import dev.pinkroom.walletconnectkit.WalletConnectKit
 import org.ethereumphone.nftcreator.ui.screens.Home
+import org.ethereumphone.nftcreator.ui.screens.MintingScreen
 
 import org.ethereumphone.nftcreator.ui.screens.NavGraphs
+import org.ethereumphone.nftcreator.ui.screens.destinations.MintingScreenDestination
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 import org.ethereumphone.nftcreator.walletconnect.ConnectWalletViewModel
 import org.koin.androidx.compose.get
@@ -30,6 +35,17 @@ class MainActivity : ComponentActivity() {
         ImmutableX(base = ImmutableXBase.Sandbox).setHttpLoggingLevel(level = ImmutableXHttpLoggingLevel.Body)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        var imageUri: Uri? = null
+
+        if (Intent.ACTION_SEND == intent.action && intent.type?.startsWith("image/") == true) {
+            val receivedUri: Uri? = intent.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+
+            // Use the receivedUri as needed
+            if (receivedUri != null) {
+                imageUri = receivedUri
+            }
+        }
+
         setContent {
             NftCreatorTheme {
                 DestinationsNavHost(
@@ -37,7 +53,11 @@ class MainActivity : ComponentActivity() {
                     dependenciesContainerBuilder = {
                         dependency(get<WalletConnectKit>())
                     }
-                )
+                ) {
+                    composable(MintingScreenDestination) {
+                        MintingScreen(imageUri = imageUri)
+                    }
+                }
             }
         }
     }
