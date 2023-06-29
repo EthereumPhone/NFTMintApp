@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -21,9 +24,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.ethereumphone.nftcreator.ui.screens.MintingScreen
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
+import org.ethereumphone.nftcreator.ui.theme.gray
 
 
 @Composable
@@ -64,8 +69,8 @@ fun AddressPills(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .clip(RoundedCornerShape(50.dp))
-            .background(Color(0xFF2E3D4E))
-            .padding(vertical = 6.dp, horizontal = 12.dp)
+            .background(Color(0xFF24303D))
+            .padding(vertical = 5.dp, horizontal = 10.dp)
             .clickable {
                 val clipboard: ClipboardManager? =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
@@ -89,21 +94,29 @@ fun AddressPills(
                 .background(color)
                 .size(15.dp)
         ) {}
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(10.dp))
         Text(
-            text = text,
+            text = network,
+            //fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
-            style = MaterialTheme.typography.button,
-            color = Color.White
+            color = gray
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = address.take(5) + "...",
+            fontWeight = FontWeight.Normal,
+            color = gray
         )
     }
 }
 
-//@ExperimentalComposeUiApi
-//@Composable
-//@Preview
-//fun PreviewMintingScreen() {
-//    NftCreatorTheme {
-//        AddressPills("0xefBABdeE59968641DC6E892e30C470c2b40157Cd",1)
-//    }
-//}
+@ExperimentalComposeUiApi
+@Composable @Preview
+fun PreviewMintingScreen() {
+    ///NftCreatorTheme {
+    val scope = rememberCoroutineScope()
+    val hostState = remember { SnackbarHostState() }
+    val sdeg = rememberSnackbarDelegate(hostState, scope)
+    AddressPills("0xefBABdeE59968641DC6E892e30C470c2b40157Cd", 1, sdeg = sdeg)
+    //}
+}

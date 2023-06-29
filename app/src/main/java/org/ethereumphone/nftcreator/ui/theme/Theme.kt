@@ -40,6 +40,7 @@ fun NftCreatorTheme(
     CompositionLocalProvider(LocalSpacing provides Spacing()){
         MaterialTheme(
             colors = colors,
+            typography = ethOSTypography,
             content = content,
             shapes = shapes
         )
