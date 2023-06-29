@@ -72,6 +72,7 @@ import java.io.FileWriter
 @Composable
 @Destination(start = true)
 fun MintingScreen(
+    imageUri: Uri?,
 ) {
     Scaffold {
         Column(
@@ -82,14 +83,17 @@ fun MintingScreen(
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
         ) {
-            MintingScreenInput()
+            MintingScreenInput(
+                initalImageUri = imageUri
+            )
         }
     }
 }
 
 @Composable
 fun MintingScreenInput(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    initalImageUri: Uri?
 ) {
 
     //For Snackbar
@@ -140,7 +144,7 @@ fun MintingScreenInput(
         contractAddress = "0x5c4AA72b2847b3049e837b2fF218a696d9F50F50"
     )
     var selectedNetwork = mainnetNetwork
-    val imageUri = remember { mutableStateOf<Uri?>(null) }
+    val imageUri = remember { mutableStateOf<Uri?>(initalImageUri) }
     val con = LocalContext.current
     var titleText = ""
     var descriptionText = ""
@@ -158,16 +162,17 @@ fun MintingScreenInput(
 
     val walletSDK = WalletSDK(LocalContext.current)//access to wallet
     val walletAddress = walletSDK.getAddress()//get wallet address
-    val currChainid = walletSDK.getChainId()
-    if (currChainid != 1) {
-        walletSDK.changeChainid(1).whenComplete { s, t ->
-            if (s != WalletSDK.DECLINE) {
-                print("Changed chain")
-            } else {
-                print("Declined")
+    val context = LocalContext.current
+    val runnable = Runnable {
+        synchronized(context) {
+            val currChainid = walletSDK.getChainId()
+            if (currChainid != 1) {
+                println("Not on mainnet, changing chain")
+                walletSDK.changeChainid(1).get()
             }
         }
     }
+    Thread(runnable).start()
 
 
     Box(
