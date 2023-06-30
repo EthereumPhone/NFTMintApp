@@ -186,7 +186,7 @@ fun MintingScreenInput(
                 .fillMaxWidth()
                 .background(darkblue1)
                 //.height(LocalConfiguration.current.screenHeightDp.dp)
-                .padding(32.dp)
+                .padding(32.dp,24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
