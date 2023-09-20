@@ -1,5 +1,6 @@
 package org.ethereumphone.nftcreator.ui.theme
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
@@ -7,6 +8,11 @@ import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val DarkColorPalette = darkColors(
     primary = Purple500,
@@ -37,6 +43,17 @@ fun NftCreatorTheme(
     content: @Composable () -> Unit
 ) {
     val colors = darkColors
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = Color(0xFF1E2730).toArgb() // change color status bar here
+            window.navigationBarColor = Color(0xFF1E2730).toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+        }
+    }
+
     CompositionLocalProvider(LocalSpacing provides Spacing()){
         MaterialTheme(
             colors = colors,

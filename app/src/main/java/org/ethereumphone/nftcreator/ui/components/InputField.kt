@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.theme.*
 
@@ -59,6 +60,7 @@ fun InputField(
             Text(
                 text = placeholder,
                 fontFamily = Inter,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold
             )
         },

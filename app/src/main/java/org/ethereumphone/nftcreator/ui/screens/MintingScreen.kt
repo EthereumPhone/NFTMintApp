@@ -5,7 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
+
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.provider.MediaStore
@@ -13,6 +13,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,13 +29,17 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
@@ -160,24 +169,39 @@ fun MintingScreenInput(
         Font(R.font.inter_bold, FontWeight.Bold)
     )
 
-    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
-    val walletAddress = walletSDK.getAddress()//get wallet address
-    val context = LocalContext.current
-    val runnable = Runnable {
-        synchronized(context) {
-            val currChainid = walletSDK.getChainId()
-            if (currChainid != 1) {
-                println("Not on mainnet, changing chain")
-                walletSDK.changeChainid(1).get()
-            }
-        }
+    val showInfoDialog =  remember { mutableStateOf(false) }
+    if(showInfoDialog.value){
+        InfoDialog(
+            setShowDialog = {
+                showInfoDialog.value = false
+            },
+            title = "Disclaimers",
+            text = "ethOS allows you to mint .jpg NFTs on Ethereum, " +
+                    "but it assumes no ownership, liability, or " +
+                    "responsibility for their use."
+
+        )
     }
-    Thread(runnable).start()
+
+//    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
+//    val walletAddress = walletSDK.getAddress()//get wallet address
+//    val context = LocalContext.current
+//    val runnable = Runnable {
+//        synchronized(context) {
+//            val currChainid = walletSDK.getChainId()
+//            if (currChainid != 1) {
+//                println("Not on mainnet, changing chain")
+//                walletSDK.changeChainid(1).get()
+//            }
+//        }
+//    }
+//    Thread(runnable).start()
 
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
+    Box (
+        modifier = modifier
+            .fillMaxSize()
+    ){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
@@ -186,26 +210,45 @@ fun MintingScreenInput(
                 .fillMaxWidth()
                 .background(darkblue1)
                 //.height(LocalConfiguration.current.screenHeightDp.dp)
-                .padding(32.dp,24.dp)
+                .padding(32.dp, 24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(top=4.dp)
             ) {
 
-                AddressPills(address = walletAddress, chainId = selectedNetwork.chainId, sdeg=sdeg)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Mint",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 42.sp,
-                    color = white,
-                    textAlign = TextAlign.Center,
-                    fontFamily = Inter,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp)
+                AddressPills(
+                    address = "0xefBABdeE59968641DC6E892e30C470c2b40157Cd",//"walletAddress",
+                    chainId = selectedNetwork.chainId,
+                    sdeg=sdeg,
+                    onclick={},
+                    icon={
+                        IconButton(
+                            onClick = {showInfoDialog.value = true}
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = "Information",
+                                tint = Color(0xFF9FA2A5),
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                //.background(Color.Red)
+                            )
+                        }
+                    }
                 )
+//                Spacer(modifier = Modifier.height(8.dp))
+//                Text(
+//                    text = "Mint",
+//                    fontWeight = FontWeight.Bold,
+//                    fontSize = 42.sp,
+//                    color = white,
+//                    textAlign = TextAlign.Center,
+//                    fontFamily = Inter,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 12.dp)
+//                )
             }
 
             Column (
@@ -214,7 +257,11 @@ fun MintingScreenInput(
                 modifier = Modifier.fillMaxHeight()
             ) {
                 //Image
-                Box (contentAlignment= Alignment.Center){
+                Box (
+
+                    contentAlignment= Alignment.Center,
+                    modifier = Modifier.clip(RoundedCornerShape(12.dp))
+                ){
                     val launcher = rememberLauncherForActivityResult(
                         ActivityResultContracts.StartActivityForResult()
                     ) { result ->
@@ -232,59 +279,92 @@ fun MintingScreenInput(
                     }
                     if (openCamOrGallery.value) {
 
-                        AlertDialog(
-                            // Center the buttons inside the dialog
+                        SelectDialog(
+                            color = darkblue1,//Color(0xFF1E2730),
+                            content = {
 
-                            onDismissRequest = { },
-                            title = { Text(text = "Choose Image Source") },
-                            buttons = {
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Column(
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(120.dp),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                                    ,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
                                 ) {
-                                    Button(onClick = {
-                                        // Launch the camera intent
-                                        openCamOrGallery.value = false
-                                        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                        launcher.launch(intent)
-                                    }) {
+                                    Button(
+                                        contentPadding = PaddingValues(14.dp,0.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            backgroundColor = Color(0xFF3C4958),//Color(0xFF1E2730),//0xFF24303D),//0xFF3C4958),//
+                                            contentColor = Color.White
+                                        ),
+                                        enabled = true,
+                                        shape = CircleShape,
+
+                                        onClick = {
+                                            // Launch the camera intent
+                                            openCamOrGallery.value = false
+                                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                            launcher.launch(intent)
+                                        }) {
                                         Text(text="Camera", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, fontFamily = Inter)
                                     }
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Button(onClick = {
-                                        // Launch the gallery intent
-                                        openCamOrGallery.value = false
-                                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                                        launcher.launch(intent)
-                                    }) {
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Button(
+                                        contentPadding = PaddingValues(14.dp,0.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            backgroundColor = Color(0xFF3C4958),//1E2730),
+                                            contentColor = Color.White
+                                        ),
+                                        enabled = true,
+                                        shape = CircleShape,
+
+                                        onClick = {
+                                            // Launch the gallery intent
+                                            openCamOrGallery.value = false
+                                            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                                            launcher.launch(intent)
+                                        }) {
                                         Text(text="Gallery", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, fontFamily = Inter)
 
                                     }
                                 }
+                            },
+                            title = "Choose Image Source",
+                            setShowDialog = {
+                                openCamOrGallery.value = false
                             }
+
                         )
+
+
                     }
                     if (imageUri.value != null) {
-                        AsyncImage(
-                            model = imageUri.value,
-                            contentDescription = "Selected image",
-                            contentScale = ContentScale.FillHeight,
-                            modifier = Modifier
+                        Box (
+                            modifier =  Modifier
                                 .fillMaxWidth()
                                 .height(250.dp)
-                                .clickable {
-                                    openCamOrGallery.value = true
-                                }
-                        )
+                                ,
+                            contentAlignment = Alignment.Center
+                        ){
+                            AsyncImage(
+                                model = imageUri.value,
+                                contentDescription = "Selected image",
+                                contentScale = ContentScale.FillHeight,
+                                modifier =  Modifier
+                                    .fillMaxWidth()
+                                    .height(250.dp)
+                                    .clickable {
+                                        openCamOrGallery.value = true
+                                    },
+
+
+                                )
+                        }
+
                     } else {
                         ImageBox(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(180.dp)
+                                .height(250.dp)
                                 .clickable {
                                     // Get image
                                     openCamOrGallery.value = true
@@ -293,6 +373,7 @@ fun MintingScreenInput(
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
+                //Inputs
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -318,8 +399,27 @@ fun MintingScreenInput(
                     ) {
                         descriptionText = it
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
+
+
+                    Spacer(modifier = Modifier.height(46.dp))
                     if(processing.value){
+
+
+                        //Opacity Animation
+                        val transition = rememberInfiniteTransition()
+                        val fadingAnimation by transition.animateFloat(
+                            initialValue = 1.0f,
+                            targetValue = 1f,
+                            animationSpec = infiniteRepeatable(
+                                animation = keyframes {
+                                    durationMillis = 2000
+                                    1.0f at  0 with LinearEasing
+                                    0f at  1000 with LinearEasing
+                                    1.0f at  2000 with LinearEasing
+                                }
+                            )
+                        )
+
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -330,13 +430,16 @@ fun MintingScreenInput(
                                     .fillMaxWidth()
                             )
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text(text = processText.value,color= white)
+                            Text(
+                                modifier = Modifier.alpha(fadingAnimation),
+                                text = processText.value,color= white)
                         }
                     }else{
                         ethOSButton(
-                            "Mint",
-                            Icons.Default.ArrowUpward,
+                            text ="Mint",
+
                             enabled = imageUri.value != null,
+
                             onClick = {
                                 // Check if phone has internet connection
                                 if (!isNetworkAvailable(con)) {
@@ -344,11 +447,6 @@ fun MintingScreenInput(
                                     sdeg.coroutineScope.launch {
                                         sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
                                     }
-//                                    Toast.makeText(
-//                                        con,
-//                                        "No internet connection",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
                                     return@ethOSButton
                                 }
                                 // Lets mint
@@ -454,9 +552,16 @@ fun MintingScreenInput(
                 }
             }
         }
+
         //Host for Snackbar
-        ethOSSnackbarHost(delegate = sdeg, modifier = Modifier.padding(12.dp).align(alignment = Alignment.BottomStart))
+        ethOSSnackbarHost(delegate = sdeg, modifier = Modifier
+            .padding(12.dp)
+            .align(alignment = Alignment.BottomStart))
+
     }
+
+
+
 
 
 }
@@ -476,11 +581,36 @@ fun isNetworkAvailable(con: Context): Boolean {
 
 
 
-/*@ExperimentalComposeUiApi
+@ExperimentalComposeUiApi
 @Composable
-@Preview(showBackground = true, widthDp = 390, heightDp = 800)
+@Preview(showBackground = true)
 fun PreviewMintingScreen() {
     NftCreatorTheme {
-        MintingScreen()
+
+//        Column(
+//            modifier = Modifier
+////                .statusBarsPadding()
+////                .navigationBarsPadding()
+////                .imePadding()
+//                .verticalScroll(rememberScrollState())
+//                .fillMaxHeight()
+//                .background(Green)
+//        ) {
+
+
+            Column (
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                    .background(Green)
+            ){
+                MintingScreenInput(
+                initalImageUri = null
+            )
+            }
+//
+
+
+//        }
     }
-}*/
+}

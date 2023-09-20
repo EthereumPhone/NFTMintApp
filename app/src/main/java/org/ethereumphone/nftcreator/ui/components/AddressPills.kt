@@ -9,9 +9,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,6 +40,8 @@ import org.ethereumphone.nftcreator.ui.theme.gray
 fun AddressPills(
     address: String,
     chainId: Int,
+    onclick: () -> Unit,
+    icon: @Composable () -> Unit,
     sdeg:SnackbarDelegate
 ) {
 
@@ -65,49 +72,89 @@ fun AddressPills(
 
     val text = network+" " + address.take(5) + "..."
     val context = LocalContext.current
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .clip(RoundedCornerShape(50.dp))
-            .background(Color(0xFF24303D))
-            .padding(vertical = 5.dp, horizontal = 10.dp)
-            .clickable {
-                val clipboard: ClipboardManager? =
-                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-                val clip = ClipData.newPlainText("Address", address)
-                clipboard?.setPrimaryClip(clip)
 
-                // Toast copy to clipboard
-//                Toast
-//                    .makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT)
-//                    .show()
-                //Snackbar for copy to clipboard
-                sdeg.coroutineScope.launch {
-                    sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
-                }
 
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        //Address
+        Row (
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ){
+            IconButton(
+                onClick = {}
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Information",
+                    tint = Color.Transparent,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                    //.background(Color.Red)
+                )
             }
-    ) {
-        Box (
+            Box(
+                modifier = Modifier
+                    .clickable {
+                        val clipboard: ClipboardManager? =
+                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+                        val clip = ClipData.newPlainText("Address", address)
+                        clipboard?.setPrimaryClip(clip)
+
+                        sdeg.coroutineScope.launch {
+                            sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
+                        }
+                               },
+            ){
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            val clipboard: ClipboardManager? =
+                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+                            val clip = ClipData.newPlainText("Address", address)
+                            clipboard?.setPrimaryClip(clip)
+                        },
+                    text = truncateText(address),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF9FA2A5)
+                )
+            }
+            icon()
+        }
+        //Networkpill
+//        val chainName = when(chainId) {
+//            1 -> "Mainnet"
+//            5 -> "Goerli"
+//            10 -> "Optimism"
+//            137 -> "Polygon"
+//            42161 -> "Arbitrum"
+//            else -> "Mainnet"
+//        }
+        Surface (
             modifier = Modifier
-                .clip(CircleShape)
-                .background(color)
-                .size(15.dp)
-        ) {}
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(
-            text = network,
-            //fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            color = gray
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(
-            text = address.take(5) + "...",
-            fontWeight = FontWeight.Normal,
-            color = gray
-        )
+                .clip(CircleShape),
+            color = Color(0xFF24303D),
+            contentColor = Color.White
+        ) {
+            Text(
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                text = network,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White
+            )
+        }
     }
+}
+
+private fun truncateText(text: String): String {
+    if (text.length > 19) {
+        return text.substring(0, 5) + "..." + text.takeLast(3) + " "
+    }
+    return text
 }
 
 @ExperimentalComposeUiApi
@@ -117,6 +164,27 @@ fun PreviewMintingScreen() {
     val scope = rememberCoroutineScope()
     val hostState = remember { SnackbarHostState() }
     val sdeg = rememberSnackbarDelegate(hostState, scope)
-    AddressPills("0xefBABdeE59968641DC6E892e30C470c2b40157Cd", 1, sdeg = sdeg)
+    AddressPills(
+        "0xefBABdeE59968641DC6E892e30C470c2b40157Cd",
+        1,
+        sdeg = sdeg,
+        icon = {
+            IconButton(
+                onClick = {}
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Information",
+                    tint = Color(0xFF9FA2A5),
+                    modifier = Modifier
+                        .clip(CircleShape)
+                    //.background(Color.Red)
+                )
+            }
+        },
+        onclick = {
+
+        }
+    )
     //}
 }

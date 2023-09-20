@@ -1,6 +1,8 @@
 package org.ethereumphone.nftcreator.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,7 +41,14 @@ fun ImageBox(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
-            .background(darkblue2)
+            .dashedBorder(
+                4.dp,
+                Color(0xFF3C4958),
+                shape=RoundedCornerShape(24.dp),
+                on = 20.dp,
+                off = 10.dp
+            )
+
 
     ) {
         Column(
@@ -47,23 +56,25 @@ fun ImageBox(
             verticalArrangement= Arrangement.Center,
             modifier = Modifier.fillMaxSize(),
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+            Column(
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
                 Icon(
                     Icons.Outlined.Image,
-                    contentDescription = "select image",
-                    tint = white,
+                    contentDescription = "Select image",
+                    tint = Color(0xFF9FA2A5),
                     modifier = Modifier
                         .size(28.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Select",
+                    text = "Select image",
                     fontSize = 18.sp,
-                    color = white,
+                    color = Color(0xFF9FA2A5),
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = Inter
                 )
@@ -76,7 +87,7 @@ fun ImageBox(
 @Composable
 fun previewImageBox() {
     ImageBox(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight(.8f)
+        .width(300.dp)
+        .height(250.dp)
     )
 }
