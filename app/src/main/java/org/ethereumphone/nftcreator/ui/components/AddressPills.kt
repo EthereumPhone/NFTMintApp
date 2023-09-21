@@ -98,28 +98,28 @@ fun AddressPills(
             Box(
                 modifier = Modifier
                     .clickable {
-                        val clipboard: ClipboardManager? =
-                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-                        val clip = ClipData.newPlainText("Address", address)
-                        clipboard?.setPrimaryClip(clip)
+//                        val clipboard: ClipboardManager? =
+//                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+//                        val clip = ClipData.newPlainText("Address", address)
+//                        clipboard?.setPrimaryClip(clip)
 
-                        sdeg.coroutineScope.launch {
-                            sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
-                        }
+//                        sdeg.coroutineScope.launch {
+//                            sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
+//                        }
                                },
             ){
                 Text(
                     modifier = Modifier
                         .clickable {
-                            val clipboard: ClipboardManager? =
-                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-                            val clip = ClipData.newPlainText("Address", address)
-                            clipboard?.setPrimaryClip(clip)
+//                            val clipboard: ClipboardManager? =
+//                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+//                            val clip = ClipData.newPlainText("Address", address)
+//                            clipboard?.setPrimaryClip(clip)
                         },
-                    text = truncateText(address),
+                    text = address,//truncateText(address),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF9FA2A5)
+                    color = Color.White
                 )
             }
             icon()

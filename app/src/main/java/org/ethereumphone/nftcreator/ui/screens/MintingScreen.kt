@@ -210,7 +210,7 @@ fun MintingScreenInput(
                 .fillMaxWidth()
                 .background(darkblue1)
                 //.height(LocalConfiguration.current.screenHeightDp.dp)
-                .padding(32.dp, 24.dp)
+                .padding(24.dp, 24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -218,7 +218,7 @@ fun MintingScreenInput(
             ) {
 
                 AddressPills(
-                    address = "0xefBABdeE59968641DC6E892e30C470c2b40157Cd",//"walletAddress",
+                    address = "Mintapp",
                     chainId = selectedNetwork.chainId,
                     sdeg=sdeg,
                     onclick={},
@@ -237,18 +237,6 @@ fun MintingScreenInput(
                         }
                     }
                 )
-//                Spacer(modifier = Modifier.height(8.dp))
-//                Text(
-//                    text = "Mint",
-//                    fontWeight = FontWeight.Bold,
-//                    fontSize = 42.sp,
-//                    color = white,
-//                    textAlign = TextAlign.Center,
-//                    fontFamily = Inter,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(vertical = 12.dp)
-//                )
             }
 
             Column (
