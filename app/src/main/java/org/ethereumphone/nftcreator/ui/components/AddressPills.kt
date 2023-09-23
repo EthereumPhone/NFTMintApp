@@ -108,6 +108,7 @@ fun AddressPills(
 //                        }
                                },
             ){
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     modifier = Modifier
                         .clickable {

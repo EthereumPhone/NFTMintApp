@@ -71,7 +71,8 @@ fun InputField(
             placeholderColor = gray,
             errorCursorColor= Color.Red,
             unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent
+            focusedIndicatorColor = Color.Transparent,
+            cursorColor = white
         ),
         shape = RoundedCornerShape(12.dp),
         modifier = modifier,

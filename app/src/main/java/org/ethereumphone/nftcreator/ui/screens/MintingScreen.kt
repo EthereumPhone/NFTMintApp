@@ -218,7 +218,7 @@ fun MintingScreenInput(
             ) {
 
                 AddressPills(
-                    address = "Mintapp",
+                    address = "Mint App",
                     chainId = selectedNetwork.chainId,
                     sdeg=sdeg,
                     onclick={},
@@ -238,6 +238,8 @@ fun MintingScreenInput(
                     }
                 )
             }
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
