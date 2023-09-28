@@ -176,7 +176,7 @@ fun MintingScreenInput(
                 showInfoDialog.value = false
             },
             title = "Disclaimers",
-            text = "ethOS allows you to mint .jpg NFTs on Ethereum, " +
+            text = "ethOS allows you to mint jpgs on Ethereum, " +
                     "but it assumes no ownership, liability, or " +
                     "responsibility for their use."
 
