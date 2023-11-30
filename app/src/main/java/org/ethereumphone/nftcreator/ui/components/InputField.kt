@@ -66,7 +66,7 @@ fun InputField(
         },
         readOnly = readOnly,
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = darkblue2,
+            backgroundColor = Color.Transparent,
             textColor = white,
             placeholderColor = gray,
             errorCursorColor= Color.Red,

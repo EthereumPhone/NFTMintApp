@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "org.ethereumphone.nftcreator"
-        minSdk 27
+        minSdk 30
         targetSdk 32
         versionCode 100003
         versionName "1.0.3"
@@ -139,5 +139,11 @@ dependencies {
 
     //WalletSDK (ethOS baby)
     implementation 'com.github.EthereumPhone:WalletSDK:0.0.8'
+
+
+    //ethOS
+
+    //Haptics
+    //implementation 'com.github.EthereumPhone:ethOS-Component-Library:haptics-c5beada698-1'
 
 }

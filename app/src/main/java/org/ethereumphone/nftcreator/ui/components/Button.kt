@@ -163,7 +163,7 @@ fun ethOSButton(
         colors = ButtonDefaults.buttonColors(
             disabledBackgroundColor = Color(0xFF9FA2A5),
             disabledContentColor = Color(0xFFDCDCDC) ,//if(primary) (if(isPressed) positive else warning ) else blue,
-            contentColor = Color(0xFF24303D),
+            contentColor = Color.Black,
             backgroundColor = Color.White
         )
     ) {
@@ -174,7 +174,7 @@ fun ethOSButton(
             modifier = Modifier.fillMaxWidth()
         ){
 
-            Text(text=text, color= if(enabled) Color(0xFF24303D) else Color(0xFFDCDCDC), fontWeight = FontWeight.SemiBold, fontSize = 18.sp, fontFamily = Inter)
+            Text(text=text, color= if(enabled) Color.Black else Color(0xFFDCDCDC), fontWeight = FontWeight.SemiBold, fontSize = 18.sp, fontFamily = Inter)
 
         }
 
@@ -186,6 +186,6 @@ fun ethOSButton(
 @Preview
 fun PreviewButton() {
     NftCreatorTheme {
-        //ethOSButton("Mint",Icons.Default.ArrowDownward)
+        ethOSButton(text ="Mint", enabled = true)
     }
 }

@@ -1,5 +1,6 @@
 package org.ethereumphone.nftcreator.ui.screens
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
@@ -8,6 +9,8 @@ import android.graphics.Bitmap
 
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -99,6 +102,7 @@ fun MintingScreen(
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MintingScreenInput(
     modifier: Modifier = Modifier,
@@ -109,6 +113,7 @@ fun MintingScreenInput(
     val scope = rememberCoroutineScope()
     val hostState = remember { SnackbarHostState() }
     val sdeg = rememberSnackbarDelegate(hostState,scope)
+
 
     val options = listOf("Mainnet",
         //"Optimism",
@@ -208,47 +213,29 @@ fun MintingScreenInput(
             modifier = modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
-                .background(darkblue1)
+                .background(Color.Black)
                 //.height(LocalConfiguration.current.screenHeightDp.dp)
                 .padding(24.dp, 24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(top=4.dp)
+                //modifier = Modifier.padding(top=4.dp)
             ) {
 
-                AddressPills(
-                    address = "Mint App",
-                    chainId = selectedNetwork.chainId,
-                    sdeg=sdeg,
-                    onclick={},
-                    icon={
-                        IconButton(
-                            onClick = {showInfoDialog.value = true}
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = "Information",
-                                tint = Color(0xFF9FA2A5),
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                //.background(Color.Red)
-                            )
-                        }
-                    }
-                )
+                TopHeader(title = "Mint", trailIcon = true, onClick={
+                    showInfoDialog.value = true
+                })
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+
 
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxHeight()
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxHeight().padding(vertical = 18.dp)
             ) {
                 //Image
                 Box (
-
                     contentAlignment= Alignment.Center,
                     modifier = Modifier.clip(RoundedCornerShape(12.dp))
                 ){
@@ -338,16 +325,19 @@ fun MintingScreenInput(
                             AsyncImage(
                                 model = imageUri.value,
                                 contentDescription = "Selected image",
-                                contentScale = ContentScale.FillHeight,
-                                modifier =  Modifier
-                                    .fillMaxWidth()
-                                    .height(250.dp)
+                                contentScale = ContentScale.Crop,
+
+                                modifier =  Modifier.fillMaxSize()
                                     .clickable {
                                         openCamOrGallery.value = true
                                     },
 
 
                                 )
+                        }
+                        //Image selected
+                        sdeg.coroutineScope.launch {
+                            sdeg.showSnackbar(SnackbarState.SUCCESS,"Image selected")
                         }
 
                     } else {
@@ -367,12 +357,14 @@ fun MintingScreenInput(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.background(Color.Red)
+
                 ) {
 
                     //Inputs & Button
                     InputField(
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = "Title",
+                        placeholder = "Enter Title",
                         value = "",
                     ) {
                         titleText = it
@@ -381,172 +373,194 @@ fun MintingScreenInput(
                     InputField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(.4f),
+                            .fillMaxHeight(0.6f),
                         singeLine = false,
-                        maxLines = 5,
-                        placeholder = "Description",
+
+                        placeholder = "Enter Description",
                         value = ""
                     ) {
                         descriptionText = it
                     }
 
 
-                    Spacer(modifier = Modifier.height(46.dp))
-                    if(processing.value){
 
 
-                        //Opacity Animation
-                        val transition = rememberInfiniteTransition()
-                        val fadingAnimation by transition.animateFloat(
-                            initialValue = 1.0f,
-                            targetValue = 1f,
-                            animationSpec = infiniteRepeatable(
-                                animation = keyframes {
-                                    durationMillis = 2000
-                                    1.0f at  0 with LinearEasing
-                                    0f at  1000 with LinearEasing
-                                    1.0f at  2000 with LinearEasing
-                                }
-                            )
+
+                }
+
+                //Haptics
+                var timings = longArrayOf(
+                    25,25,25,25,25,200,25,25,25,25,25,25,25,25
+                )
+                var amplitudes = intArrayOf(
+                    0,20,40,60,80,100,80,60,50,40,30,20,10,0
+                )
+                val repeatIndex = -1 // Do not repeat.
+
+                var vibrator =  LocalContext.current.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+                if(processing.value){
+
+
+                    //Opacity Animation
+                    val transition = rememberInfiniteTransition()
+                    val fadingAnimation by transition.animateFloat(
+                        initialValue = 1.0f,
+                        targetValue = 1f,
+                        animationSpec = infiniteRepeatable(
+                            animation = keyframes {
+                                durationMillis = 2000
+                                1.0f at  0 with LinearEasing
+                                0f at  1000 with LinearEasing
+                                1.0f at  2000 with LinearEasing
+                            }
                         )
+                    )
 
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            //Inputs & Button
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .fillMaxWidth()
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                modifier = Modifier.alpha(fadingAnimation),
-                                text = processText.value,color= white)
-                        }
-                    }else{
-                        ethOSButton(
-                            text ="Mint",
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        //Inputs & Button
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            modifier = Modifier.alpha(fadingAnimation),
+                            text = processText.value,color= white)
+                    }
+                }
+                else{
 
-                            enabled = imageUri.value != null,
+                    ethOSButton(
+                        text ="Mint",
 
-                            onClick = {
-                                // Check if phone has internet connection
-                                if (!isNetworkAvailable(con)) {
-                                    //launches snackbar component with couroutine
-                                    sdeg.coroutineScope.launch {
-                                        sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
-                                    }
-                                    return@ethOSButton
+                        enabled = imageUri.value != null,
+
+                        onClick = {
+                            vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, repeatIndex))
+
+                            // Check if phone has internet connection
+                            if (!isNetworkAvailable(con)) {
+                                //launches snackbar component with couroutine
+                                sdeg.coroutineScope.launch {
+                                    sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
                                 }
-                                // Lets mint
-                                // Upload the image on ipfs
-                                processing.value = true
-                                val runnable = Runnable {
-                                    val wallet = WalletSDK(con)
-                                    val ipfs = IPFSApi()
-                                    val filename = "${System.currentTimeMillis()}.jpg"
-                                    val file = File(con.cacheDir, filename)
-                                    val fos = FileOutputStream(file)
-                                    val imageArray =
-                                        con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
-                                    try {
-                                        fos.write(imageArray);
-                                    } finally {
-                                        fos.close();
-                                    }
-                                    val imageIPFSHash = ipfs.uploadFile(file)
-                                    if (!selectedNetwork.equals(null)) {
-                                        // Mint on evm just with different contracts
-                                        // First the tokenJSON to IPFS
-                                        var gson = Gson()
-                                        val jsonString = gson.toJson(
-                                            TokenData(
-                                                name = titleText,
-                                                description = descriptionText,
-                                                image = "ipfs://$imageIPFSHash",
-                                                attributes = listOf(
-                                                    MinterAttribute(
-                                                        trait_type = "Minter",
-                                                        value = wallet.getAddress()
-                                                    )
+                                return@ethOSButton
+                            }
+                            // Lets mint
+                            // Upload the image on ipfs
+                            processing.value = true
+                            val runnable = Runnable {
+                                val wallet = WalletSDK(con)
+                                val ipfs = IPFSApi()
+                                val filename = "${System.currentTimeMillis()}.jpg"
+                                val file = File(con.cacheDir, filename)
+                                val fos = FileOutputStream(file)
+                                val imageArray =
+                                    con.contentResolver.openInputStream(imageUri.value!!)?.readBytes()!!
+                                try {
+                                    fos.write(imageArray);
+                                } finally {
+                                    fos.close();
+                                }
+                                val imageIPFSHash = ipfs.uploadFile(file)
+                                if (!selectedNetwork.equals(null)) {
+                                    // Mint on evm just with different contracts
+                                    // First the tokenJSON to IPFS
+                                    var gson = Gson()
+                                    val jsonString = gson.toJson(
+                                        TokenData(
+                                            name = titleText,
+                                            description = descriptionText,
+                                            image = "ipfs://$imageIPFSHash",
+                                            attributes = listOf(
+                                                MinterAttribute(
+                                                    trait_type = "Minter",
+                                                    value = wallet.getAddress()
                                                 )
                                             )
                                         )
-                                        val jsonFileName = "${System.currentTimeMillis()}.json"
-                                        val jsonFile = File(con.cacheDir, jsonFileName)
-                                        val fw = FileWriter(jsonFile)
-                                        try {
-                                            fw.write(jsonString)
-                                        } finally {
-                                            fw.close()
-                                        }
+                                    )
+                                    val jsonFileName = "${System.currentTimeMillis()}.json"
+                                    val jsonFile = File(con.cacheDir, jsonFileName)
+                                    val fw = FileWriter(jsonFile)
+                                    try {
+                                        fw.write(jsonString)
+                                    } finally {
+                                        fw.close()
+                                    }
 
-                                        val jsonIPFSHash = ipfs.uploadFile(jsonFile)
+                                    val jsonIPFSHash = ipfs.uploadFile(jsonFile)
 
-                                        val contractsIntercation = ContractInteraction(
-                                            con = con,
-                                            selectedNetwork = selectedNetwork
-                                        )
-                                        contractsIntercation.load()
-                                        processText.value = "Minting NFT..."
-                                        contractsIntercation.mintImage(
-                                            address = wallet.getAddress(),
-                                            tokenURI = "ipfs://$jsonIPFSHash"
-                                        ).whenComplete { s, throwable ->
-                                            processing.value = false
-                                            if (s != WalletSDK.DECLINE) {
-                                                imageUri.value = null
-                                                val url = "${selectedNetwork.chainExplorer}/tx/$s"
-                                                con.copyToClipboard(url)
-                                                val uri = Uri.parse(url)
-                                                val intent = Intent(Intent.ACTION_VIEW, uri)
-                                                Thread.sleep(1000)
-                                                con.startActivity(intent)
-                                            }
-                                        }
-
-                                    } else if (selectedNetwork.equals("IMX")) {
-                                        // Mint on IMX
-                                        val signer = ImxSigner(context = con)
-                                        var starkSinger = ImxStarkSinger(signer, con.getSharedPreferences("STARK", Context.MODE_PRIVATE))
-
-                                        mintingWorkFlow(
-                                            signer = signer,
-                                            starkSinger = starkSinger,
-                                            ipfsHash = imageIPFSHash, //"QmSn5Y8cAxokNbJdqE91BDF7zQpNHw9VmNfmijzC3gQsTV",
-                                            blueprint = ""
-                                        ).whenComplete { result, _ ->
-                                            Log.d("test", result.toString())
-                                            val jsonObject = JSONObject(result.toString())
-                                            val dataObject: JSONObject =
-                                                jsonObject.getJSONArray("results").get(0) as JSONObject
-                                            val url =
-                                                "https://market.sandbox.immutable.com/inventory/${dataObject.get("contract_address")}/${
-                                                    dataObject.get("token_id")
-                                                }"
-                                            con.copyToClipboard(url)
-                                            Thread.sleep(1000)
-                                            processing.value = false
+                                    val contractsIntercation = ContractInteraction(
+                                        con = con,
+                                        selectedNetwork = selectedNetwork
+                                    )
+                                    contractsIntercation.load()
+                                    processText.value = "Minting NFT..."
+                                    contractsIntercation.mintImage(
+                                        address = wallet.getAddress(),
+                                        tokenURI = "ipfs://$jsonIPFSHash"
+                                    ).whenComplete { s, throwable ->
+                                        processing.value = false
+                                        if (s != WalletSDK.DECLINE) {
                                             imageUri.value = null
+                                            val url = "${selectedNetwork.chainExplorer}/tx/$s"
+                                            con.copyToClipboard(url)
                                             val uri = Uri.parse(url)
                                             val intent = Intent(Intent.ACTION_VIEW, uri)
+                                            Thread.sleep(1000)
                                             con.startActivity(intent)
+
+//                                                sdeg.coroutineScope.launch {
+//                                                    sdeg.showSnackbar(SnackbarState.SUCCESS,"Minting Complete")
+//                                                }
                                         }
                                     }
+
+                                } else if (selectedNetwork.equals("IMX")) {
+                                    // Mint on IMX
+                                    val signer = ImxSigner(context = con)
+                                    var starkSinger = ImxStarkSinger(signer, con.getSharedPreferences("STARK", Context.MODE_PRIVATE))
+
+                                    mintingWorkFlow(
+                                        signer = signer,
+                                        starkSinger = starkSinger,
+                                        ipfsHash = imageIPFSHash, //"QmSn5Y8cAxokNbJdqE91BDF7zQpNHw9VmNfmijzC3gQsTV",
+                                        blueprint = ""
+                                    ).whenComplete { result, _ ->
+                                        Log.d("test", result.toString())
+                                        val jsonObject = JSONObject(result.toString())
+                                        val dataObject: JSONObject =
+                                            jsonObject.getJSONArray("results").get(0) as JSONObject
+                                        val url =
+                                            "https://market.sandbox.immutable.com/inventory/${dataObject.get("contract_address")}/${
+                                                dataObject.get("token_id")
+                                            }"
+                                        con.copyToClipboard(url)
+                                        Thread.sleep(1000)
+                                        processing.value = false
+                                        imageUri.value = null
+                                        val uri = Uri.parse(url)
+                                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                                        con.startActivity(intent)
+                                    }
                                 }
-                                Thread(runnable).start()
                             }
-                        )
-                    }
+                            Thread(runnable).start()
+                        }
+                    )
                 }
             }
         }
 
         //Host for Snackbar
-        ethOSSnackbarHost(delegate = sdeg, modifier = Modifier
-            .padding(12.dp)
-            .align(alignment = Alignment.BottomStart))
+
+        ethOSSnackbarHost(delegate = sdeg, modifier = Modifier.padding(12.dp).align(alignment = Alignment.BottomStart))
+
 
     }
 

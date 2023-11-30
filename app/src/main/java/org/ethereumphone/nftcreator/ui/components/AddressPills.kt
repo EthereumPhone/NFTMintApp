@@ -137,7 +137,7 @@ fun AddressPills(
         Surface (
             modifier = Modifier
                 .clip(CircleShape),
-            color = Color(0xFF24303D),
+            color = Color(0xFF262626),
             contentColor = Color.White
         ) {
             Text(
@@ -149,6 +149,8 @@ fun AddressPills(
             )
         }
     }
+
+
 }
 
 private fun truncateText(text: String): String {
@@ -166,7 +168,7 @@ fun PreviewMintingScreen() {
     val hostState = remember { SnackbarHostState() }
     val sdeg = rememberSnackbarDelegate(hostState, scope)
     AddressPills(
-        "0xefBABdeE59968641DC6E892e30C470c2b40157Cd",
+        "Mintapp",
         1,
         sdeg = sdeg,
         icon = {

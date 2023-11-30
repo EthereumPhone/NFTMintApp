@@ -43,7 +43,7 @@ fun ImageBox(
             .clip(RoundedCornerShape(24.dp))
             .dashedBorder(
                 4.dp,
-                Color(0xFF3C4958),
+                Color(0xFF9FA2A5),
                 shape=RoundedCornerShape(24.dp),
                 on = 20.dp,
                 off = 10.dp
