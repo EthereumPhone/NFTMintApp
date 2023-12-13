@@ -357,7 +357,7 @@ fun MintingScreenInput(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.background(Color.Red)
+
 
                 ) {
 

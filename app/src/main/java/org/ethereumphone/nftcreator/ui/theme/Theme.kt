@@ -1,5 +1,6 @@
 package org.ethereumphone.nftcreator.ui.theme
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
@@ -21,9 +22,10 @@ private val DarkColorPalette = darkColors(
     background = black900
 )
 
+@SuppressLint("ConflictingOnColor")
 private val darkColors = darkColors(
     primary = darkblue1,
-    onPrimary = white,
+    onPrimary = Color.White,
     secondary = darkblue2,
     onSecondary = white,
     error = md_theme_dark_error,
@@ -48,9 +50,9 @@ fun NftCreatorTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color(0xFF1E2730).toArgb() // change color status bar here
-            window.navigationBarColor = Color(0xFF1E2730).toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            window.statusBarColor = Color.Black.toArgb() // change color status bar here
+            window.navigationBarColor = Color.Black.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
 
