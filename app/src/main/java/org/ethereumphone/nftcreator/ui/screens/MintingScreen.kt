@@ -188,19 +188,19 @@ fun MintingScreenInput(
         )
     }
 
-//    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
-//    val walletAddress = walletSDK.getAddress()//get wallet address
-//    val context = LocalContext.current
-//    val runnable = Runnable {
-//        synchronized(context) {
-//            val currChainid = walletSDK.getChainId()
-//            if (currChainid != 1) {
-//                println("Not on mainnet, changing chain")
-//                walletSDK.changeChainid(1).get()
-//            }
-//        }
-//    }
-//    Thread(runnable).start()
+    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
+    val walletAddress = walletSDK.getAddress()//get wallet address
+    val context = LocalContext.current
+    val runnable = Runnable {
+        synchronized(context) {
+            val currChainid = walletSDK.getChainId()
+            if (currChainid != 1) {
+                println("Not on mainnet, changing chain")
+                walletSDK.changeChainid(1).get()
+            }
+        }
+    }
+    Thread(runnable).start()
 
 
     Box (
