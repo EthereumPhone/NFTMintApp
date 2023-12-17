@@ -80,7 +80,6 @@ import java.io.FileWriter
 
 // https://www.youtube.com/watch?v=8waTylS0wUc
 
-@ExperimentalComposeUiApi
 @Composable
 @Destination(start = true)
 fun MintingScreen(
@@ -92,7 +91,6 @@ fun MintingScreen(
                 .statusBarsPadding()
                 .navigationBarsPadding()
                 .imePadding()
-                .verticalScroll(rememberScrollState())
                 .fillMaxSize()
         ) {
             MintingScreenInput(
@@ -318,8 +316,7 @@ fun MintingScreenInput(
                         Box (
                             modifier =  Modifier
                                 .fillMaxWidth()
-                                .height(250.dp)
-                                ,
+                                .height(250.dp),
                             contentAlignment = Alignment.Center
                         ){
                             AsyncImage(
@@ -334,10 +331,6 @@ fun MintingScreenInput(
 
 
                                 )
-                        }
-                        //Image selected
-                        sdeg.coroutineScope.launch {
-                            sdeg.showSnackbar(SnackbarState.SUCCESS,"Image selected")
                         }
 
                     } else {
@@ -585,36 +578,120 @@ fun isNetworkAvailable(con: Context): Boolean {
 
 
 
-@ExperimentalComposeUiApi
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-@Preview(showBackground = true)
+@Preview
 fun PreviewMintingScreen() {
-    NftCreatorTheme {
-
-//        Column(
-//            modifier = Modifier
-////                .statusBarsPadding()
-////                .navigationBarsPadding()
-////                .imePadding()
-//                .verticalScroll(rememberScrollState())
-//                .fillMaxHeight()
-//                .background(Green)
-//        ) {
-
-
-            Column (
+    Scaffold {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Box (
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-                    .background(Green)
+                    .fillMaxSize()
+
             ){
-                MintingScreenInput(
-                initalImageUri = null
-            )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .background(Color.Black)
+                        //.height(LocalConfiguration.current.screenHeightDp.dp)
+                        .padding(24.dp, 24.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        //modifier = Modifier.padding(top=4.dp)
+                    ) {
+
+                        TopHeader(title = "Mint", trailIcon = true, onClick={
+                        })
+                    }
+
+
+
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxHeight().padding(vertical = 18.dp)
+                    ) {
+                        //Image
+                        Box (
+                            contentAlignment= Alignment.Center,
+                            modifier = Modifier.clip(RoundedCornerShape(12.dp))
+                        ){
+
+
+                            ImageBox(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(250.dp)
+                                    .clickable {
+                                        // Get image
+                                    }
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        //Inputs
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+
+
+                            ) {
+
+                            //Inputs & Button
+                            InputField(
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = "Enter Title",
+                                value = "",
+                            ) {
+                            }
+                            Spacer(modifier = Modifier.height(20.dp))
+                            InputField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(0.6f),
+                                singeLine = false,
+
+                                placeholder = "Enter Description",
+                                value = ""
+                            ) {
+
+                            }
+
+
+
+
+
+                        }
+
+                        ethOSButton(
+                            text ="Mint",
+
+                            enabled = true,
+
+                            onClick = {
+                            }
+                        )
+
+
+
+
+                    }
+                }
+
+
+                //Host for Snackbar
+
+
+
             }
-//
 
-
-//        }
+        }
     }
+
 }
