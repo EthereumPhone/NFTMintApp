@@ -22,7 +22,7 @@
         android:theme="@style/Theme.NFTCreator">
         <activity
             android:name=".CreatorActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -32,6 +32,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -255,59 +257,25 @@ fun MintingScreenInput(
                     if (openCamOrGallery.value) {
 
                         SelectDialog(
-                            color = darkblue1,//Color(0xFF1E2730),
-                            content = {
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                    ,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Button(
-                                        contentPadding = PaddingValues(14.dp,0.dp),
-                                        colors = ButtonDefaults.buttonColors(
-                                            backgroundColor = Color(0xFF3C4958),//Color(0xFF1E2730),//0xFF24303D),//0xFF3C4958),//
-                                            contentColor = Color.White
-                                        ),
-                                        enabled = true,
-                                        shape = CircleShape,
-
-                                        onClick = {
-                                            // Launch the camera intent
-                                            openCamOrGallery.value = false
-                                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                            launcher.launch(intent)
-                                        }) {
-                                        Text(text="Camera", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, fontFamily = Inter)
-                                    }
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Button(
-                                        contentPadding = PaddingValues(14.dp,0.dp),
-                                        colors = ButtonDefaults.buttonColors(
-                                            backgroundColor = Color(0xFF3C4958),//1E2730),
-                                            contentColor = Color.White
-                                        ),
-                                        enabled = true,
-                                        shape = CircleShape,
-
-                                        onClick = {
-                                            // Launch the gallery intent
-                                            openCamOrGallery.value = false
-                                            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                                            launcher.launch(intent)
-                                        }) {
-                                        Text(text="Gallery", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, fontFamily = Inter)
-
-                                    }
-                                }
-                            },
-                            title = "Choose Image Source",
-                            setShowDialog = {
+                            title = "Select",
+                            color = Color.Black,
+                            setShowDialog = {openCamOrGallery.value = false},
+                            firstOptionTitle = "Camera",
+                            firstOptionIcon = Icons.Outlined.CameraAlt,
+                            onClickFirstOption={
+                                // Launch the camera intent
                                 openCamOrGallery.value = false
-                            }
-
+                                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                launcher.launch(intent)
+                            },
+                            secondOptionTitle = "Gallery",
+                            secondOptionIcon= Icons.Outlined.Image,
+                            onClickSecondOption={
+                                // Launch the gallery intent
+                                openCamOrGallery.value = false
+                                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                                launcher.launch(intent)
+                            },
                         )
 
 

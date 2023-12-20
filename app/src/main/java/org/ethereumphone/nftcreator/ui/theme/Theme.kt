@@ -24,15 +24,15 @@ private val DarkColorPalette = darkColors(
 
 @SuppressLint("ConflictingOnColor")
 private val darkColors = darkColors(
-    primary = darkblue1,
+    primary = Color.Black,
     onPrimary = Color.White,
-    secondary = darkblue2,
+    secondary = Color(0xFF262626),
     onSecondary = white,
     error = md_theme_dark_error,
     onError = md_theme_dark_onError,
-    background = md_theme_dark_background,
-    onBackground = darkblue1,
-    surface = darkblue2,
+    background = Color.Black,
+    onBackground = Color.White,
+    surface = Color(0xFF262626),
     onSurface = white,
 )
 
