@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +36,8 @@ fun InputField(
     readOnly: Boolean = false,
     singeLine: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
+    size: Int = 20,
+
     //shape: Shape = RoundedCornerShape(12.dp),
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -56,11 +59,16 @@ fun InputField(
                 onChange(it)
             }
         },
+        textStyle = TextStyle(
+            fontFamily = Inter,
+            fontSize = size.sp,
+            fontWeight = FontWeight.SemiBold
+        ),
         placeholder = {
             Text(
                 text = placeholder,
                 fontFamily = Inter,
-                fontSize = 20.sp,
+                fontSize = size.sp,
                 fontWeight = FontWeight.SemiBold
             )
         },

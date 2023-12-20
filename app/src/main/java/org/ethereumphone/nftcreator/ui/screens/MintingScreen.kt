@@ -186,19 +186,19 @@ fun MintingScreenInput(
         )
     }
 
-    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
-    val walletAddress = walletSDK.getAddress()//get wallet address
-    val context = LocalContext.current
-    val runnable = Runnable {
-        synchronized(context) {
-            val currChainid = walletSDK.getChainId()
-            if (currChainid != 1) {
-                println("Not on mainnet, changing chain")
-                walletSDK.changeChainid(1).get()
-            }
-        }
-    }
-    Thread(runnable).start()
+//    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
+//    val walletAddress = walletSDK.getAddress()//get wallet address
+//    val context = LocalContext.current
+//    val runnable = Runnable {
+//        synchronized(context) {
+//            val currChainid = walletSDK.getChainId()
+//            if (currChainid != 1) {
+//                println("Not on mainnet, changing chain")
+//                walletSDK.changeChainid(1).get()
+//            }
+//        }
+//    }
+//    Thread(runnable).start()
 
 
     Box (
@@ -358,6 +358,9 @@ fun MintingScreenInput(
                     InputField(
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = "Enter Title",
+                        maxLines = 2,
+                        singeLine = false,
+                        size = 32,
                         value = "",
                     ) {
                         titleText = it
@@ -582,6 +585,7 @@ fun isNetworkAvailable(con: Context): Boolean {
 @Composable
 @Preview
 fun PreviewMintingScreen() {
+    /*
     Scaffold {
         Column(
             modifier = Modifier
@@ -693,5 +697,6 @@ fun PreviewMintingScreen() {
 
         }
     }
-
+*/
+    MintingScreenInput(initalImageUri=null)
 }
