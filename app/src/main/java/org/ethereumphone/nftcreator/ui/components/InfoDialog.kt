@@ -31,82 +31,82 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
-@Composable
-fun InfoDialog(
-    title: String,
-    text: String,
-    setShowDialog: () -> Unit,
-){
-    Dialog(onDismissRequest = { setShowDialog() }) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = Color(0xFF1E2730),
-            contentColor = Color.White,
-            elevation = 4.dp
-        ) {
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    modifier = Modifier.padding(28.dp),
+//@Composable
+//fun InfoDialog(
+//    title: String,
+//    text: String,
+//    setShowDialog: () -> Unit,
+//){
+//    Dialog(onDismissRequest = { setShowDialog() }) {
+//        Surface(
+//            shape = RoundedCornerShape(16.dp),
+//            color = Color(0xFF1E2730),
+//            contentColor = Color.White,
+//            elevation = 4.dp
+//        ) {
+//            Box(
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Column(
+//                    modifier = Modifier.padding(28.dp),
+//
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//
+//                ) {
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween,
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Rounded.Close,
+//                            contentDescription = "",
+//                            tint = Color.Transparent,//(0xFF24303D),
+//                            modifier = Modifier
+//                                .width(30.dp)
+//                                .height(30.dp)
+//
+//                        )
+//                        Text(
+//                            text = title,
+//                            style = TextStyle(
+//                                fontSize = 24.sp,
+//                                fontFamily = FontFamily.Default,
+//                                fontWeight = FontWeight.SemiBold
+//                            )
+//                        )
+//                        Icon(
+//                            imageVector = Icons.Rounded.Close,
+//                            contentDescription = "Close",
+//                            tint = Color.Transparent,//(0xFF24303D),//Color.White,
+//                            modifier = Modifier
+//                                .width(30.dp)
+//                                .height(30.dp)
+//                                .clickable { setShowDialog() }
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.height(12.dp))
+//
+//                    Text(
+//                        text = text,
+//                        fontSize = 16.sp,
+//                        color = Color(0xFF9FA2A5),
+//                        textAlign = TextAlign.Center,
+//                        fontWeight = FontWeight.Normal,
+//                    )
+//
+//                }
+//            }
+//        }
+//    }
+//}
 
-                    horizontalAlignment = Alignment.CenterHorizontally
-
-                ) {
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = "",
-                            tint = Color.Transparent,//(0xFF24303D),
-                            modifier = Modifier
-                                .width(30.dp)
-                                .height(30.dp)
-
-                        )
-                        Text(
-                            text = title,
-                            style = TextStyle(
-                                fontSize = 24.sp,
-                                fontFamily = FontFamily.Default,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
-                        Icon(
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = "Close",
-                            tint = Color.Transparent,//(0xFF24303D),//Color.White,
-                            modifier = Modifier
-                                .width(30.dp)
-                                .height(30.dp)
-                                .clickable { setShowDialog() }
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text(
-                        text = text,
-                        fontSize = 16.sp,
-                        color = Color(0xFF9FA2A5),
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Normal,
-                    )
-
-                }
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewInfoDialog() {
-    InfoDialog(
-        "Title",
-        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
-        {})
-}
+//@Preview
+//@Composable
+//fun PreviewInfoDialog() {
+//    InfoDialog(
+//        "Title",
+//        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+//        {})
+//}

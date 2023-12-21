@@ -73,6 +73,14 @@ import org.ethereumphone.nftcreator.ui.theme.*
 import org.ethereumphone.nftcreator.utils.*
 import org.ethereumphone.nftcreator.utils.mintingWorkFlow
 import org.ethereumphone.walletsdk.WalletSDK
+import org.ethosmobile.components.library.core.ethOSButton
+import org.ethosmobile.components.library.core.ethOSHeader
+import org.ethosmobile.components.library.core.ethOSInfoDialog
+import org.ethosmobile.components.library.core.ethOSSelectDialog
+import org.ethosmobile.components.library.core.ethOSTextField
+import org.ethosmobile.components.library.mint.ethOSImageBox
+import org.ethosmobile.components.library.mint.ethOSInputField
+import org.ethosmobile.components.library.theme.Colors
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -82,6 +90,7 @@ import java.io.FileWriter
 
 // https://www.youtube.com/watch?v=8waTylS0wUc
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 @Destination(start = true)
 fun MintingScreen(
@@ -160,8 +169,12 @@ fun MintingScreenInput(
     var selectedNetwork = mainnetNetwork
     val imageUri = remember { mutableStateOf<Uri?>(initalImageUri) }
     val con = LocalContext.current
-    var titleText = ""
-    var descriptionText = ""
+    var titleText by remember {
+        mutableStateOf("")
+    }
+    var descriptionText by remember {
+        mutableStateOf("")
+    }
     val processing = remember { mutableStateOf(false) }
     val processText = remember { mutableStateOf("Uploading image...") }
     val openCamOrGallery = remember { mutableStateOf(false) }
@@ -176,7 +189,7 @@ fun MintingScreenInput(
 
     val showInfoDialog =  remember { mutableStateOf(false) }
     if(showInfoDialog.value){
-        InfoDialog(
+        ethOSInfoDialog(
             setShowDialog = {
                 showInfoDialog.value = false
             },
@@ -188,52 +201,55 @@ fun MintingScreenInput(
         )
     }
 
-    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
-    val walletAddress = walletSDK.getAddress()//get wallet address
-    val context = LocalContext.current
-    val runnable = Runnable {
-        synchronized(context) {
-            val currChainid = walletSDK.getChainId()
-            if (currChainid != 1) {
-                println("Not on mainnet, changing chain")
-                walletSDK.changeChainid(1).get()
-            }
-        }
-    }
-    Thread(runnable).start()
+//    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
+//    val walletAddress = walletSDK.getAddress()//get wallet address
+//    val context = LocalContext.current
+//    val runnable = Runnable {
+//        synchronized(context) {
+//            val currChainid = walletSDK.getChainId()
+//            if (currChainid != 1) {
+//                println("Not on mainnet, changing chain")
+//                walletSDK.changeChainid(1).get()
+//            }
+//        }
+//    }
+//    Thread(runnable).start()
 
 
-    Box (
+    Column (
         modifier = modifier
             .fillMaxSize()
+            .background(Colors.BLACK),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
     ){
+        ethOSHeader(title = "Mint", isTrailContent = true, trailContent = {
+            IconButton(
+                onClick = {
+                    showInfoDialog.value = true
+                },
+                modifier  = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Go back",
+                    tint =  Colors.GRAY,
+                    modifier  = Modifier.size(32.dp)
+                )
+            }
+        })
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
-                .background(Color.Black)
+                .background(Colors.BLACK)
                 //.height(LocalConfiguration.current.screenHeightDp.dp)
                 .padding(24.dp, 24.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                //modifier = Modifier.padding(top=4.dp)
-            ) {
 
-                TopHeader(title = "Mint", trailIcon = true, onClick={
-                    showInfoDialog.value = true
-                })
-            }
-
-
-
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxHeight().padding(vertical = 18.dp)
-            ) {
                 //Image
                 Box (
                     contentAlignment= Alignment.Center,
@@ -256,9 +272,9 @@ fun MintingScreenInput(
                     }
                     if (openCamOrGallery.value) {
 
-                        SelectDialog(
+                        ethOSSelectDialog(
                             title = "Select",
-                            color = Color.Black,
+                            color = Colors.BLACK,
                             setShowDialog = {openCamOrGallery.value = false},
                             firstOptionTitle = "Camera",
                             firstOptionIcon = Icons.Outlined.CameraAlt,
@@ -282,7 +298,7 @@ fun MintingScreenInput(
                     }
                     if (imageUri.value != null) {
                         Box (
-                            modifier =  Modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .height(250.dp),
                             contentAlignment = Alignment.Center
@@ -292,7 +308,8 @@ fun MintingScreenInput(
                                 contentDescription = "Selected image",
                                 contentScale = ContentScale.Crop,
 
-                                modifier =  Modifier.fillMaxSize()
+                                modifier = Modifier
+                                    .fillMaxSize()
                                     .clickable {
                                         openCamOrGallery.value = true
                                     },
@@ -302,14 +319,12 @@ fun MintingScreenInput(
                         }
 
                     } else {
-                        ImageBox(
+                        ethOSImageBox (
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(250.dp)
-                                .clickable {
-                                    // Get image
-                                    openCamOrGallery.value = true
-                                }
+                                .height(250.dp),
+                            onClick = {// Get image
+                                openCamOrGallery.value = true}
                         )
                     }
                 }
@@ -323,7 +338,7 @@ fun MintingScreenInput(
                 ) {
 
                     //Inputs & Button
-                    InputField(
+                    ethOSInputField(
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = "Enter Title",
                         maxLines = 2,
@@ -334,14 +349,14 @@ fun MintingScreenInput(
                         titleText = it
                     }
                     Spacer(modifier = Modifier.height(20.dp))
-                    InputField(
+                    ethOSInputField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.6f),
                         singeLine = false,
 
                         placeholder = "Enter Description",
-                        value = ""
+                        value = descriptionText
                     ) {
                         descriptionText = it
                     }
@@ -352,16 +367,6 @@ fun MintingScreenInput(
 
                 }
 
-                //Haptics
-                var timings = longArrayOf(
-                    25,25,25,25,25,200,25,25,25,25,25,25,25,25
-                )
-                var amplitudes = intArrayOf(
-                    0,20,40,60,80,100,80,60,50,40,30,20,10,0
-                )
-                val repeatIndex = -1 // Do not repeat.
-
-                var vibrator =  LocalContext.current.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
                 if(processing.value){
 
@@ -397,6 +402,17 @@ fun MintingScreenInput(
                     }
                 }
                 else{
+
+                    //Haptics
+                    var timings = longArrayOf(
+                        25,25,25,25,25,200,25,25,25,25,25,25,25,25
+                    )
+                    var amplitudes = intArrayOf(
+                            0,20,40,60,80,100,80,60,50,40,30,20,10,0
+                    )
+                    val repeatIndex = -1 // Do not repeat.
+
+                    var vibrator =  LocalContext.current.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
                     ethOSButton(
                         text ="Mint",
@@ -518,12 +534,12 @@ fun MintingScreenInput(
                         }
                     )
                 }
-            }
+
         }
 
         //Host for Snackbar
 
-        ethOSSnackbarHost(delegate = sdeg, modifier = Modifier.padding(12.dp).align(alignment = Alignment.BottomStart))
+        ethOSSnackbarHost(delegate = sdeg, modifier = Modifier.padding(12.dp))
 
 
     }
@@ -570,7 +586,7 @@ fun PreviewMintingScreen() {
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .background(Color.Black)
+                        .background(Colors.BLACK)
                         //.height(LocalConfiguration.current.screenHeightDp.dp)
                         .padding(24.dp, 24.dp)
                 ) {

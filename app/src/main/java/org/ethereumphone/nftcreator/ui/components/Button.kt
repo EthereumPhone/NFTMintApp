@@ -121,71 +121,71 @@ import org.ethereumphone.nftcreator.ui.theme.*
 //
 //}
 
-@Composable
-fun ethOSButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    enabled: Boolean,
-    onClick: (() -> Unit)? = null,
-    interactionSource: MutableInteractionSource =
-        remember { MutableInteractionSource() }
-) {
-
-    //val interactionSource = remember { MutableInteractionSource() }
-    //val isPressed by interactionSource.collectIsPressedAsState() //if pressed
-    //val isHovering by interactionSource.collectIsFocusedAsState() //if hovered
-
-    val Inter = FontFamily(
-        Font(R.font.inter_light,FontWeight.Light),
-        Font(R.font.inter_regular,FontWeight.Normal),
-        Font(R.font.inter_medium,FontWeight.Medium),
-        Font(R.font.inter_semibold,FontWeight.SemiBold),
-        Font(R.font.inter_bold, FontWeight.Bold)
-    )
-
-    Button(
-        interactionSource = interactionSource,
-        onClick = {
-            if (onClick != null) {
-                onClick()
-            }
-        },
-        shape = RoundedCornerShape(50.dp),
-        enabled = enabled,
-        modifier = modifier
-            .fillMaxWidth()
-            //.hoverable(interactionSource = interactionSource, enabled = true)
-            .height(54.dp)
-            .indication(interactionSource, rememberRipple(bounded = true, color = Color.Black))
-
-        ,
-        contentPadding= PaddingValues(horizontal = 8.dp, vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(
-            disabledBackgroundColor = Color(0xFF9FA2A5),
-            disabledContentColor = Color(0xFFDCDCDC) ,//if(primary) (if(isPressed) positive else warning ) else blue,
-            contentColor = Color.Black,
-            backgroundColor = Color.White
-        )
-    ) {
-
-        Row(
-            horizontalArrangement =  Arrangement.Center,
-            verticalAlignment =  Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ){
-
-            Text(text=text, color= if(enabled) Color.Black else Color(0xFFDCDCDC), fontWeight = FontWeight.SemiBold, fontSize = 18.sp, fontFamily = Inter)
-
-        }
-
-    }
-
-}
+//@Composable
+//fun ethOSButton(
+//    modifier: Modifier = Modifier,
+//    text: String,
+//    enabled: Boolean,
+//    onClick: (() -> Unit)? = null,
+//    interactionSource: MutableInteractionSource =
+//        remember { MutableInteractionSource() }
+//) {
+//
+//    //val interactionSource = remember { MutableInteractionSource() }
+//    //val isPressed by interactionSource.collectIsPressedAsState() //if pressed
+//    //val isHovering by interactionSource.collectIsFocusedAsState() //if hovered
+//
+//    val Inter = FontFamily(
+//        Font(R.font.inter_light,FontWeight.Light),
+//        Font(R.font.inter_regular,FontWeight.Normal),
+//        Font(R.font.inter_medium,FontWeight.Medium),
+//        Font(R.font.inter_semibold,FontWeight.SemiBold),
+//        Font(R.font.inter_bold, FontWeight.Bold)
+//    )
+//
+//    Button(
+//        interactionSource = interactionSource,
+//        onClick = {
+//            if (onClick != null) {
+//                onClick()
+//            }
+//        },
+//        shape = RoundedCornerShape(50.dp),
+//        enabled = enabled,
+//        modifier = modifier
+//            .fillMaxWidth()
+//            //.hoverable(interactionSource = interactionSource, enabled = true)
+//            .height(54.dp)
+//            .indication(interactionSource, rememberRipple(bounded = true, color = Color.Black))
+//
+//        ,
+//        contentPadding= PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+//        colors = ButtonDefaults.buttonColors(
+//            disabledBackgroundColor = Color(0xFF9FA2A5),
+//            disabledContentColor = Color(0xFFDCDCDC) ,//if(primary) (if(isPressed) positive else warning ) else blue,
+//            contentColor = Color.Black,
+//            backgroundColor = Color.White
+//        )
+//    ) {
+//
+//        Row(
+//            horizontalArrangement =  Arrangement.Center,
+//            verticalAlignment =  Alignment.CenterVertically,
+//            modifier = Modifier.fillMaxWidth()
+//        ){
+//
+//            Text(text=text, color= if(enabled) Color.Black else Color(0xFFDCDCDC), fontWeight = FontWeight.SemiBold, fontSize = 18.sp, fontFamily = Inter)
+//
+//        }
+//
+//    }
+//
+//}
 
 @Composable
 @Preview
 fun PreviewButton() {
     NftCreatorTheme {
-        ethOSButton(text ="Mint", enabled = true)
+//        ethOSButton(text ="Mint", enabled = true)
     }
 }

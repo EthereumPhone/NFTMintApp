@@ -21,12 +21,12 @@ kotlin {
 
 
 android {
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "org.ethereumphone.nftcreator"
         minSdk 30
-        targetSdk 32
+        targetSdk 34
         versionCode 100003
         versionName "1.0.3"
 
@@ -51,7 +51,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "1.1.1"
+        kotlinCompilerExtensionVersion "1.4.1"
     }
 
     buildFeatures { // Jetpack Compose preview
@@ -145,5 +145,5 @@ dependencies {
 
     //Haptics
     //implementation 'com.github.EthereumPhone:ethOS-Component-Library:haptics-c5beada698-1'
-
+    implementation 'com.github.EthereumPhone:ethOS-Component-Library:d3a62e32b4'
 }

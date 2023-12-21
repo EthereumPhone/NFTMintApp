@@ -69,6 +69,7 @@ internal class WCKViewModel constructor(
                 is Session.Status.Approved -> onSessionApproved()
                 is Session.Status.Connected -> onSessionConnected()
                 is Session.Status.Closed -> onSessionDisconnected()
+                else -> {}
             }
             sessionCallback?.onStatus(status)
         }
