@@ -29,74 +29,74 @@ import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.ui.theme.*
 
 
-@Composable
-fun InputField(
-    value: String,
-    placeholder: String,
-    readOnly: Boolean = false,
-    singeLine: Boolean = true,
-    maxLines: Int = Int.MAX_VALUE,
-    size: Int = 20,
-
-    //shape: Shape = RoundedCornerShape(12.dp),
-    modifier: Modifier = Modifier,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    onChange: ((value: String) -> Unit)? = null
-) {
-    val Inter = FontFamily(
-        Font(R.font.inter_light, FontWeight.Light),
-        Font(R.font.inter_regular, FontWeight.Normal),
-        Font(R.font.inter_medium, FontWeight.Medium),
-        Font(R.font.inter_semibold, FontWeight.SemiBold),
-        Font(R.font.inter_bold, FontWeight.Bold)
-    )
-    var text by remember { mutableStateOf(value) }
-    TextField(
-        value = text,
-        onValueChange = {
-            text = it
-            if (onChange != null) {
-                onChange(it)
-            }
-        },
-        textStyle = TextStyle(
-            fontFamily = Inter,
-            fontSize = size.sp,
-            fontWeight = FontWeight.SemiBold
-        ),
-        placeholder = {
-            Text(
-                text = placeholder,
-                fontFamily = Inter,
-                fontSize = size.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        },
-        readOnly = readOnly,
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.Transparent,
-            textColor = white,
-            placeholderColor = gray,
-            errorCursorColor= Color.Red,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            cursorColor = white
-        ),
-        shape = RoundedCornerShape(12.dp),
-        modifier = modifier,
-        singleLine = singeLine,
-        maxLines = maxLines,
-        trailingIcon = trailingIcon
-    )
-}
-
-@Composable
-@Preview
-fun PreviewInputFiledBox() {
-    NftCreatorTheme {
-        InputField("Test", "Test", modifier = Modifier.fillMaxWidth())
-    }
-}
+//@Composable
+//fun InputField(
+//    value: String,
+//    placeholder: String,
+//    readOnly: Boolean = false,
+//    singeLine: Boolean = true,
+//    maxLines: Int = Int.MAX_VALUE,
+//    size: Int = 20,
+//
+//    //shape: Shape = RoundedCornerShape(12.dp),
+//    modifier: Modifier = Modifier,
+//    trailingIcon: @Composable (() -> Unit)? = null,
+//    onChange: ((value: String) -> Unit)? = null
+//) {
+//    val Inter = FontFamily(
+//        Font(R.font.inter_light, FontWeight.Light),
+//        Font(R.font.inter_regular, FontWeight.Normal),
+//        Font(R.font.inter_medium, FontWeight.Medium),
+//        Font(R.font.inter_semibold, FontWeight.SemiBold),
+//        Font(R.font.inter_bold, FontWeight.Bold)
+//    )
+//    var text by remember { mutableStateOf(value) }
+//    TextField(
+//        value = text,
+//        onValueChange = {
+//            text = it
+//            if (onChange != null) {
+//                onChange(it)
+//            }
+//        },
+//        textStyle = TextStyle(
+//            fontFamily = Inter,
+//            fontSize = size.sp,
+//            fontWeight = FontWeight.SemiBold
+//        ),
+//        placeholder = {
+//            Text(
+//                text = placeholder,
+//                fontFamily = Inter,
+//                fontSize = size.sp,
+//                fontWeight = FontWeight.SemiBold
+//            )
+//        },
+//        readOnly = readOnly,
+//        colors = TextFieldDefaults.textFieldColors(
+//            backgroundColor = Color.Transparent,
+//            textColor = white,
+//            placeholderColor = gray,
+//            errorCursorColor= Color.Red,
+//            unfocusedIndicatorColor = Color.Transparent,
+//            focusedIndicatorColor = Color.Transparent,
+//            cursorColor = white
+//        ),
+//        shape = RoundedCornerShape(12.dp),
+//        modifier = modifier,
+//        singleLine = singeLine,
+//        maxLines = maxLines,
+//        trailingIcon = trailingIcon
+//    )
+//}
+//
+//@Composable
+//@Preview
+//fun PreviewInputFiledBox() {
+//    NftCreatorTheme {
+//        InputField("Test", "Test", modifier = Modifier.fillMaxWidth())
+//    }
+//}
 
 /*
 

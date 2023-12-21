@@ -36,158 +36,158 @@ import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 import org.ethereumphone.nftcreator.ui.theme.gray
 
 
-@Composable
-fun AddressPills(
-    address: String,
-    chainId: Int,
-    onclick: () -> Unit,
-    icon: @Composable () -> Unit,
-    sdeg:SnackbarDelegate
-) {
-
-
-    var network = ""
-    when (chainId) {
-        1 -> network = "Mainnet"
-        5 -> network = "Goerli"
-        10 -> network = "Optimism"
-        137 -> network = "Polygon"
-        42161 -> network = "Arbitrum"
-        else -> {
-            network = "Mainnet"
-        }
-    }
-
-    var color = Color(0xFF2E3D4E)
-    when (chainId) {
-        1 -> color = Color(0xFF45BA4A)
-        5 -> color = Color(0xFFFCA311)
-        10 -> color = Color(0xFFE52222)
-        137 -> color = Color(0xFF8A50DA)
-        42161 -> color = Color(0xFF49A9F2)
-        else -> {
-            color = Color(0xFF45BA4A)
-        }
-    }
-
-    val text = network+" " + address.take(5) + "..."
-    val context = LocalContext.current
-
-
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        //Address
-        Row (
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(),
-        ){
-            IconButton(
-                onClick = {}
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = "Information",
-                    tint = Color.Transparent,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                    //.background(Color.Red)
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .clickable {
-//                        val clipboard: ClipboardManager? =
-//                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-//                        val clip = ClipData.newPlainText("Address", address)
-//                        clipboard?.setPrimaryClip(clip)
-
-//                        sdeg.coroutineScope.launch {
-//                            sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
-//                        }
-                               },
-            ){
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    modifier = Modifier
-                        .clickable {
-//                            val clipboard: ClipboardManager? =
-//                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
-//                            val clip = ClipData.newPlainText("Address", address)
-//                            clipboard?.setPrimaryClip(clip)
-                        },
-                    text = address,//truncateText(address),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-            }
-            icon()
-        }
-        //Networkpill
-//        val chainName = when(chainId) {
-//            1 -> "Mainnet"
-//            5 -> "Goerli"
-//            10 -> "Optimism"
-//            137 -> "Polygon"
-//            42161 -> "Arbitrum"
-//            else -> "Mainnet"
+//@Composable
+//fun AddressPills(
+//    address: String,
+//    chainId: Int,
+//    onclick: () -> Unit,
+//    icon: @Composable () -> Unit,
+//    sdeg:SnackbarDelegate
+//) {
+//
+//
+//    var network = ""
+//    when (chainId) {
+//        1 -> network = "Mainnet"
+//        5 -> network = "Goerli"
+//        10 -> network = "Optimism"
+//        137 -> network = "Polygon"
+//        42161 -> network = "Arbitrum"
+//        else -> {
+//            network = "Mainnet"
 //        }
-        Surface (
-            modifier = Modifier
-                .clip(CircleShape),
-            color = Color(0xFF262626),
-            contentColor = Color.White
-        ) {
-            Text(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                text = network,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White
-            )
-        }
-    }
-
-
-}
-
-private fun truncateText(text: String): String {
-    if (text.length > 19) {
-        return text.substring(0, 5) + "..." + text.takeLast(3) + " "
-    }
-    return text
-}
-
-@ExperimentalComposeUiApi
-@Composable @Preview
-fun PreviewMintingScreen() {
-    ///NftCreatorTheme {
-    val scope = rememberCoroutineScope()
-    val hostState = remember { SnackbarHostState() }
-    val sdeg = rememberSnackbarDelegate(hostState, scope)
-    AddressPills(
-        "Mintapp",
-        1,
-        sdeg = sdeg,
-        icon = {
-            IconButton(
-                onClick = {}
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = "Information",
-                    tint = Color(0xFF9FA2A5),
-                    modifier = Modifier
-                        .clip(CircleShape)
-                    //.background(Color.Red)
-                )
-            }
-        },
-        onclick = {
-
-        }
-    )
-    //}
-}
+//    }
+//
+//    var color = Color(0xFF2E3D4E)
+//    when (chainId) {
+//        1 -> color = Color(0xFF45BA4A)
+//        5 -> color = Color(0xFFFCA311)
+//        10 -> color = Color(0xFFE52222)
+//        137 -> color = Color(0xFF8A50DA)
+//        42161 -> color = Color(0xFF49A9F2)
+//        else -> {
+//            color = Color(0xFF45BA4A)
+//        }
+//    }
+//
+//    val text = network+" " + address.take(5) + "..."
+//    val context = LocalContext.current
+//
+//
+//    Column (
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ){
+//        //Address
+//        Row (
+//            horizontalArrangement = Arrangement.SpaceBetween,
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier.fillMaxWidth(),
+//        ){
+//            IconButton(
+//                onClick = {}
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Outlined.Info,
+//                    contentDescription = "Information",
+//                    tint = Color.Transparent,
+//                    modifier = Modifier
+//                        .clip(CircleShape)
+//                    //.background(Color.Red)
+//                )
+//            }
+//            Box(
+//                modifier = Modifier
+//                    .clickable {
+////                        val clipboard: ClipboardManager? =
+////                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+////                        val clip = ClipData.newPlainText("Address", address)
+////                        clipboard?.setPrimaryClip(clip)
+//
+////                        sdeg.coroutineScope.launch {
+////                            sdeg.showSnackbar(SnackbarState.WARNING,"No internet connection")
+////                        }
+//                               },
+//            ){
+//                Spacer(modifier = Modifier.height(10.dp))
+//                Text(
+//                    modifier = Modifier
+//                        .clickable {
+////                            val clipboard: ClipboardManager? =
+////                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+////                            val clip = ClipData.newPlainText("Address", address)
+////                            clipboard?.setPrimaryClip(clip)
+//                        },
+//                    text = address,//truncateText(address),
+//                    fontSize = 20.sp,
+//                    fontWeight = FontWeight.SemiBold,
+//                    color = Color.White
+//                )
+//            }
+//            icon()
+//        }
+//        //Networkpill
+////        val chainName = when(chainId) {
+////            1 -> "Mainnet"
+////            5 -> "Goerli"
+////            10 -> "Optimism"
+////            137 -> "Polygon"
+////            42161 -> "Arbitrum"
+////            else -> "Mainnet"
+////        }
+//        Surface (
+//            modifier = Modifier
+//                .clip(CircleShape),
+//            color = Color(0xFF262626),
+//            contentColor = Color.White
+//        ) {
+//            Text(
+//                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+//                text = network,
+//                fontSize = 14.sp,
+//                fontWeight = FontWeight.SemiBold,
+//                color = Color.White
+//            )
+//        }
+//    }
+//
+//
+//}
+//
+//private fun truncateText(text: String): String {
+//    if (text.length > 19) {
+//        return text.substring(0, 5) + "..." + text.takeLast(3) + " "
+//    }
+//    return text
+//}
+//
+//@ExperimentalComposeUiApi
+//@Composable @Preview
+//fun PreviewMintingScreen() {
+//    ///NftCreatorTheme {
+//    val scope = rememberCoroutineScope()
+//    val hostState = remember { SnackbarHostState() }
+//    val sdeg = rememberSnackbarDelegate(hostState, scope)
+//    AddressPills(
+//        "Mintapp",
+//        1,
+//        sdeg = sdeg,
+//        icon = {
+//            IconButton(
+//                onClick = {}
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Outlined.Info,
+//                    contentDescription = "Information",
+//                    tint = Color(0xFF9FA2A5),
+//                    modifier = Modifier
+//                        .clip(CircleShape)
+//                    //.background(Color.Red)
+//                )
+//            }
+//        },
+//        onclick = {
+//
+//        }
+//    )
+//    //}
+//}
