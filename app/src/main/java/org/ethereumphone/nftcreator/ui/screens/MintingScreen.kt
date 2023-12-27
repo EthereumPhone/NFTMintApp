@@ -5,8 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.compose.ui.graphics.BlendMode
-
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.VibrationEffect
@@ -30,8 +28,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.rounded.Preview
+import androidx.compose.material.icons.rounded.Upload
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -42,11 +45,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
-
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.debugInspectorInfo
@@ -64,18 +67,21 @@ import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.moduls.MinterAttribute
 import org.ethereumphone.nftcreator.moduls.Network
+import org.ethereumphone.nftcreator.moduls.PreferencesHelper
 import org.ethereumphone.nftcreator.moduls.TokenData
 import org.ethereumphone.nftcreator.ui.components.*
 import org.ethereumphone.nftcreator.ui.theme.*
 import org.ethereumphone.nftcreator.utils.*
-import org.ethereumphone.nftcreator.utils.mintingWorkFlow
 import org.ethereumphone.walletsdk.WalletSDK
 import org.ethosmobile.components.library.core.ethOSButton
 import org.ethosmobile.components.library.core.ethOSHeader
 import org.ethosmobile.components.library.core.ethOSInfoDialog
+import org.ethosmobile.components.library.core.ethOSOnboardingModalBottomSheet
 import org.ethosmobile.components.library.core.ethOSSelectDialog
 import org.ethosmobile.components.library.mint.ethOSImageBox
 import org.ethosmobile.components.library.mint.ethOSInputField
+import org.ethosmobile.components.library.models.OnboardingItem
+import org.ethosmobile.components.library.models.OnboardingObject
 import org.ethosmobile.components.library.theme.Colors
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
@@ -107,6 +113,7 @@ fun MintingScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MintingScreenInput(
@@ -197,21 +204,72 @@ fun MintingScreenInput(
         )
     }
 
-//    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
-//    val walletAddress = walletSDK.getAddress()//get wallet address
-//    val context = LocalContext.current
-//    val runnable = Runnable {
-//        synchronized(context) {
-//            val currChainid = walletSDK.getChainId()
-//            if (currChainid != 1) {
-//                println("Not on mainnet, changing chain")
-//                walletSDK.changeChainid(1).get()
-//            }
-//        }
-//    }
-//    Thread(runnable).start()
+    val walletSDK = WalletSDK(LocalContext.current)//access to wallet
+    val walletAddress = walletSDK.getAddress()//get wallet address
+    val context = LocalContext.current
+    val runnable = Runnable {
+        synchronized(context) {
+            val currChainid = walletSDK.getChainId()
+            if (currChainid != 1) {
+                println("Not on mainnet, changing chain")
+                walletSDK.changeChainid(1).get()
+            }
+        }
+    }
+    Thread(runnable).start()
 
     val scrollState = rememberScrollState()
+
+
+    //onboarding
+    val modalSheetState = rememberModalBottomSheetState(true)
+
+
+
+    var preferenceValue by remember { mutableStateOf("") }
+    // Load preference
+    LaunchedEffect(key1 = Unit) {
+        preferenceValue = PreferencesHelper.getPreference(context, "onboarding_key", "onboarding_uncomplete")
+    }
+
+
+
+    if(preferenceValue == "onboarding_uncomplete"){
+        ethOSOnboardingModalBottomSheet(
+            onDismiss = {
+                scope.launch {
+                    modalSheetState.hide()
+                }.invokeOnCompletion {
+
+                }
+                PreferencesHelper.setPreference(context, "onboarding_key", "onboarding_complete")
+            },
+            sheetState = modalSheetState,
+            onboardingObject = OnboardingObject(
+                imageVector = R.drawable.mint,
+                title = "Mint",
+                items = listOf(
+                    OnboardingItem(
+                        imageVector = Icons.Rounded.Upload,
+                        title = "Mint",
+                        subtitle = "Mint NFTs straight to Ethereum straight from your camera roll with only a few clicks"
+                    ),
+                    OnboardingItem(
+                        imageVector = Icons.Rounded.Preview,
+                        title = "Viewable on Opensea",
+                        subtitle = "To view, follow the link to Opensea and connect your native wallet."
+                    ),
+                    OnboardingItem(
+                        imageVector = Icons.Outlined.ErrorOutline,
+                        title = "Disclaimer",
+                        subtitle = "ethOS does not take any ownership, liability or responsibility over what ethOS Mint is used to mint NFTs to ethereum for"
+                    ),
+
+
+                )
+            )
+        )
+    }
 
     Column(
         //verticalArrangement = Arrangement.SpaceBetween,
@@ -235,8 +293,9 @@ fun MintingScreenInput(
 
        Column (
            verticalArrangement = Arrangement.SpaceBetween,
-           modifier = modifier.fillMaxSize()
-               .padding(start = 24.dp, end = 24.dp,top = 12.dp, bottom = 24.dp,)
+           modifier = modifier
+               .fillMaxSize()
+               .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 24.dp,)
        ){
            Column(
                horizontalAlignment = Alignment.CenterHorizontally,
