@@ -19,6 +19,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -273,7 +274,7 @@ fun MintingScreenInput(
 
     Column(
         //verticalArrangement = Arrangement.SpaceBetween,
-        modifier  = Modifier.fillMaxSize()
+        modifier  = Modifier.fillMaxSize().background(Colors.BLACK)
     ) {
         ethOSHeader(title = "Mint", isTrailContent = true, trailContent = {
             IconButton(

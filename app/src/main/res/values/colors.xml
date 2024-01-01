@@ -12,7 +12,7 @@
     <color name="purple_dark">@color/gray_dark</color>
     <color name="purple_medium">#5550F2</color>
     <color name="purple_light">#A3A0FF</color>
-    <color name="gray_dark">#FF1E2730</color>
+    <color name="gray_dark">#FF000000</color>
 
 
 </resources>

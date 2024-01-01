@@ -16,12 +16,9 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import com.ramcosta.composedestinations.navigation.dependency
 import dev.pinkroom.walletconnectkit.WalletConnectKit
-import org.ethereumphone.nftcreator.ui.screens.Home
 import org.ethereumphone.nftcreator.ui.screens.MintingScreen
-
 import org.ethereumphone.nftcreator.ui.screens.NavGraphs
 import org.ethereumphone.nftcreator.ui.screens.destinations.MintingScreenDestination
-import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 import org.koin.androidx.compose.get
 
 
@@ -47,7 +44,7 @@ class MainActivity : ComponentActivity() {
         StrictMode.setVmPolicy(builder.build())
 
         setContent {
-            NftCreatorTheme {
+            //NftCreatorTheme {
                 DestinationsNavHost(
                     navGraph = NavGraphs.root,
                     dependenciesContainerBuilder = {
@@ -58,7 +55,7 @@ class MainActivity : ComponentActivity() {
                         MintingScreen(imageUri = imageUri)
                     }
                 }
-            }
+            //}
         }
     }
 }
