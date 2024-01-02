@@ -243,6 +243,7 @@ fun MintingScreenInput(
 
                 }
                 PreferencesHelper.setPreference(context, "onboarding_key", "onboarding_complete")
+                preferenceValue = "onboarding_complete"
             },
             sheetState = modalSheetState,
             onboardingObject = OnboardingObject(
@@ -252,17 +253,17 @@ fun MintingScreenInput(
                     OnboardingItem(
                         imageVector = Icons.Rounded.Upload,
                         title = "Mint",
-                        subtitle = "Mint NFTs straight to Ethereum straight from your camera roll with only a few clicks"
+                        subtitle = "Mint NFTs straight to Ethereum straight from your camera roll with only a few clicks."
                     ),
                     OnboardingItem(
                         imageVector = Icons.Rounded.Preview,
                         title = "Viewable on Opensea",
-                        subtitle = "To view, follow the link to Opensea and connect your native wallet."
+                        subtitle = "To view, open Opensea in Three and connect your system wallet."
                     ),
                     OnboardingItem(
                         imageVector = Icons.Outlined.ErrorOutline,
                         title = "Disclaimer",
-                        subtitle = "ethOS does not take any ownership, liability or responsibility over what ethOS Mint is used to mint NFTs to ethereum for"
+                        subtitle = "ethOS does not take any ownership, liability or responsibility over what ethOS Mint is used for."
                     ),
 
 
