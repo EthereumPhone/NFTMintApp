@@ -487,7 +487,8 @@ fun MintingScreenInput(
                )
 
                Column(
-                   horizontalAlignment = Alignment.CenterHorizontally
+                   horizontalAlignment = Alignment.CenterHorizontally,
+                   modifier = modifier.fillMaxWidth()
                ) {
                    //Inputs & Button
                    CircularProgressIndicator(
