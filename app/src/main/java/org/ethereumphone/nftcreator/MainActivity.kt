@@ -19,8 +19,7 @@ import dev.pinkroom.walletconnectkit.WalletConnectKit
 import org.ethereumphone.nftcreator.ui.screens.Home
 import org.ethereumphone.nftcreator.ui.screens.MintingScreen
 
-import org.ethereumphone.nftcreator.ui.screens.NavGraphs
-import org.ethereumphone.nftcreator.ui.screens.destinations.MintingScreenDestination
+
 import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
 import org.koin.androidx.compose.get
 
@@ -48,16 +47,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NftCreatorTheme {
-                DestinationsNavHost(
-                    navGraph = NavGraphs.root,
-                    dependenciesContainerBuilder = {
-                        dependency(get<WalletConnectKit>())
-                    }
-                ) {
-                    composable(MintingScreenDestination) {
-                        MintingScreen(imageUri = imageUri)
-                    }
-                }
+                MintingScreen(imageUri = imageUri)
             }
         }
     }
