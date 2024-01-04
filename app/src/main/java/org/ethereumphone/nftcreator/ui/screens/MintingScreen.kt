@@ -222,7 +222,7 @@ fun MintingScreenInput(
     val scrollState = rememberScrollState()
 
 
-    //onboarding
+    //Onboarding
     val modalSheetState = rememberModalBottomSheetState(true)
 
 

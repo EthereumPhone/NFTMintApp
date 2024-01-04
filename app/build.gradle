@@ -145,7 +145,7 @@ dependencies {
 
     //Haptics
     //implementation 'com.github.EthereumPhone:ethOS-Component-Library:haptics-c5beada698-1'
-    implementation 'com.github.EthereumPhone:ethOS-Component-Library:a5ac60a61d'
+    implementation 'com.github.EthereumPhone:ethOS-Component-Library:137ec355d7'
     implementation "androidx.compose.material3:material3:1.1.1"
     implementation 'androidx.preference:preference-ktx:1.1.1' // Check for the latest version
 
