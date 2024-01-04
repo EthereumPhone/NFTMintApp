@@ -19,11 +19,13 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -31,9 +33,12 @@ import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Preview
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -59,9 +64,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.ramcosta.composedestinations.annotation.Destination
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
@@ -83,6 +91,7 @@ import org.ethosmobile.components.library.mint.ethOSInputField
 import org.ethosmobile.components.library.models.OnboardingItem
 import org.ethosmobile.components.library.models.OnboardingObject
 import org.ethosmobile.components.library.theme.Colors
+import org.ethosmobile.components.library.theme.Fonts
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -224,6 +233,16 @@ fun MintingScreenInput(
     //onboarding
     val modalSheetState = rememberModalBottomSheetState(true)
 
+    // Minted
+    val mintModalSheetState = rememberModalBottomSheetState(true)
+    var mintedTxState by remember {
+        mutableStateOf(false)
+    }
+    var currentTxState by remember {
+        mutableStateOf("")
+    }
+
+    var keyNum by remember { mutableStateOf(0) }
 
 
     var preferenceValue by remember { mutableStateOf("") }
@@ -232,7 +251,24 @@ fun MintingScreenInput(
         preferenceValue = PreferencesHelper.getPreference(context, "onboarding_key", "onboarding_uncomplete")
     }
 
+    if (mintedTxState) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                scope.launch {
+                    mintModalSheetState.hide()
+                }.invokeOnCompletion {
 
+                }
+                mintedTxState = false
+                currentTxState = ""
+            },
+            sheetState = mintModalSheetState,
+            containerColor = Color.Black,
+            contentColor = Color.White
+        ) {
+            PendingTransactionStateUi(transactionHash = currentTxState)
+        }
+    }
 
     if(preferenceValue == "onboarding_uncomplete"){
         ethOSOnboardingModalBottomSheet(
@@ -264,9 +300,7 @@ fun MintingScreenInput(
                         imageVector = Icons.Outlined.ErrorOutline,
                         title = "Disclaimer",
                         subtitle = "ethOS does not take any ownership, liability or responsibility over what ethOS Mint is used for."
-                    ),
-
-
+                    )
                 )
             )
         )
@@ -402,38 +436,35 @@ fun MintingScreenInput(
                        //modifier = Modifier.fadingEdge(topBottomFade),
                    ) {
 
-                       //Inputs & Button
-                       ethOSInputField(
-                           modifier = Modifier.fillMaxWidth(),
-                           placeholder = "Enter Title",
-                           maxLines = 2,
-                           singeLine = false,
-                           size = 32,
-                           value = "",
-                       ) {
-                           titleText = it
+                       key(keyNum) {
+                           //Inputs & Button
+                           ethOSInputField(
+                               modifier = Modifier.fillMaxWidth(),
+                               placeholder = "Enter Title",
+                               maxLines = 2,
+                               singeLine = false,
+                               size = 32,
+                               value = "",
+                           ) {
+                               titleText = it
+                           }
+                           Spacer(modifier = Modifier.height(8.dp))
+                           ethOSInputField(
+                               modifier = Modifier
+                                   .fillMaxWidth()
+                                   .fillMaxHeight(0.6f)
+                                   //.verticalFadingEdge(scrollState,12.dp,Colors.BLACK),
+                                   .fadingEdge(topBottomFade),
+                               singeLine = false,
+
+                               placeholder = "Enter Description",
+                               value = descriptionText
+                           ) {
+                               descriptionText = it
+                           }
                        }
-                       Spacer(modifier = Modifier.height(8.dp))
-                       ethOSInputField(
-                           modifier = Modifier
-                               .fillMaxWidth()
-                               .fillMaxHeight(0.6f)
-                               //.verticalFadingEdge(scrollState,12.dp,Colors.BLACK),
-                               .fadingEdge(topBottomFade),
-                           singeLine = false,
-
-                           placeholder = "Enter Description",
-                           value = descriptionText
-                       ) {
-                           descriptionText = it
-                       }
-
-
                    }
                }
-//                }
-
-
 
            }
 
@@ -556,18 +587,14 @@ fun MintingScreenInput(
                                ).whenComplete { s, throwable ->
                                    processing.value = false
                                    if (s != WalletSDK.DECLINE) {
-                                       imageUri.value = null
-                                       val url = "${selectedNetwork.chainExplorer}/tx/$s"
-                                       con.copyToClipboard(url)
-                                       val uri = Uri.parse(url)
-                                       val intent = Intent(Intent.ACTION_VIEW, uri)
                                        Thread.sleep(1000)
-                                       con.startActivity(intent)
-
-//                                                sdeg.coroutineScope.launch {
-//                                                    sdeg.showSnackbar(SnackbarState.SUCCESS,"Minting Complete")
-//                                                }
+                                       imageUri.value = null
+                                       titleText = ""
+                                       descriptionText = ""
+                                       keyNum += 1
                                    }
+                                   currentTxState = s
+                                   mintedTxState = true
                                }
 
                            } else if (selectedNetwork.equals("IMX")) {
@@ -712,7 +739,119 @@ fun isNetworkAvailable(con: Context): Boolean {
     return connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo!!.isConnected
 }
 
+@Composable
+fun PendingTransactionStateUi(
+    transactionHash: String
+) {
+    val context = LocalContext.current
 
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 12.dp, end = 12.dp, bottom = 48.dp)
+            .fillMaxHeight(.5f)
+        ,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column (
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            if(transactionHash.startsWith("0x")) {
+                Box (
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(110.dp)
+                        .border(
+                            5.dp, Colors.SUCCESS,
+                            CircleShape
+                        )
+                ){
+                    androidx.compose.material3.Icon(
+                        Icons.Rounded.Check,
+                        "Approve",
+                        tint = Colors.SUCCESS,
+                        modifier = Modifier.size(64.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.size(8.dp))
+
+                androidx.compose.material3.Text(
+                    text = "Transaction Succeeded.",
+                    color = Color.White,
+                    fontSize = 28.sp,
+                    fontFamily = Fonts.INTER,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Spacer(modifier = Modifier.size(8.dp))
+
+                androidx.compose.material3.Text(
+                    text = "It might take some time for the NFT to be indexed by OpenSea.",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontFamily = Fonts.INTER,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp) // Add padding here
+                )
+
+                androidx.compose.material3.Text(
+                    text = "View NFT on OpenSea",
+                    color = Color(0xFF71B5FF),
+                    fontSize = 18.sp,
+                    fontFamily = Fonts.INTER,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.clickable {
+                        // Create link for opensea
+                        val link = "https://opensea.io/collection/ethos-minting-app-1?search[sortAscending]=false&search[sortBy]=CREATED_DATE"
+
+                        // Open link in browser
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse(link)
+                        context.startActivity(intent)
+                    }
+                )
+
+            }
+            else {
+
+                Box (
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(110.dp)
+                        .border(
+                            5.dp, Colors.ERROR,
+                            CircleShape
+                        )
+                ){
+                    androidx.compose.material3.Icon(
+                        Icons.Rounded.Close,
+                        "Failed",
+                        tint = Colors.ERROR,
+                        modifier = Modifier.size(64.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.size(8.dp))
+
+                androidx.compose.material3.Text(
+                    text = "Transaction Failed",
+                    color = Color.White,
+                    fontSize = 28.sp,
+                    fontFamily = Fonts.INTER,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+            }
+        }
+
+
+    }
+}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
