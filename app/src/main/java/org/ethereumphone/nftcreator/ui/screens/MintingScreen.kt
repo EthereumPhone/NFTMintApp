@@ -19,6 +19,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -68,14 +69,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.ramcosta.composedestinations.annotation.Destination
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.moduls.MinterAttribute
 import org.ethereumphone.nftcreator.moduls.Network
-import org.ethereumphone.nftcreator.moduls.PreferencesHelper
 import org.ethereumphone.nftcreator.moduls.TokenData
 import org.ethereumphone.nftcreator.ui.components.*
 import org.ethereumphone.nftcreator.ui.theme.*
@@ -245,11 +243,9 @@ fun MintingScreenInput(
     var keyNum by remember { mutableStateOf(0) }
 
 
-    var preferenceValue by remember { mutableStateOf("") }
-    // Load preference
-    LaunchedEffect(key1 = Unit) {
-        preferenceValue = PreferencesHelper.getPreference(context, "onboarding_key", "onboarding_uncomplete")
-    }
+    val store = UserStore(context)
+    val onboarding_complete = store.getUserOnboarding.collectAsState(initial = false)
+
 
     if (mintedTxState) {
         ModalBottomSheet(
@@ -270,16 +266,15 @@ fun MintingScreenInput(
         }
     }
 
-    if(preferenceValue == "onboarding_uncomplete"){
+    if(!onboarding_complete.value){
         ethOSOnboardingModalBottomSheet(
             onDismiss = {
                 scope.launch {
                     modalSheetState.hide()
+                    store.saveUserOnboarding(true)
                 }.invokeOnCompletion {
 
                 }
-                PreferencesHelper.setPreference(context, "onboarding_key", "onboarding_complete")
-                preferenceValue = "onboarding_complete"
             },
             sheetState = modalSheetState,
             onboardingObject = OnboardingObject(
@@ -308,7 +303,7 @@ fun MintingScreenInput(
 
     Column(
         //verticalArrangement = Arrangement.SpaceBetween,
-        modifier  = Modifier.fillMaxSize()
+        modifier  = Modifier.fillMaxSize().background(Colors.BLACK)
     ) {
         ethOSHeader(title = "Mint", isTrailContent = true, trailContent = {
             IconButton(

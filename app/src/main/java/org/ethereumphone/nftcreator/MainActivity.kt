@@ -1,5 +1,6 @@
 package org.ethereumphone.nftcreator
 
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,16 +13,7 @@ import androidx.core.view.WindowCompat
 import com.immutable.sdk.ImmutableX
 import com.immutable.sdk.ImmutableXBase
 import com.immutable.sdk.ImmutableXHttpLoggingLevel
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.manualcomposablecalls.composable
-import com.ramcosta.composedestinations.navigation.dependency
-import dev.pinkroom.walletconnectkit.WalletConnectKit
-import org.ethereumphone.nftcreator.ui.screens.Home
 import org.ethereumphone.nftcreator.ui.screens.MintingScreen
-
-
-import org.ethereumphone.nftcreator.ui.theme.NftCreatorTheme
-import org.koin.androidx.compose.get
 
 
 @ExperimentalComposeUiApi
@@ -46,9 +38,9 @@ class MainActivity : ComponentActivity() {
         StrictMode.setVmPolicy(builder.build())
 
         setContent {
-            NftCreatorTheme {
+            //NftCreatorTheme {
                 MintingScreen(imageUri = imageUri)
-            }
+            //}
         }
     }
 }
