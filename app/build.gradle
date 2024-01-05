@@ -149,5 +149,8 @@ dependencies {
     implementation "androidx.compose.material3:material3:1.1.1"
     implementation 'androidx.preference:preference-ktx:1.1.1' // Check for the latest version
 
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
+    implementation 'androidx.datastore:datastore-preferences-rxjava2:1.0.0'
+    implementation 'androidx.datastore:datastore-preferences-rxjava3:1.0.0'
 
 }

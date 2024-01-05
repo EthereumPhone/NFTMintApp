@@ -68,7 +68,6 @@ import org.ethereumphone.nftcreator.IPFSApi
 import org.ethereumphone.nftcreator.R
 import org.ethereumphone.nftcreator.moduls.MinterAttribute
 import org.ethereumphone.nftcreator.moduls.Network
-import org.ethereumphone.nftcreator.moduls.PreferencesHelper
 import org.ethereumphone.nftcreator.moduls.TokenData
 import org.ethereumphone.nftcreator.ui.components.*
 import org.ethereumphone.nftcreator.ui.theme.*
@@ -227,27 +226,24 @@ fun MintingScreenInput(
 
 
 
-    var preferenceValue by remember { mutableStateOf("") }
-    // Load preference
-    LaunchedEffect(key1 = Unit) {
-        preferenceValue = PreferencesHelper.getPreference(context, "onboarding_key", "onboarding_uncomplete")
-    }
+    val store = UserStore(context)
+    val onboarding_complete = store.getUserOnboarding.collectAsState(initial = false)
 
-
-
-    if(preferenceValue == "onboarding_uncomplete"){
+    if(!onboarding_complete.value){
         ethOSOnboardingModalBottomSheet(
             onDismiss = {
                 scope.launch {
                     modalSheetState.hide()
+                    store.saveUserOnboarding(true)
                 }.invokeOnCompletion {
 
                 }
-                PreferencesHelper.setPreference(context, "onboarding_key", "onboarding_complete")
+
+                //PreferencesHelper.setPreference(context, "onboarding_key", "onboarding_complete")
             },
             sheetState = modalSheetState,
             onboardingObject = OnboardingObject(
-                imageVector = R.drawable.mint,
+                imageVector = R.drawable.baseline_check_24,
                 title = "Mint",
                 items = listOf(
                     OnboardingItem(
@@ -263,11 +259,11 @@ fun MintingScreenInput(
                     OnboardingItem(
                         imageVector = Icons.Outlined.ErrorOutline,
                         title = "Disclaimer",
-                        subtitle = "ethOS does not take any ownership, liability or responsibility over what ethOS Mint is used to mint NFTs to ethereum for"
+                        subtitle = " As running the light node means that a system service must be running in the background when ON, your phone may experience a minimal decrease in battery life."
                     ),
 
 
-                )
+                    )
             )
         )
     }
