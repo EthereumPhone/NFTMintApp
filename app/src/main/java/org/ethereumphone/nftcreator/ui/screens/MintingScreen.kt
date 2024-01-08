@@ -81,12 +81,12 @@ import org.ethereumphone.nftcreator.ui.components.*
 import org.ethereumphone.nftcreator.ui.theme.*
 import org.ethereumphone.nftcreator.utils.*
 import org.ethereumphone.walletsdk.WalletSDK
+import org.ethosmobile.components.library.core.dashedBorder
 import org.ethosmobile.components.library.core.ethOSButton
 import org.ethosmobile.components.library.core.ethOSHeader
 import org.ethosmobile.components.library.core.ethOSInfoDialog
 import org.ethosmobile.components.library.core.ethOSOnboardingModalBottomSheet
 import org.ethosmobile.components.library.core.ethOSSelectDialog
-import org.ethosmobile.components.library.mint.ethOSImageBox
 import org.ethosmobile.components.library.mint.ethOSInputField
 import org.ethosmobile.components.library.models.OnboardingItem
 import org.ethosmobile.components.library.models.OnboardingObject
@@ -440,7 +440,7 @@ fun MintingScreenInput(
                            //Inputs & Button
                            ethOSInputField(
                                modifier = Modifier.fillMaxWidth(),
-                               placeholder = "Enter Title",
+                               placeholder = "Enter title",
                                maxLines = 2,
                                singeLine = false,
                                size = 32,
@@ -457,7 +457,7 @@ fun MintingScreenInput(
                                    .fadingEdge(topBottomFade),
                                singeLine = false,
 
-                               placeholder = "Enter Description",
+                               placeholder = "Enter description",
                                value = descriptionText
                            ) {
                                descriptionText = it
@@ -652,6 +652,56 @@ fun MintingScreenInput(
 
 }
 
+@Composable
+fun ethOSImageBox(
+    modifier: Modifier= Modifier,
+    onClick: () -> Unit
+) {
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(24.dp))
+            .dashedBorder(
+                4.dp,
+                Colors.GRAY,
+                shape= RoundedCornerShape(24.dp),
+                on = 20.dp,
+                off = 10.dp
+            )
+            .clickable {
+                onClick()
+            }
+
+
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement= Arrangement.Center,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    Icons.Outlined.Image,
+                    contentDescription = "Select image",
+                    tint = Colors.GRAY,
+                    modifier = Modifier
+                        .size(36.dp)
+                )
+                Spacer(modifier = Modifier.width(18.dp))
+                Text(
+                    text = "Select image",
+                    fontSize = 18.sp,
+                    color = Colors.GRAY,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = Fonts.INTER
+                )
+            }
+        }
+    }
+}
 
 fun Modifier.fadingEdge(brush: Brush) = this
     .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
