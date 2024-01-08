@@ -203,7 +203,7 @@ fun MintingScreenInput(
             setShowDialog = {
                 showInfoDialog.value = false
             },
-            title = "Disclaimers",
+            title = "Disclaimer",
             text = "ethOS allows you to mint jpgs on Ethereum, " +
                     "but it assumes no ownership, liability, or " +
                     "responsibility for their use."
@@ -288,7 +288,7 @@ fun MintingScreenInput(
                     ),
                     OnboardingItem(
                         imageVector = Icons.Rounded.Preview,
-                        title = "Viewable on Opensea",
+                        title = "Viewable on opensea",
                         subtitle = "To view, open Opensea in Three and connect your system wallet."
                     ),
                     OnboardingItem(
@@ -435,7 +435,7 @@ fun MintingScreenInput(
                            //Inputs & Button
                            ethOSInputField(
                                modifier = Modifier.fillMaxWidth(),
-                               placeholder = "Enter Title",
+                               placeholder = "Enter title",
                                maxLines = 2,
                                singeLine = false,
                                size = 32,
@@ -452,7 +452,7 @@ fun MintingScreenInput(
                                    .fadingEdge(topBottomFade),
                                singeLine = false,
 
-                               placeholder = "Enter Description",
+                               placeholder = "Enter description",
                                value = descriptionText
                            ) {
                                descriptionText = it
